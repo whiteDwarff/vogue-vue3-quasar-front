@@ -11,6 +11,18 @@ const validateEmail = (val) => {
   return reg.test(val) || '이메일 형식이 아닙니다';
 };
 /**
+ * @param { string } tel 휴대폰 번호
+ * @returns { boolean } 휴대폰 번호가 유효성 검사를 통과하면 true 반환
+ * @returns { string }  휴대폰 번호가 유효성 검사에 통과히지 못하면 message 반환
+ * -------------------------------------------------------------------
+ * @description 휴대폰 번호 유효성 검사 ( '-'을 포함한 휴대폰 번호 유효성 검사 )
+ */
+const validateTel = (val) => {
+  const reg = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+  return reg.test(val) || '휴대폰 번호 형식이 아닙니다';
+};
+
+/**
  * @param { string } password 비밀번호
  * @returns { boolean } 비밀번호가 유효성 검사를 통과하면 true 반환
  * @returns { string }  비밀번호가 유효성 검사에 통과히지 못하면 message 반환
@@ -21,7 +33,7 @@ const validatePassword = (val) => {
   const reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
   return (
     reg.test(val) ||
-    '비밀번호는 영문, 숫자, 특수기호 조합 8자리 이상 입력하세요'
+    '비밀번호는 영문, 숫자, 특수기호 조합 8자리 이상 15자리 이하로 입력하세요'
   );
 };
 /**
@@ -33,6 +45,11 @@ const validatePassword = (val) => {
  * @description 회원가입, 회원정보 수정 시 비밀번호 확인
  */
 const validatePasswordConfirm = (password, passwordConfirm) =>
-  password === passwordConfirm || '비밀번호 값이 일치하지 않습니다';
+  password === passwordConfirm || '비밀번호가 일치하지 않습니다';
 
-export { validateEmail, validatePassword, validatePasswordConfirm };
+export {
+  validateEmail,
+  validatePassword,
+  validateTel,
+  validatePasswordConfirm,
+};
