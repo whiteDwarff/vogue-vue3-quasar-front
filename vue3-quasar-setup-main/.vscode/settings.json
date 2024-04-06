@@ -1,0 +1,52 @@
+// {
+//   "editor.bracketPairColorization.enabled": true,
+//   "editor.guides.bracketPairs": true,
+//   "editor.formatOnSave": true,
+//   "editor.defaultFormatter": "esbenp.prettier-vscode",
+//   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+//   "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"]
+// }
+{
+  "workbench.colorTheme": "Community Material Theme",
+  "workbench.iconTheme": "material-icon-theme",
+  "settingsSync.ignoredExtensions": [],
+  "python.autoComplete.extraPaths": [],
+  "python.pythonPath": "/usr/bin/python3",
+  "python.analysis.extraPaths": [],
+  "extensions.ignoreRecommendations": true,
+  "explorer.confirmDelete": false,
+  /////////////////////////////////////////
+  //  eslint 설정
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "markdown"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "notebook.editorOptionsCustomizations": {},
+  "explorer.confirmDragAndDrop": false,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "json.schemas": [],
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "window.commandCenter": false,
+  "eslint.codeActionsOnSave.rules": null,
+  "editor.formatOnSave": true
+  /////////////////////////////////////////
+}
