@@ -108,7 +108,7 @@ module.exports = configure(function (/* ctx */) {
               '@vueuse/core',
               'quasar',
             ],
-            dirs: ['src/utils/**', 'src/boot/**'],
+            dirs: ['src/service/**', 'src/utils/**', 'src/boot/**'],
           },
         ],
         /**

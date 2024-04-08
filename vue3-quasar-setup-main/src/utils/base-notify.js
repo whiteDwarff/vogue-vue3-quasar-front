@@ -18,6 +18,7 @@ export function baseNotify(
 
   if (actions) {
     option = {
+      ...option,
       timeout: 2000,
       progress: true,
       actions: [
