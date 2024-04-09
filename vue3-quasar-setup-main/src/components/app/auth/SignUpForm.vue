@@ -130,6 +130,7 @@ import {
   validateTel,
 } from '/src/utils/validate-rules';
 
+const props = defineProps(['token']);
 const emit = defineEmits(['changeView']);
 
 const form = ref({
@@ -189,7 +190,7 @@ const { isLoading: emailLoading, execute: fetchedHasEmail } = useAsyncState(
 );
 const handleHasEmail = async () => {
   if (validateEmail(form.value.email) == true)
-    await fetchedHasEmail(0, form.value);
+    await fetchedHasEmail(0, { ...form.value, token: props.token });
   else baseNotify('이메일 형식이 아닙니다', { type: 'warning' });
 };
 </script>

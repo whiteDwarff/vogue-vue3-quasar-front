@@ -1,5 +1,11 @@
 <template>
-  <q-dialog v-model="value">
+  <q-dialog
+    v-model="value"
+    persistent
+    no-shake
+    transition-hide="none"
+    transition-show="none"
+  >
     <q-card style="width: 400px">
       <q-card-section class="flex">
         <q-space />
@@ -9,6 +15,7 @@
       <q-card-section class="q-pt-none">
         <component
           :is="authViewComponents[viewMode]"
+          :token
           @change-view="changeViewMode"
         />
       </q-card-section>
@@ -17,6 +24,7 @@
 </template>
 
 <script setup>
+const props = defineProps(['token']);
 const value = defineModel();
 
 // 반응형 상태 값

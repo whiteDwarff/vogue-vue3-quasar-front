@@ -17,7 +17,6 @@
         outlined
         dense
         label="비밀번호"
-        :type="!pwdVisibilityOpt ? 'password' : 'text'"
         placeholder="특수기호, 숫자를 포함한 8자리 이상 15자리 이하"
         :rules="[validatePassword]"
         lazy-rules
@@ -46,6 +45,8 @@
 </template>
 <script setup>
 import { validateEmail, validatePassword } from '/src/utils/validate-rules';
+
+const props = defineProps(['token']);
 const emit = defineEmits(['changeView']);
 
 const form = ref({
@@ -60,6 +61,6 @@ const { isLoading, execute } = useAsyncState(signIn, null, {
 });
 
 const handleSubmit = async () => {
-  await (0, execute(form.value));
+  await (0, execute({ ...form.value, token: props.token }));
 };
 </script>
