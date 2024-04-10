@@ -24,18 +24,31 @@
 </template>
 
 <script setup>
-const props = defineProps(['token']);
+import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
+
 const value = defineModel();
 
 // 반응형 상태 값
 const viewMode = ref('SignInForm');
 const changeViewMode = (mode) => (viewMode.value = mode);
+// Google ReCaptch token
+const token = ref('');
 
 // defineAsyncComponent()
 const authViewComponents = {
   SignInForm: defineAsyncComponent(() => import('./SignInForm.vue')),
   SignUpForm: defineAsyncComponent(() => import('./SignUpForm.vue')),
 };
+
+// --------------------------------------------------------------------------
+// Google ReCaptch 사용 v-bind로 토큰 값 넘김
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
+
+const recaptcha = async () => {
+  await recaptchaLoaded();
+  token.value = await executeRecaptcha('auth');
+};
+recaptcha();
 </script>
 
 <style lang="scss" scoped></style>

@@ -13,14 +13,14 @@
         rounded
         class="bg-black text-white q-pa-sm"
         :ripple="false"
-        @click="recaptcha"
+        @click="isDialog = true"
       />
     </q-header>
     <q-page-container :style="pageContainerStyles">
       <router-view />
     </q-page-container>
 
-    <AuthDialog v-model="isDialog" :token />
+    <AuthDialog v-model="isDialog" />
   </q-layout>
 </template>
 
@@ -38,19 +38,6 @@ const pageContainerStyles = computed(() => ({
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
-
-// --------------------------------------------------------------------------
-// google recaptcha setting => props를 통해 로그인, 회원가입에서 사용
-const token = ref('');
-const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
-
-const recaptcha = async () => {
-  isDialog.value = true;
-
-  await recaptchaLoaded();
-  token.value = await executeRecaptcha('login');
-  console.log(token.value);
-};
 </script>
 
 <style lang="scss" scoped>

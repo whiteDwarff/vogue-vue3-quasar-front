@@ -16,7 +16,7 @@
         <template v-slot:append>
           <q-btn
             label="중복확인 "
-            @click.stop="handleHasEmail"
+            @click="handleHasEmail"
             dense
             unelevated
             :ripple="false"
@@ -130,8 +130,8 @@ import {
   validateTel,
 } from '/src/utils/validate-rules';
 
-const props = defineProps(['token']);
 const emit = defineEmits(['changeView']);
+const props = defineProps(['token']);
 
 const form = ref({
   email: '',
@@ -146,6 +146,7 @@ const confirmPassword = ref('');
 const pwdVisibilityOpt = ref(false);
 // 이메일 중복검사 상태변수
 const emailDuplicatedOpt = ref(false);
+
 // --------------------------------------------------------------------------
 // 회원가입
 const { isLoading: submitLoading, execute: fetchedSignUp } = useAsyncState(
@@ -162,9 +163,11 @@ const { isLoading: submitLoading, execute: fetchedSignUp } = useAsyncState(
     },
   },
 );
+
 const handleSubmit = async () => {
-  if (emailDuplicatedOpt.value) await fetchedSignUp(0, form.value);
-  else baseNotify('이메일 중복검사를 해주세요.', { type: 'warning' });
+  if (emailDuplicatedOpt.value) {
+    await fetchedSignUp(0, { ...form.value, token: props.token });
+  } else baseNotify('이메일 중복검사를 해주세요.', { type: 'warning' });
 };
 // --------------------------------------------------------------------------
 // 이메일 중복검사
@@ -175,6 +178,7 @@ const { isLoading: emailLoading, execute: fetchedHasEmail } = useAsyncState(
     immediate: false,
     throwError: true,
     onSuccess: (data) => {
+      console.log(data);
       if (data?.status == 200) {
         baseNotify(
           '사용할 수 있는 이메일입니다. 현재 이메일을 사용하시겠습니까?',
@@ -188,9 +192,10 @@ const { isLoading: emailLoading, execute: fetchedHasEmail } = useAsyncState(
     },
   },
 );
+
 const handleHasEmail = async () => {
   if (validateEmail(form.value.email) == true)
-    await fetchedHasEmail(0, { ...form.value, token: props.token });
+    await fetchedHasEmail(0, form.value);
   else baseNotify('이메일 형식이 아닙니다', { type: 'warning' });
 };
 </script>
