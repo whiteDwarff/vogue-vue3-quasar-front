@@ -21,6 +21,7 @@
         :rules="[validatePassword]"
         lazy-rules
         hide-bottom-space
+        type="password"
       />
       <div class="flex justify-between q-mt-md">
         <q-btn label="아이디 찾기" color="secondary" flat dense size="13px" />
@@ -28,10 +29,11 @@
       </div>
       <q-btn
         type="submit"
-        label="로그인하기"
+        label="로그인"
         class="full-width"
         unelevated
         color="primary"
+        :loading="isLoading"
       />
       <q-btn
         @click="$emit('changeView', 'SignUpForm')"
@@ -41,6 +43,7 @@
         class="full-width"
       />
     </q-form>
+    {{ form }}
   </div>
 </template>
 <script setup>
@@ -52,15 +55,21 @@ const emit = defineEmits(['changeView']);
 const form = ref({
   email: '',
   password: '',
+  token: props.token,
 });
 
 const { isLoading, execute } = useAsyncState(signIn, null, {
   immediate: false,
   throwError: true,
-  onSuccess: () => {},
+  onSuccess: (data) => {
+    if (data?.status == 200) {
+      baseNotify(data.message);
+      console.log(data);
+    }
+  },
 });
 
 const handleSubmit = async () => {
-  await (0, execute({ ...form.value, token: props.token }));
+  await execute(0, form);
 };
 </script>

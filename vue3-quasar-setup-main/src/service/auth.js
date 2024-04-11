@@ -9,8 +9,9 @@
 export async function signUp(form) {
   try {
     return await api.post('/auth/signUp', form);
-  } catch ({ response }) {
-    getErrorMessage(response.status);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
   }
 }
 /**
@@ -22,8 +23,9 @@ export async function signUp(form) {
 export async function duplicatedEmail(form) {
   try {
     return await api.post('/auth/hasEmail', form);
-  } catch ({ response }) {
-    getErrorMessage(response.status);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
   }
 }
 /**
@@ -35,7 +37,8 @@ export async function duplicatedEmail(form) {
 export async function signIn(form) {
   try {
     return await api.post('/auth/signIn', form);
-  } catch ({ response }) {
-    getErrorMessage(response.status);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
   }
 }
