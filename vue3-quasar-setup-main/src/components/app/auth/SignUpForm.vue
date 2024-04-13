@@ -129,9 +129,9 @@ import {
   validatePasswordConfirm,
   validateTel,
 } from '/src/utils/validate-rules';
+import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
 
 const emit = defineEmits(['changeView']);
-const props = defineProps(['token']);
 
 const form = ref({
   email: '',
@@ -163,10 +163,14 @@ const { isLoading: submitLoading, execute: fetchedSignUp } = useAsyncState(
     },
   },
 );
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
 const handleSubmit = async () => {
   if (emailDuplicatedOpt.value) {
-    await fetchedSignUp(0, { ...form.value, token: props.token });
+    await recaptchaLoaded();
+    const token = await executeRecaptcha('auth');
+
+    await fetchedSignUp(0, { ...form.value, token });
   } else baseNotify('이메일 중복검사를 해주세요.', { type: 'warning' });
 };
 // --------------------------------------------------------------------------

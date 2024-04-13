@@ -1,5 +1,26 @@
 <template>
-  <div v-if="editor" class="flex q-pa-xs">
+  <div v-if="editor" class="flex flex items-center q-pa-xs">
+    <!-- text-color -->
+    <q-btn
+      flat
+      dense
+      icon="sym_o_border_color"
+      @click="color.click()"
+      :style="{ color: icon.color }"
+    >
+      <input
+        ref="color"
+        type="color"
+        @input="
+          editor.chain().focus().setColor($event.target.value).run(),
+            (icon.color = $event.target.value)
+        "
+        :value="editor.getAttributes('textStyle').color || '#000000'"
+        style="width: 0px"
+        class="invisible"
+      />
+    </q-btn>
+    <!-- bold -->
     <q-btn
       flat
       dense
@@ -8,6 +29,8 @@
       :disabled="!editor.can().chain().focus().toggleBold().run()"
       :color="editor.isActive('bold') ? 'blue' : null"
     />
+
+    <!-- italic -->
     <q-btn
       flat
       dense
@@ -16,6 +39,42 @@
       :disabled="!editor.can().chain().focus().toggleItalic().run()"
       :color="editor.isActive('italic') ? 'blue' : null"
     />
+    <!-- text-align-->
+    <q-btn flat dense :icon="icon.align" color="blue">
+      <q-menu>
+        <q-btn
+          flat
+          dense
+          v-close-popup
+          icon="sym_o_format_align_left"
+          @click="
+            editor.chain().focus().setTextAlign('left').run(),
+              (icon.align = 'sym_o_format_align_left')
+          "
+        />
+        <q-btn
+          flat
+          dense
+          v-close-popup
+          icon="sym_o_format_align_center"
+          @click="
+            editor.chain().focus().setTextAlign('center').run(),
+              (icon.align = 'sym_o_format_align_center')
+          "
+        />
+        <q-btn
+          flat
+          dense
+          v-close-popup
+          icon="sym_o_format_align_right"
+          @click="
+            editor.chain().focus().setTextAlign('right').run(),
+              (icon.align = 'sym_o_format_align_right')
+          "
+        />
+      </q-menu>
+    </q-btn>
+    <!-- text-decoration -->
     <q-btn
       flat
       dense
@@ -24,6 +83,7 @@
       :disabled="!editor.can().chain().focus().toggleStrike().run()"
       :color="editor.isActive('strike') ? 'blue' : null"
     />
+    <!-- hiper-link -->
     <q-btn
       flat
       dense
@@ -33,6 +93,7 @@
       :color="editor.isActive('link') ? 'blue' : null"
     />
     <q-separator vertical inset spaced />
+    <!-- code -->
     <q-btn
       flat
       dense
@@ -41,6 +102,7 @@
       :disabled="!editor.can().chain().focus().toggleCode().run()"
       :color="editor.isActive('code') ? 'blue' : null"
     />
+    <!-- code -->
     <q-btn
       flat
       dense
@@ -123,14 +185,19 @@ const props = defineProps({
     type: Object,
   },
 });
+const icon = ref({
+  align: 'sym_o_format_align_left',
+  color: '#000',
+});
+const color = ref(null);
 
 const handleLinkMenu = () => {
-  if (props.editor.isActive("link")) {
+  if (props.editor.isActive('link')) {
     props.editor.chain().focus().unsetLink().run();
     return;
   }
-  const previousUrl = props.editor.getAttributes("link").href;
-  const url = window.prompt("URL", previousUrl);
+  const previousUrl = props.editor.getAttributes('link').href;
+  const url = window.prompt('URL', previousUrl);
 
   // cancelled
   if (url === null) {
@@ -138,8 +205,8 @@ const handleLinkMenu = () => {
   }
 
   // empty
-  if (url === "") {
-    props.editor.chain().focus().extendMarkRange("link").unsetLink().run();
+  if (url === '') {
+    props.editor.chain().focus().extendMarkRange('link').unsetLink().run();
 
     return;
   }
@@ -148,13 +215,13 @@ const handleLinkMenu = () => {
   props.editor
     .chain()
     .focus()
-    .extendMarkRange("link")
+    .extendMarkRange('link')
     .setLink({ href: url })
     .run();
 };
 
 const handleImageMenu = () => {
-  const url = window.prompt("URL");
+  const url = window.prompt('URL');
 
   if (url) {
     props.editor.chain().focus().setImage({ src: url }).run();

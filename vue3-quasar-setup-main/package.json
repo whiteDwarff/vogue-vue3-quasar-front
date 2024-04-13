@@ -14,9 +14,12 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "@tiptap/extension-color": "^2.3.0",
     "@tiptap/extension-image": "^2.2.4",
     "@tiptap/extension-link": "^2.2.4",
     "@tiptap/extension-placeholder": "^2.2.4",
+    "@tiptap/extension-text-align": "^2.3.0",
+    "@tiptap/extension-text-style": "^2.3.0",
     "@tiptap/pm": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
     "@tiptap/vue-3": "^2.2.4",

@@ -9,12 +9,17 @@
 </template>
 
 <script setup>
+import { watch } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
+import { Color } from '@tiptap/extension-color';
+import { Editor } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
-import { watch } from 'vue';
+import TextStyle from '@tiptap/extension-text-style';
+import TextAlign from '@tiptap/extension-text-align';
+
 import TibTabEdirotMenu from './TibTabEdirotMenu.vue';
 
 // 상위 컴포넌트에서 v-model을 통한 바인딩
@@ -33,8 +38,13 @@ const editor = useEditor({
     Placeholder.configure({
       placeholder: '마크다운을 이용해서 편리하게 글을 작성하세요.',
     }),
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+    }),
     Link,
     Image,
+    TextStyle,
+    Color,
   ],
   // editor에 변화가 일어났을 때 ~
   // 사용자의 입력 등...

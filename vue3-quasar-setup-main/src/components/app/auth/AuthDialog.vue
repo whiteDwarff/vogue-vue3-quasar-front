@@ -15,8 +15,8 @@
       <q-card-section class="q-pt-none">
         <component
           :is="authViewComponents[viewMode]"
-          :token
           @change-view="changeViewMode"
+          @close-dialog="$emit('update:modelValue', false)"
         />
       </q-card-section>
     </q-card>
@@ -24,7 +24,8 @@
 </template>
 
 <script setup>
-import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
+import { defineAsyncComponent } from 'vue';
+import FindByEmailForm from './FindByEmailForm.vue';
 
 const value = defineModel();
 
@@ -38,17 +39,8 @@ const token = ref('');
 const authViewComponents = {
   SignInForm: defineAsyncComponent(() => import('./SignInForm.vue')),
   SignUpForm: defineAsyncComponent(() => import('./SignUpForm.vue')),
+  FindByEmailForm: defineAsyncComponent(() => import('./FindByEmailForm.vue')),
 };
-
-// --------------------------------------------------------------------------
-// Google ReCaptch 사용 v-bind로 토큰 값 넘김
-const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
-
-const recaptcha = async () => {
-  await recaptchaLoaded();
-  token.value = await executeRecaptcha('auth');
-};
-recaptcha();
 </script>
 
 <style lang="scss" scoped></style>
