@@ -1,13 +1,19 @@
 <template>
   <div>
-    <div class="text-h5 text-center text-weight-bold q-mb-xl">이메일 찾기</div>
+    <div class="text-h5 text-center text-weight-bold q-mb-xl">
+      비밀번호 찾기
+    </div>
 
-    <template v-if="form.email">
-      <div class="text-center q-mb-xl">
-        가입하신 이메일은 <b>{{ form.email }}</b> 입니다.
-      </div>
-    </template>
     <q-form @submit.prevent="handleSubmit" class="q-gutter-y-md">
+      <q-input
+        v-model="form.email"
+        outlined
+        dense
+        label="이메일"
+        :rules="[validateEmail]"
+        lazy-rules
+        hide-bottom-space
+      />
       <q-input
         v-model="form.name"
         outlined
@@ -44,27 +50,24 @@
   </div>
 </template>
 <script setup>
-import { validateTel } from '/src/utils/validate-rules';
+import { baseNotify } from 'src/utils/base-notify';
+import { validateTel, validateEmail } from '/src/utils/validate-rules';
 
 const emit = defineEmits(['changeView', 'closeDialog']);
 
 const form = ref({
+  email: '',
   name: '',
   tel: '',
-  email: null,
 });
 
-const { isLoading, execute } = useAsyncState(findByEmail, null, {
+const { isLoading, execute } = useAsyncState(findBypassword, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
+    console.log(res);
     if (res?.status == 200) {
-      const email = [...res.data.list.email];
-      const findAt = email.indexOf('@');
-      const criteria = parseInt(findAt / 3);
-
-      for (let i = criteria; i < criteria + 3; i++) email[i] = '*';
-      form.value.email = email.join('');
+      baseNotify(res.data.message);
     }
   },
 });

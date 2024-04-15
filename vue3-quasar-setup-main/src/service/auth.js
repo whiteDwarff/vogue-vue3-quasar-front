@@ -55,3 +55,17 @@ export async function findByEmail(form) {
     getErrorMessage(err.response);
   }
 }
+/**
+ * @param { string } form 사용자 정보
+ * @return { promise } 200 status
+ * -------------------------------------------------------------------
+ * @description 비밀번호 찾기
+ */
+export async function findBypassword(form) {
+  try {
+    return await api.post('/auth/password', form);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
+  }
+}

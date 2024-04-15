@@ -101,8 +101,6 @@
         </template>
       </q-input>
 
-      <q-separator class="q-mb-md" />
-
       <q-btn
         label="제출"
         type="submit"

@@ -40,6 +40,9 @@ const authViewComponents = {
   SignInForm: defineAsyncComponent(() => import('./SignInForm.vue')),
   SignUpForm: defineAsyncComponent(() => import('./SignUpForm.vue')),
   FindByEmailForm: defineAsyncComponent(() => import('./FindByEmailForm.vue')),
+  FindByPasswordForm: defineAsyncComponent(() =>
+    import('./FindByPasswordForm.vue'),
+  ),
 };
 </script>
 

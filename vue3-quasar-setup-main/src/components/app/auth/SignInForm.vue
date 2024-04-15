@@ -31,7 +31,14 @@
           dense
           size="13px"
         />
-        <q-btn label="비밀번호 찾기" color="secondary" flat dense size="13px" />
+        <q-btn
+          @click="$emit('changeView', 'FindByPasswordForm')"
+          label="비밀번호 찾기"
+          color="secondary"
+          flat
+          dense
+          size="13px"
+        />
       </div>
       <q-btn
         type="submit"
