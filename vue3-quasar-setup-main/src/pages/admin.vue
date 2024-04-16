@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <q-page padding>
     <RouterView />
-  </div>
+  </q-page>
 </template>
 
 <script setup></script>

@@ -107,6 +107,7 @@ module.exports = configure(function (/* ctx */) {
               'vue-router',
               '@vueuse/core',
               'quasar',
+              'pinia',
             ],
             dirs: ['src/service/**', 'src/utils/**', 'src/boot/**'],
           },
@@ -119,7 +120,12 @@ module.exports = configure(function (/* ctx */) {
           'unplugin-vue-components/vite',
           {
             // 컴포넌트를 검색할 디렉토리의 상대 경로
-            dirs: ['src/components/**', 'src/pages/**'],
+            dirs: [
+              'src/components/**',
+              'src/components/**/**',
+              'src/pages/**',
+              'src/pages/**/**',
+            ],
             // 컴포넌트의 유효한 파일 확장자
             extensions: ['vue'],
             // 하위 디렉터리 검색

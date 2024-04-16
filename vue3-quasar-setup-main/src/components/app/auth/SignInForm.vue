@@ -61,6 +61,11 @@
 <script setup>
 import { validateEmail, validatePassword } from '/src/utils/validate-rules';
 import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
+import { useAuthStore } from 'src/stores/authStore';
+import { storeToRefs } from 'pinia';
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
 
 const emit = defineEmits(['changeView', 'closeDialog']);
 
@@ -72,8 +77,11 @@ const form = ref({
 const { isLoading, execute } = useAsyncState(signIn, null, {
   immediate: false,
   throwError: true,
-  onSuccess: (data) => {
-    if (data?.status == 200) emit('closeDialog');
+  onSuccess: (res) => {
+    if (res?.status == 200) {
+      emit('closeDialog');
+      authStore.setUser(res.data.list.user);
+    }
   },
 });
 

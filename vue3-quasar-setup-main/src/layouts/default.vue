@@ -5,8 +5,8 @@
       <q-toolbar-title> default </q-toolbar-title>
 
       <q-space />
-
       <q-btn
+        v-if="!isAuthState"
         label="로그인 • 회원가입"
         dense
         unelevated
@@ -15,7 +15,18 @@
         :ripple="false"
         @click="isDialog = true"
       />
+      <q-btn
+        v-if="isAuthState"
+        label=" 로그아웃 "
+        dense
+        unelevated
+        rounded
+        class="bg-black text-white q-pa-sm"
+        :ripple="false"
+        @click="authStore.setUser()"
+      />
     </q-header>
+
     <q-page-container :style="pageContainerStyles">
       <router-view />
     </q-page-container>
@@ -25,7 +36,9 @@
 </template>
 
 <script setup>
-import { VueReCaptcha, useReCaptcha } from 'vue-recaptcha-v3';
+import { useAuthStore } from 'src/stores/authStore';
+const authStore = useAuthStore();
+const { isAuthState, user } = storeToRefs(authStore);
 
 const route = useRoute();
 
