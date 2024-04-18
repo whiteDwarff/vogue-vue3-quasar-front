@@ -1,100 +1,30 @@
 <template>
-  <q-card>
-    <div class="row">
-      <q-list bordered separator class="col-4">
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
+  <q-card class="row q-col-gutter-md">
+    <q-card-section class="col-12 col-sm-4">
+      <q-list bordered separator>
+        <q-item clickable v-ripple>
+          <q-item-section>Single line item</q-item-section>
+        </q-item>
 
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
+        <q-item clickable v-ripple>
+          <q-item-section>
+            <q-item-label>Item with caption</q-item-label>
+            <q-item-label caption>Caption</q-item-label>
+          </q-item-section>
+        </q-item>
 
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
-
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
-
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
+        <q-item clickable v-ripple>
+          <q-item-section>
+            <q-item-label overline>OVERLINE</q-item-label>
+            <q-item-label>Item with caption</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
+    </q-card-section>
 
-      <div class="col-8" color="bg-red">
-        <q-card flat>
-          <q-tabs
-            v-model="tab"
-            dense
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-            align="left"
-            narrow-indicator
-          >
-            <q-tab name="main" label="대분류" />
-            <q-tab name="sub" label="중분류" />
-          </q-tabs>
-
-          <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="main">
-              <CategoryForm />
-            </q-tab-panel>
-
-            <q-tab-panel name="sub">
-              <CategoryForm />
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-      </div>
-    </div>
+    <q-card-section class="col-12 col-sm-8">
+      <CategoryForm />
+    </q-card-section>
   </q-card>
 </template>
 

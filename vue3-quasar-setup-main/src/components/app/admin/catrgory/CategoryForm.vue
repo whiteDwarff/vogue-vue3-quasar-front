@@ -23,29 +23,66 @@
       <div class="row items-center">
         <label for="" class="col-12 col-sm-3">공개여부</label>
         <div class="col-12 col-sm-9">
-          <q-radio size="sm" val="y" label="공개" />
-          <q-radio size="sm" v-model="shape" val="n" label="비공개" />
-        </div>
-      </div>
-      <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">접근권한</label>
-        <div class="col-12 col-sm-9">
-          <q-checkbox size="sm" val="a" label="ANONYMOUS" />
-          <q-checkbox size="sm" val="b" label="일반사용자" />
-          <q-checkbox size="sm" v-model="shape" val="c" label="사이트관리자" />
-          <q-checkbox size="sm" v-model="shape" val="d" label="시스템관리자" />
-        </div>
-      </div>
-      <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">사용권한</label>
-        <div class="col-12 col-sm-9">
-          <q-checkbox size="sm" val="a" label="게시글 작성" />
-          <q-checkbox size="sm" val="b" label="게시글 수정" />
-          <q-checkbox size="sm" val="b" label="게시글 삭제" />
+          <q-radio size="sm" val="y" label="공개" class="q-mr-lg" />
+          <q-radio size="sm" val="n" label="비공개" />
         </div>
       </div>
 
       <q-separator />
+
+      <q-markup-table>
+        <thead>
+          <tr>
+            <th class="text-center">사용자</th>
+            <th class="text-center">접근권한</th>
+            <th class="text-center">등록</th>
+            <th class="text-center">수정</th>
+            <th class="text-center">삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-center">ANONYMOUS</td>
+            <td class="text-center">
+              <q-checkbox size="sm" val="a" />
+            </td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"></td>
+          </tr>
+          <tr>
+            <td class="text-center">일반사용자</td>
+            <td class="text-center">
+              <q-checkbox size="sm" val="a" />
+            </td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"></td>
+          </tr>
+          <tr>
+            <td class="text-center">사이트관리자</td>
+            <td class="text-center">
+              <q-checkbox size="sm" val="a" />
+            </td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"></td>
+          </tr>
+          <tr>
+            <td class="text-center">시스템관리자</td>
+            <td class="text-center">
+              <q-checkbox size="sm" val="a" />
+            </td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"><q-checkbox size="sm" val="a" /></td>
+            <td class="text-center"></td>
+          </tr>
+        </tbody>
+      </q-markup-table>
 
       <div class="flex">
         <q-space />
