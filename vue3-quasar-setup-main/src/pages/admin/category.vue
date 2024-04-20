@@ -22,7 +22,7 @@
       </q-list>
     </q-card-section>
 
-    <q-card-section class="col-12 col-sm-8">
+    <q-card-section class="col-12 col-sm-8" bordered>
       <CategoryForm />
     </q-card-section>
   </q-card>

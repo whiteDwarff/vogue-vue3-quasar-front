@@ -28,6 +28,7 @@
     </q-header>
 
     <q-page-container :style="pageContainerStyles">
+      <router-link to="/admin/category">go</router-link>
       <router-view />
     </q-page-container>
 
@@ -36,18 +37,32 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
+import { useSystemStore } from 'src/stores/systemStore';
+
+// --------------------------------------------------------------------------
 const authStore = useAuthStore();
+const systemStore = useSystemStore();
 const { isAuthState, user } = storeToRefs(authStore);
+const { system, isSisSystemState } = storeToRefs(systemStore);
+// --------------------------------------------------------------------------
 
 const route = useRoute();
 
 const isDialog = ref(false);
-
+// --------------------------------------------------------------------------
+const { execute } = useAsyncState(getSystemAll, null, {
+  immediate: true,
+  throwError: true,
+  onSuccess: (res) => {
+    if (res?.status == 200) systemStore.setSystems(res.data.list);
+  },
+});
+if (!isSisSystemState) execute();
 // --------------------------------------------------------------------------
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px
-  // <router lang="yaml"> 속성
   maxWidth: route.meta?.width || '1080px',
   margin: '0 auto',
 }));
