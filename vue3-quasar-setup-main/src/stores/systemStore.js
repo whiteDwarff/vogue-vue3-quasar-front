@@ -30,9 +30,11 @@ export const useSystemStore = defineStore('system', () => {
       arr.push({
         value: item.seq,
         label: item.name,
+        depth: item.depth,
+        url: item.url,
       });
-      return arr;
     }
+    return arr;
   };
 
   return {

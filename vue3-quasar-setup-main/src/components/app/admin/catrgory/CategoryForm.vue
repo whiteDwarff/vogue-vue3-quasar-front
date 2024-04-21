@@ -1,13 +1,19 @@
 <template>
-  <form action="" class="q-gutter-y-lg">
+  <form @submit.prevent="" class="q-gutter-y-lg">
     <div class="row items-center">
       <label for="" class="col-12 col-sm-3">상위타입</label>
+      <!-- 
+        emit-value : value 속성만 업데이트
+        map-option : option명은 label로 사용 
+      -->
       <q-select
-        v-model="form.upperMenu"
+        v-model="form.upperSeq"
         :options="upperMenu"
-        class="col-12 col-sm-9"
+        emit-value
+        map-options
         dense
         :options-dense="true"
+        class="col-12 col-sm-9"
       />
     </div>
     <div class="row items-center">
@@ -56,7 +62,7 @@
           <td class="text-center">{{ item.value }}</td>
           <td class="text-center">
             <q-checkbox
-              v-model="form.permission[i].baseAuthAcs"
+              v-model="form.permission[i].access"
               size="sm"
               true-value="Y"
               false-value="N"
@@ -64,7 +70,7 @@
           </td>
           <td class="text-center">
             <q-checkbox
-              v-model="form.permission[i].baseAuthAdd"
+              v-model="form.permission[i].add"
               size="sm"
               true-value="Y"
               false-value="N"
@@ -72,7 +78,7 @@
           </td>
           <td class="text-center">
             <q-checkbox
-              v-model="form.permission[i].baseAuthUpd"
+              v-model="form.permission[i].update"
               size="sm"
               true-value="Y"
               false-value="N"
@@ -80,7 +86,7 @@
           </td>
           <td class="text-center">
             <q-checkbox
-              v-model="form.permission[i].baseAuthDel"
+              v-model="form.permission[i].delete"
               size="sm"
               true-value="Y"
               false-value="N"
@@ -89,49 +95,55 @@
         </tr>
       </tbody>
     </q-markup-table>
-    <div v-for="item of form.permission" :key="item.key">
-      {{ item }}
-    </div>
+
     <div class="flex">
       <q-space />
       <q-btn color="red" label="삭제" outline class="q-mr-md" :ripple="false" />
-      <q-btn color="teal" label="저장" outline :ripple="false" />
+      <q-btn
+        @click="$emit('submit')"
+        color="teal"
+        label="저장"
+        outline
+        :ripple="false"
+      />
     </div>
   </form>
 </template>
 
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useSystemStore } from 'src/stores/systemStore';
+const form = defineModel('form');
+const upperMenu = defineModel('upperMenu');
+// import { storeToRefs } from 'pinia';
+// import { useSystemStore } from 'src/stores/systemStore';
 
-const systemStore = useSystemStore();
-const { system } = storeToRefs(systemStore);
+// const systemStore = useSystemStore();
+// const { system } = storeToRefs(systemStore);
 
-const upperMenu = ref(systemStore.categorySelectMenu());
+// const upperMenu = ref(systemStore.categorySelectMenu());
 
-const form = ref({
-  upperMenu: upperMenu.value[0],
-  name: '',
-  url: '',
-  sort: '',
-  useYn: 'Y',
-  depth: 0,
-  permission: [],
-});
-const addUserPermission = () => {
-  for (let item of system.value.permission) {
-    const obj = {
-      key: item.idntfCd,
-      value: item.idntfNm,
-      baseAuthAcs: 'Y',
-      baseAuthAdd: 'Y',
-      baseAuthUpd: 'Y',
-      baseAuthDel: 'Y',
-    };
-    form.value.permission.push(obj);
-  }
-};
-addUserPermission();
+// const form = ref({
+//   upperMenu: upperMenu.value[0].value,
+//   name: '',
+//   url: '',
+//   sort: '',
+//   useYn: 'Y',
+//   depth: 0,
+//   permission: [],
+// });
+// const addUserPermission = () => {
+//   for (let item of system.value.permission) {
+//     const obj = {
+//       key: item.idntfCd,
+//       value: item.idntfNm,
+//       baseAuthAcs: 'Y',
+//       baseAuthAdd: 'Y',
+//       baseAuthUpd: 'Y',
+//       baseAuthDel: 'Y',
+//     };
+//     form.value.permission.push(obj);
+//   }
+// };
+// addUserPermission();
 </script>
 
 <style lang="scss" scoped></style>
