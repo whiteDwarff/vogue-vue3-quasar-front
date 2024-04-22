@@ -68,10 +68,13 @@ const pageContainerStyles = computed(() => ({
 }));
 </script>
 
-<style lang="scss" scoped>
+<style>
 // <q-btn> hover 시 backgroud 제거
 :deep(.q-btn.btn--no-hover .q-focus-helper) {
   display: none;
+}
+.border {
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 </style>
 

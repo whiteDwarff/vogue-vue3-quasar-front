@@ -24,11 +24,13 @@
 
     <!-- category-form -->
     <q-card-section class="col-12 col-sm-8" bordered>
-      <CategoryForm
-        v-model:form="form"
-        v-model:upperMenu="upperMenu"
-        @submit="handleSubmit"
-      />
+      <q-card flat class="q-pa-md border">
+        <CategoryForm
+          v-model:form="form"
+          v-model:upperMenu="upperMenu"
+          @submit="handleSubmit"
+        />
+      </q-card>
     </q-card-section>
   </q-card>
 </template>
@@ -38,22 +40,17 @@ import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 
 import CategoryForm from 'src/components/app/admin/catrgory/CategoryForm.vue';
+import { baseNotify } from 'src/utils/base-notify';
 
 const systemStore = useSystemStore();
 const { system } = storeToRefs(systemStore);
 
 const upperMenu = ref(systemStore.categorySelectMenu());
 
-const form = ref({
-  upperSeq: upperMenu.value[0].value,
-  name: '',
-  url: '',
-  sort: '',
-  useYn: 'Y',
-  depth: 0,
-  permission: [],
-});
+// ----------------------------------------------------------------
+// 사옹자 권한별 체크박스 셋팅
 const addUserPermission = () => {
+  const basket = [];
   for (let item of system.value.permission) {
     const obj = {
       idntfCd: item.idntfCd,
@@ -63,13 +60,29 @@ const addUserPermission = () => {
       update: 'Y',
       delete: 'Y',
     };
-    form.value.permission.push(obj);
+    basket.push(obj);
   }
+  return basket;
 };
-addUserPermission();
+// ----------------------------------------------------------------
+// form의 초기값 셋팅
+const initializeForm = ref({
+  upperSeq: upperMenu.value[0].value,
+  name: '',
+  url: '/',
+  sort: '',
+  useYn: 'Y',
+  depth: 0,
+  permission: addUserPermission(),
+});
 
+const form = ref({
+  ...initializeForm.value,
+});
+// ----------------------------------------------------------------
+// form의 upperSeq를 감시하여 추가 로직 구현
 watch(
-  () => form.value.upperMenu,
+  () => form.value.upperSeq,
   (newValue) => {
     const selectedCtrgry = upperMenu.value.find(
       (data) => data.value == newValue,
@@ -78,17 +91,26 @@ watch(
     form.value.url = selectedCtrgry.url;
   },
 );
-
+// ----------------------------------------------------------------
+// 카테고리 등록
 const { execute, isLoading } = useAsyncState(insertCategory, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
     console.log(res);
+    if (res?.status == 201) {
+      baseNotify(res.data.message);
+      form.value = {
+        ...initializeForm.value,
+      };
+    } else {
+      console.log(res);
+    }
   },
 });
 
 const handleSubmit = async () => {
-  await insertCategory(form.value);
+  await execute(0, form.value);
 };
 </script>
 
