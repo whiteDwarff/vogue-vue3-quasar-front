@@ -19,7 +19,7 @@ export const useSystemStore = defineStore('system', () => {
     system.value.permission = permission;
   };
 
-  const setCategory = ({ category }) => {
+  const setCategory = (category) => {
     system.value.category = category;
   };
   // -------------------------------------------------------------------

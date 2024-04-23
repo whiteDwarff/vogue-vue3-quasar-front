@@ -1,6 +1,6 @@
 <template>
   <!-- 페이지 단위의 root element :  q-page -->
-  <q-page padding> auth : {{ user }} </q-page>
+  <div>auth : {{ user }}</div>
 </template>
 
 <script setup>

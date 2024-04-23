@@ -26,10 +26,28 @@
         @click="authStore.setUser()"
       />
     </q-header>
-
+    <!-- :style="pageContainerStyles" -->
     <q-page-container :style="pageContainerStyles">
-      <router-link to="/admin/category">go</router-link>
-      <router-view />
+      <q-page padding class="row q-col-gutter-x-md">
+        <!-- aside  -->
+        <q-card class="col-3 q-pl-none">
+          <q-list bordered separator>
+            <q-expansion-item
+              v-for="item of system.category"
+              :key="item.seq"
+              :label="item.name"
+              default-opened
+            >
+              <q-separator />
+              <q-item v-for="a of item.midCategory" :key="a.seq" clickable>
+                {{ a.name }}
+              </q-item>
+            </q-expansion-item>
+          </q-list>
+        </q-card>
+
+        <router-view class="col-9" />
+      </q-page>
     </q-page-container>
 
     <AuthDialog v-model="isDialog" />
@@ -56,20 +74,31 @@ const { execute } = useAsyncState(getSystemAll, null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    if (res?.status == 200) systemStore.setSystems(res.data.list);
+    if (res?.status == 200) {
+      const categorys = res.data.list.category;
+
+      for (let category of categorys) {
+        const childrens = JSON.parse(category.midCategory);
+        const arr = [];
+        for (let children of childrens)
+          if (category.seq == children.upperSeq) arr.push(children);
+        category.midCategory = [...arr];
+      }
+      systemStore.setCategory(categorys);
+      console.log(system.value);
+    }
   },
 });
-if (!isSisSystemState) execute();
 // --------------------------------------------------------------------------
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px
-  maxWidth: route.meta?.width || '1080px',
+  maxWidth: route.meta?.width || '80%',
   margin: '0 auto',
 }));
 </script>
 
 <style>
-// <q-btn> hover 시 backgroud 제거
+/* <q-btn> hover 시 backgroud 제거 */
 :deep(.q-btn.btn--no-hover .q-focus-helper) {
   display: none;
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-card class="row q-col-gutter-md">
+  <q-card class="row">
     <q-card-section class="col-12 col-sm-4">
       <q-list bordered separator>
         <q-item clickable v-ripple>
