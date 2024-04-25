@@ -44,6 +44,7 @@
               </q-item>
             </q-expansion-item>
           </q-list>
+          <router-link to="/admin/category">sdsada</router-link>
         </q-card>
 
         <router-view class="col-9" />
@@ -65,12 +66,13 @@ const systemStore = useSystemStore();
 const { isAuthState, user } = storeToRefs(authStore);
 const { system, isSisSystemState } = storeToRefs(systemStore);
 // --------------------------------------------------------------------------
-
 const route = useRoute();
 
 const isDialog = ref(false);
 // --------------------------------------------------------------------------
-const { execute } = useAsyncState(getSystemAll, null, {
+// 카테고리 및 유저권한 셋팅
+/*
+const { execute } = useAsyncState(() => getSystemAll(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
@@ -84,11 +86,12 @@ const { execute } = useAsyncState(getSystemAll, null, {
           if (category.seq == children.upperSeq) arr.push(children);
         category.midCategory = [...arr];
       }
-      systemStore.setCategory(categorys);
-      console.log(system.value);
+      systemStore.setSystems(res.data.list, categorys);
+      console.log(111);
     }
   },
 });
+*/
 // --------------------------------------------------------------------------
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px
