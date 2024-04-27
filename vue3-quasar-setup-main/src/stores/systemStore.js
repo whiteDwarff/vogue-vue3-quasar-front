@@ -23,50 +23,24 @@ export const useSystemStore = defineStore('system', () => {
     system.value.category = category;
   };
   // -------------------------------------------------------------------
-  const categorySelectMenu = () => {
-    const arr = [
-      {
-        value: '1',
-        label: 'root',
-        depth: 0,
-        url: '/',
-      },
-    ];
-
-    for (let item of system.value.category) {
-      arr.push({
-        value: item.seq,
-        label: `${arr[0].label} > ${item.name}`,
-        depth: item.depth,
-        url: item.url,
-      });
+  const sortCategories = (category) => {
+    for (let item of category) {
+      const childrens = JSON.parse(item.midCategory);
+      const arr = [];
+      for (let children of childrens)
+        if (item.seq == children.upperSeq) arr.push(children);
+      item.midCategory = [...arr];
     }
-    return arr;
+
+    return category;
   };
 
-  // 사옹자 권한별 체크박스 셋팅
-  const addUserPermission = () => {
-    const basket = [];
-    for (let item of system.value.permission) {
-      const obj = {
-        idntfCd: item.idntfCd,
-        value: item.idntfNm,
-        access: 'Y',
-        add: 'Y',
-        update: 'Y',
-        delete: 'Y',
-      };
-      basket.push(obj);
-    }
-    return basket;
-  };
   return {
     isSystemState,
     system,
     setSystems,
     setPermission,
     setCategory,
-    categorySelectMenu,
-    addUserPermission,
+    sortCategories,
   };
 });
