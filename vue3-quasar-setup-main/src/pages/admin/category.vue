@@ -3,8 +3,8 @@
     <q-card-section class="col-12 col-sm-4">
       <CategoryList
         :category
-        :seq="form.seq"
-        @update:formValue="form = $event"
+        v-model="form"
+        @update:formValue="form = initializeForm"
       />
     </q-card-section>
 
@@ -18,7 +18,7 @@
 const initializeForm = () => {
   return {
     seq: 0,
-    upperSeq: '',
+    upperSeq: 1,
     name: '',
     url: '/post/',
     sort: '',
@@ -34,8 +34,8 @@ import { useSystemStore } from 'src/stores/systemStore';
 
 const systemStore = useSystemStore();
 
-const category = ref({});
 const form = ref(initializeForm());
+const category = ref({});
 const options = ref([]);
 
 const { execute } = useAsyncState(() => getCategory(), null, {
@@ -51,11 +51,12 @@ const { execute } = useAsyncState(() => getCategory(), null, {
     }
   },
 });
-
-const refreshView = () => {
+/**
+ * TODO: 권한 받아올 경우 isRefesh가 true라면 데이터 요청, false라면
+ *       form.permission 재할당
+ */
+const refreshView = (isRefesh) => {
   execute();
   form.value = initializeForm();
 };
 </script>
-
-<style lang="scss" scoped></style>

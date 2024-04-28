@@ -14,8 +14,22 @@
           options-dense
           emit-value
           map-options
+          bottom-slots
           class="col-12 col-sm-9"
-        />
+        >
+          <template v-slot:after>
+            <q-btn
+              @click="$emit('update:formValue', false)"
+              dense
+              outline
+              color="grey-6"
+              icon="refresh"
+              :ripple="false"
+            >
+              <q-tooltip> 초기화 </q-tooltip>
+            </q-btn>
+          </template>
+        </q-select>
       </div>
       <div class="row items-center">
         <label for="" class="col-12 col-sm-3">카테고리명</label>
@@ -85,7 +99,7 @@
                 v-model="form.permission[i].access"
                 size="sm"
                 true-value="Y"
-                false-value="N"
+                :false-value="'N' || 'null'"
               />
             </td>
             <td class="text-center">
@@ -129,6 +143,7 @@
           outline
           class="q-mr-md"
           :ripple="false"
+          :loading="deleteLoading"
         />
         <q-btn
           @click="handleSubmit"
@@ -144,9 +159,7 @@
 </template>
 
 <script setup>
-import { baseNotify } from 'src/utils/base-notify';
-
-const emit = defineEmits('update:formValue');
+const emit = defineEmits(['update:formValue']);
 const props = defineProps({
   options: {
     type: Array,
@@ -166,7 +179,7 @@ const { isLoading: saveLoading, execute: save } = useAsyncState(
     onSuccess: (res) => {
       if (res?.status == 201) {
         baseNotify(res.data.message);
-        emit('update:formValue');
+        emit('update:formValue', true);
       }
     },
   },
@@ -186,7 +199,7 @@ const { isLoading: deleteLoading, execute } = useAsyncState(
     onSuccess: (res) => {
       if (res?.status == 200) {
         baseNotify(res.data.message);
-        emit('update:formValue');
+        emit('update:formValue', true);
       }
     },
   },
@@ -205,27 +218,25 @@ const handleDelete = () => {
     },
     true,
   );
-  console.log(form.value.seq, form.value.depth);
 };
-
+// --------------------------------------------------------------------------
+// upperSeq를 실시간 감시를 통해 depth 및 checkbox 옵션 활성화
 watch(
   () => form.value.upperSeq,
   (newValue) => {
     const selectedOption = props.options.find((data) => data.value == newValue);
-    form.value.depth = selectedOption.depth + 1;
+    form.value.depth = selectedOption?.depth + 1;
     for (let item of form.value.permission) {
       if (form.value.depth < 2) {
         item.add = null;
         item.update = null;
         item.delete = null;
       } else {
-        item.add = 'Y';
-        item.update = 'Y';
-        item.delete = 'Y';
+        item.add = item.add || 'Y';
+        item.update = item.add || 'Y';
+        item.delete = item.delete || 'Y';
       }
     }
   },
 );
 </script>
-
-<style lang="scss" scoped></style>

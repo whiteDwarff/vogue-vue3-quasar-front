@@ -7,7 +7,7 @@
           clickable
           class="text-bold"
         >
-          <q-item-section :class="seq == item.seq ? 'text-primary' : ''">
+          <q-item-section :class="form.seq == item.seq ? 'text-primary' : ''">
             {{ item.name }}
           </q-item-section>
         </q-item>
@@ -18,7 +18,7 @@
             :key="sub.seq"
             clickable
           >
-            <q-item-section :class="seq == sub.seq ? 'text-primary' : ''">
+            <q-item-section :class="form.seq == sub.seq ? 'text-primary' : ''">
               {{ sub.name }}</q-item-section
             ></q-item
           >
@@ -34,10 +34,9 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
-  seq: {
-    type: Number,
-  },
 });
+
+const form = defineModel();
 
 const emit = defineEmits(['update:formValue']);
 
@@ -45,8 +44,7 @@ const { execute } = useAsyncState(selectCategoryInfo, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
-    const form = res.data.list.form;
-    emit('update:formValue', form);
+    form.value = res.data.list.form;
   },
 });
 

@@ -30,23 +30,9 @@
     <q-page-container :style="pageContainerStyles">
       <q-page padding class="row q-col-gutter-x-md">
         <!-- aside  -->
-        <q-card class="col-3 q-pl-none">
-          <q-list bordered separator>
-            <q-expansion-item
-              v-for="item of system.category"
-              :key="item.seq"
-              :label="item.name"
-              default-opened
-            >
-              <q-separator />
-              <q-item v-for="a of item.midCategory" :key="a.seq" clickable>
-                {{ a.name }}
-              </q-item>
-            </q-expansion-item>
-          </q-list>
-          <router-link to="/admin/category">sdsada</router-link>
-        </q-card>
+        <AsideBar class="col-3 q-pl-none" />
 
+        <!-- router-view -->
         <router-view class="col-9" />
       </q-page>
     </q-page-container>

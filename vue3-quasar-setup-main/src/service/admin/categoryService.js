@@ -19,7 +19,6 @@ export async function getCategory() {
  * @description form의 seq값의 존재 여부에 따라 등록 및 수정
  */
 export async function saveCategory(form) {
-  console.log(form.id);
   try {
     // id가 없다면 insert
     if (!form.seq) return await api.post('/admin/category/insert', form);
@@ -52,7 +51,7 @@ export async function selectCategoryInfo(seq) {
  */
 export async function deleteCategory({ seq }) {
   try {
-    return await api.get(`/admin/category/delete?seq=${seq}`);
+    return await api.delete(`/admin/category/delete?seq=${seq}`);
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);
