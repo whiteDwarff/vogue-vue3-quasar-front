@@ -36,7 +36,7 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     Placeholder.configure({
-      placeholder: '마크다운을 이용해서 편리하게 글을 작성하세요.',
+      placeholder: '내용을 작성해주세요.',
     }),
     TextAlign.configure({
       types: ['heading', 'paragraph'],
@@ -88,7 +88,7 @@ watch(
 </style>
 <!-- 
 ❗️ component 호출 
-  - import TiptabEditor from 'src/components//common/tiptab/TiptabEditor.vue';
+  - import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
 
 ❗️ component 사용
   - tiptab이 <form> 요새에 있는 경우 @submit.prevent 필수

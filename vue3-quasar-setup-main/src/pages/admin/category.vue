@@ -6,6 +6,7 @@
         v-model="form"
         @update:formValue="form = initializeForm"
       />
+      {{ options }}
     </q-card-section>
 
     <q-card-section class="col-12 col-sm-8" bordered>
@@ -30,9 +31,11 @@ const initializeForm = () => {
 };
 </script>
 <script setup>
+import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 
 const systemStore = useSystemStore();
+const { system } = storeToRefs(systemStore);
 
 const form = ref(initializeForm());
 const category = ref({});
@@ -45,6 +48,8 @@ const { execute } = useAsyncState(() => getCategory(), null, {
     if (res?.status == 200) {
       const { list } = res.data;
       category.value = systemStore.sortCategories(list.category);
+      systemStore.setCategory(category.value);
+      console.log(system.value.category);
       options.value = list.options;
       form.value.upperSeq = options.value[0].value;
       form.value.permission = list.permission;

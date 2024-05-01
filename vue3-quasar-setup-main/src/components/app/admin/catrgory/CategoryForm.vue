@@ -9,6 +9,7 @@
       -->
         <q-select
           :options="options"
+          @update:model-value="changeSeqHanlder"
           v-model="form.upperSeq"
           dense
           options-dense
@@ -220,23 +221,19 @@ const handleDelete = () => {
   );
 };
 // --------------------------------------------------------------------------
-// upperSeq를 실시간 감시를 통해 depth 및 checkbox 옵션 활성화
-watch(
-  () => form.value.upperSeq,
-  (newValue) => {
-    const selectedOption = props.options.find((data) => data.value == newValue);
-    form.value.depth = selectedOption?.depth + 1;
-    for (let item of form.value.permission) {
-      if (form.value.depth < 2) {
-        item.add = null;
-        item.update = null;
-        item.delete = null;
-      } else {
-        item.add = item.add || 'Y';
-        item.update = item.add || 'Y';
-        item.delete = item.delete || 'Y';
-      }
+const changeSeqHanlder = (value) => {
+  const selectedOption = props.options.find((data) => data.value == value);
+  form.value.depth = selectedOption?.depth + 1;
+  for (let item of form.value.permission) {
+    if (form.value.depth < 2) {
+      item.add = null;
+      item.update = null;
+      item.delete = null;
+    } else {
+      item.add = item.add || 'Y';
+      item.update = item.add || 'Y';
+      item.delete = item.delete || 'Y';
     }
-  },
-);
+  }
+};
 </script>
