@@ -8,7 +8,7 @@
         map-option : option명은 label로 사용 
       -->
         <q-select
-          :options="options"
+          :options="category.tree"
           @update:model-value="changeSeqHanlder"
           v-model="form.upperSeq"
           dense
@@ -160,6 +160,11 @@
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
+import { useSystemStore } from 'src/stores/systemStore';
+
+const baseStore = useSystemStore();
+const { category } = storeToRefs(baseStore);
 const emit = defineEmits(['update:formValue']);
 const props = defineProps({
   options: {

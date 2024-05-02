@@ -11,8 +11,9 @@ export const useSystemStore = defineStore('system', () => {
   });
 
   const category = ref({
+    menu: [],
     tree: [], // 카테고리를 트리 형식으로 저장 ( root > NOTICE )
-    parents: [], // depth가 1인 카테고리만 저장  (key, label, seq)
+    parent: [], // depth가 1인 카테고리만 저장  (key, label, seq)
     children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
   });
 
@@ -25,33 +26,24 @@ export const useSystemStore = defineStore('system', () => {
     system.value.permission = permission;
   };
 
-  const setCategory = (category) => {
+  const setCategory = ({ list }) => {
+    category.value.menu = setMenuList(list.category);
+    category.value.tree = list.tree;
+    category.value.parent = list.parents;
+    category.value.children = list.children;
+
     system.value.category = category;
   };
   // -------------------------------------------------------------------
-  const sortCategories = (categorys) => {
+  const setMenuList = (categorys) => {
     if (categorys) {
       for (let item of categorys) {
-        // parents 저장
-        category.value.parents.push({
-          label: item.name,
-          value: item.seq,
-        });
-
         const childrens = JSON.parse(item.midCategory);
         const arr = [];
 
-        for (let children of childrens) {
-          if (item.seq == children.upperSeq) {
-            // children 저장
-            category.value.children.push({
-              label: children.name,
-              value: children.seq,
-              upperSeq: item.seq,
-            });
-            arr.push(children);
-          }
-        }
+        for (let children of childrens)
+          if (item.seq == children.upperSeq) arr.push(children);
+
         item.midCategory = [...arr];
       }
     }
@@ -65,6 +57,6 @@ export const useSystemStore = defineStore('system', () => {
     setSystems,
     setPermission,
     setCategory,
-    sortCategories,
+    setMenuList,
   };
 });

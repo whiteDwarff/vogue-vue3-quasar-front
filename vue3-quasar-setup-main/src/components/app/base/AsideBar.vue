@@ -2,7 +2,7 @@
   <q-card>
     <q-list bordered separator>
       <q-expansion-item
-        v-for="item of system.category"
+        v-for="item of category.menu"
         :key="item.seq"
         :label="item.name"
         default-opened
@@ -35,17 +35,13 @@ const authStore = useAuthStore();
 const systemStore = useSystemStore();
 
 const { user } = storeToRefs(authStore);
-const { system, category } = storeToRefs(systemStore);
+const { category } = storeToRefs(systemStore);
 
 const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    console.log('--------------------------------');
-    console.log('aside');
-    systemStore.setCategory(systemStore.sortCategories(res.data.list.category));
-    console.log(system.value);
-    console.log(category);
+    if (res.status == 200) systemStore.setCategory(res.data);
   },
 });
 </script>
