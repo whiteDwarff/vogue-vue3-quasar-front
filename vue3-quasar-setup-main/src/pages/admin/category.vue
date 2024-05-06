@@ -2,15 +2,14 @@
   <q-card class="row">
     <q-card-section class="col-12 col-sm-4">
       <CategoryList
-        :category
+        :category="category.menu"
         v-model="form"
         @update:formValue="form = initializeForm"
       />
-      {{ options }}
     </q-card-section>
 
     <q-card-section class="col-12 col-sm-8" bordered>
-      <CategoryForm v-model="form" :options @update:formValue="refreshView" />
+      <CategoryForm v-model="form" :options @update:formValue="resetForm" />
     </q-card-section>
   </q-card>
 </template>
@@ -25,43 +24,38 @@ const initializeForm = () => {
     sort: '',
     postYn: 'Y',
     useYn: 'Y',
-    depth: 0,
+    depth: 1,
     permission: [],
   };
 };
 </script>
 <script setup>
 import { storeToRefs } from 'pinia';
+import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
 
+const authStore = useAuthStore();
 const systemStore = useSystemStore();
-const { system } = storeToRefs(systemStore);
+
+const { user } = storeToRefs(authStore);
+const { category } = storeToRefs(systemStore);
 
 const form = ref(initializeForm());
-const category = ref({});
 const options = ref([]);
 
-const { execute } = useAsyncState(() => getCategory(), null, {
+onMounted(() => resetForm());
+
+const resetForm = () => {
+  execute();
+  form.value = initializeForm();
+  form.value.permission = systemStore.basePermission();
+};
+
+const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    if (res?.status == 200) {
-      const { list } = res.data;
-      category.value = systemStore.sortCategories(list.category);
-      systemStore.setCategory(category.value);
-      console.log(system.value.category);
-      options.value = list.options;
-      form.value.upperSeq = options.value[0].value;
-      form.value.permission = list.permission;
-    }
+    if (res.status == 200) systemStore.setSystem(res.data);
   },
 });
-/**
- * TODO: 권한 받아올 경우 isRefesh가 true라면 데이터 요청, false라면
- *       form.permission 재할당
- */
-const refreshView = (isRefesh) => {
-  execute();
-  form.value = initializeForm();
-};
 </script>

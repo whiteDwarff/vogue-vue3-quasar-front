@@ -11,7 +11,7 @@
         <div class="row q-col-gutter-md">
           <q-select
             v-model="form.ctgry"
-            :options
+            :options="category.parent"
             :options-dense="true"
             name="ctgry"
             outlined
@@ -86,9 +86,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
-
 const props = defineProps(['title']);
 const form = defineModel();
 

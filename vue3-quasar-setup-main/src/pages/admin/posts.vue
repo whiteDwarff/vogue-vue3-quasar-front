@@ -1,8 +1,8 @@
 <template>
   <q-card>
     <q-card-section>
+      {{ selected }}
       <div class="flex items-center q-mb-lg">
-        {{ category }}
         <span class="block text-h6">템플릿 관리</span>
         <q-space />
         <q-btn
@@ -20,7 +20,15 @@
           :ripple="false"
         />
       </div>
-
+      <BaseTable
+        v-model:selected="selected"
+        :columns
+        :rows
+        rowKey="seq"
+        label="등록된 공지사항이 없습니다."
+        :event="addTemplate"
+      ></BaseTable>
+      <!-- 
       <q-table
         v-model:selected="selected"
         flat
@@ -33,28 +41,31 @@
         hide-selected-banner
         hide-pagination
         no-data-label="등록된 공지사항이 없습니다."
-        id="template-card"
       >
         <template v-slot:body="props">
-          <q-tr :props="props" @click="changeDialog(props)">
+          <q-tr
+            :props="props"
+            @click="changeDialog(props)"
+            class="cursor-pointer"
+          >
             <q-td>
               <q-checkbox v-model="selected" :val="props.row"></q-checkbox>
             </q-td>
-            <q-td key="content" :props="props" class="cursor-pointer">
-              {{ props.row.content }}
-            </q-td>
-            <q-td key="category" :props="props">
-              {{ props.row.category }}
-            </q-td>
-            <q-td key="useYn" :props="props">
-              {{ props.row.useYn }}
-            </q-td>
-            <q-td key="createdAt" :props="props">
-              {{ props.row.createdAt }}
-            </q-td>
+
+            <template v-for="column of columns" :key="column.name">
+              <template v-for="(value, key, i) of props.row" :key="i">
+                <q-td
+                  v-if="key != 'seq' && column.name == key"
+                  :key="key"
+                  :props="props"
+                >
+                  {{ value }}
+                </q-td>
+              </template>
+            </template>
           </q-tr>
         </template>
-      </q-table>
+      </q-table> -->
     </q-card-section>
 
     <!-- pagenation -->
@@ -81,16 +92,49 @@
     </q-card-section>
   </q-card>
   <!-- dialog -->
-  <PostsDialog v-model="isDialog" :category="system.category" />
+  <PostsDialog v-model="isDialog" v-model:form="form" />
 </template>
 
+<script>
+const columns = [
+  {
+    name: 'content',
+    label: '구분',
+    field: 'content',
+    align: 'left',
+    style: 'width: 70%',
+  },
+  {
+    name: 'category',
+    label: '카테고리',
+    field: 'category',
+    align: 'center',
+    style: 'width: 10%%',
+  },
+  {
+    name: 'useYn',
+    label: '사용여부',
+    field: 'useYn',
+    align: 'center',
+    style: 'width: 10%%',
+  },
+  {
+    name: 'createdAt',
+    label: '작성일',
+    field: 'createdAt',
+    align: 'center',
+    style: 'width: 10%%',
+  },
+];
+</script>
+
 <script setup>
+import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
-import { onMounted } from 'vue';
 
 const systemStore = useSystemStore();
-const { system, category } = storeToRefs(systemStore);
+const { category } = storeToRefs(systemStore);
 
 const isDialog = ref(false);
 const selected = ref([]);
@@ -99,75 +143,41 @@ const page = ref({
   current: 1,
   max: 10,
 });
+// table data
+const rows = ref([]);
+const form = ref({
+  title: '',
+  upperSeq: 0,
+  lowerSeq: 0,
+  useYn: 'Y',
+  content: '',
+});
 
 const addTemplate = () => {
   isDialog.value = true;
 };
 
 const changeDialog = ({ row }) => {
-  console.log(row);
   isDialog.value = true;
 };
-const columns = [
-  {
-    name: 'content',
-    label: '구분',
-    field: 'content',
-  },
-  {
-    name: 'category',
-    label: '카테고리',
-    field: 'category',
-  },
-  {
-    name: 'useYn',
-    label: '사용여부',
-    field: 'useYn',
-  },
-  {
-    name: 'createdAt',
-    label: '작성일',
-    field: 'createdAt',
-  },
-];
 
-const rows = ref([
-  {
-    seq: 1,
-    content: '내용1',
-    category: '카테고리1',
-    useYn: 'Y',
-    createdAt: '2024-04-28',
+watch(systemStore.setUpperSeq, (newValue) => {
+  form.value.upperSeq = newValue;
+  form.value.lowerSeq = systemStore.setLowerCategory(newValue)[0].value;
+});
+
+const { execute } = useAsyncState(() => aaaaaaaa(), null, {
+  immediate: true,
+  throwError: true,
+  onSuccess: (res) => {
+    console.log(res);
+    if (res.status == 200) {
+      const { list } = res.data;
+      rows.value = list.notice;
+      page.value = list.page;
+    }
   },
-  {
-    seq: 2,
-    content: '내용2',
-    category: '카테고리2',
-    useYn: 'N',
-    createdAt: '2024-04-29',
-  },
-  {
-    seq: 3,
-    content: '내용3',
-    category: '카테고리3',
-    useYn: 'N',
-    createdAt: '2024-04-30',
-  },
-  {
-    seq: 4,
-    content: '내용4',
-    category: '카테고리4',
-    useYn: 'N',
-    createdAt: '2024-04-31',
-  },
-  {
-    seq: 5,
-    content: '내용5',
-    category: '카테고리5',
-    useYn: 'N',
-    createdAt: '2024-05-01',
-  },
-]);
+});
 </script>
 
 <style>

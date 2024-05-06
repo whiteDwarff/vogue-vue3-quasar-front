@@ -2,23 +2,25 @@
   <q-card>
     <q-list bordered separator>
       <q-expansion-item
-        v-for="item of category.menu"
-        :key="item.seq"
-        :label="item.name"
+        v-for="upper of category.menu"
+        :key="upper.seq"
+        :label="upper.name"
         default-opened
       >
         <q-separator />
-        <q-item v-for="menu of item.midCategory" :key="menu.seq" clickable>
-          <template v-if="menu.postYn == 'Y'">
-            <router-link :to="`${menu.url}${menu.seq}`"
-              >{{ menu.name }}, {{ menu.url }}</router-link
-            >
-          </template>
-          <template v-else>
-            <router-link :to="`${menu.url}`"
-              >{{ menu.name }}, {{ menu.url }}</router-link
-            >
-          </template>
+
+        <q-item
+          v-for="lower of upper.midCategory"
+          :key="lower.seq"
+          clickable
+          @click="
+            $router.push(
+              lower.postYn == 'Y' ? `${lower.url}${lower.seq}` : `${lower.url}`,
+            )
+          "
+          class="flex items-center"
+        >
+          {{ lower.name }}
         </q-item>
       </q-expansion-item>
     </q-list>
@@ -26,7 +28,6 @@
 </template>
 
 <script setup>
-import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
@@ -41,7 +42,8 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    if (res.status == 200) systemStore.setCategory(res.data);
+    console.log(res.data.list);
+    if (res.status == 200) systemStore.setSystem(res.data);
   },
 });
 </script>

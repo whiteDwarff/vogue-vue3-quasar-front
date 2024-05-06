@@ -164,7 +164,8 @@ import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 
 const baseStore = useSystemStore();
-const { category } = storeToRefs(baseStore);
+const { category, permission } = storeToRefs(baseStore);
+
 const emit = defineEmits(['update:formValue']);
 const props = defineProps({
   options: {
@@ -205,7 +206,7 @@ const { isLoading: deleteLoading, execute } = useAsyncState(
     onSuccess: (res) => {
       if (res?.status == 200) {
         baseNotify(res.data.message);
-        emit('update:formValue', true);
+        emit('update:formValue');
       }
     },
   },
@@ -227,7 +228,9 @@ const handleDelete = () => {
 };
 // --------------------------------------------------------------------------
 const changeSeqHanlder = (value) => {
-  const selectedOption = props.options.find((data) => data.value == value);
+  const selectedOption = category.value.parent.find(
+    (data) => data.value == value,
+  );
   form.value.depth = selectedOption?.depth + 1;
   for (let item of form.value.permission) {
     if (form.value.depth < 2) {
