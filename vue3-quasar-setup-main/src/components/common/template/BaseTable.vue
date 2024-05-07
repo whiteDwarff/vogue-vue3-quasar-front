@@ -1,7 +1,6 @@
 <template>
   <q-table
     v-model:selected="selected"
-    :selected="selected"
     selection="multiple"
     flat
     bordered
@@ -19,6 +18,7 @@
           <q-checkbox v-model="selected" :val="props.row"></q-checkbox>
         </q-td>
 
+        <!-- columns와 rows mapping -->
         <template v-for="column of columns" :key="column.name">
           <template v-for="(value, key, i) of props.row" :key="i">
             <q-td
@@ -65,6 +65,7 @@ const props = defineProps({
 	# selection="multiple"
 		- checkbox 표시
 -->
+
 <!-- 
 @TODO:
 	- q-table 참고용 body slot,

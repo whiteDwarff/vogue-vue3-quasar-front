@@ -15,13 +15,13 @@
         <div class="text-center q-mb-lg">
           <span class="text-h5 text-weight-bold">템플릿 작성</span>
         </div>
-        <form @submit.prevent="execute(0, form)" class="q-gutter-y-lg">
+        <form @submit.prevent="handleSubmit" class="q-gutter-y-lg">
           <q-input v-model="form.title" label="구분" dense />
 
           <div class="row q-col-gutter-x-md">
             <q-select
               v-model="form.upperSeq"
-              :options="systemCategory.parent"
+              :options="category.parent.filter((data) => data.postYn == 'Y')"
               @update:model-value="updateLowerSeq"
               label="대분류"
               dense
@@ -29,7 +29,7 @@
               emit-value
               map-options
               class="col-12 col-sm-6"
-              :value="systemCategory.parent[0].value"
+              :value="category.parent[0].value"
             />
 
             <q-select
@@ -86,13 +86,17 @@
 import { useSystemStore } from 'src/stores/systemStore';
 import { storeToRefs } from 'pinia';
 import { useAsyncState } from '@vueuse/core';
+import { baseNotify } from 'src/utils/base-notify';
 
 const systemStore = useSystemStore();
-const { category: systemCategory } = storeToRefs(systemStore);
+const { category } = storeToRefs(systemStore);
+
+const emit = defineEmits([]);
 
 const isDialog = defineModel('isDialog');
 const form = defineModel('form');
 
+// 대분류 선택시 소분류의 0번째 value를 자동으로 선택
 const updateLowerSeq = (value) => {
   form.value.lowerSeq = systemStore.setLowerCategory(value)[0].value;
 };
@@ -101,9 +105,12 @@ const { execute } = useAsyncState(saveNotice, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
-    console.log(res);
+    emit('update:isDialog');
+    baseNotify('템플릿이 등록되었습니다.');
   },
 });
+
+const handleSubmit = () => execute(0, form.value);
 </script>
 
 <style lang="scss" scoped></style>

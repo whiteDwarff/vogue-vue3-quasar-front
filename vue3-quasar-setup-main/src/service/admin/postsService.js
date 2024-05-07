@@ -4,9 +4,12 @@
  * -------------------------------------------------------------------
  * @description
  */
-export async function aaaaaaaa(data = {}) {
+export async function getNoticeList(page) {
+  console.log('-----------------');
+  console.log(page);
+  console.log('-----------------');
   try {
-    return await api.post('/admin/posts/get', data);
+    return await api.post('/admin/posts/get', page);
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);

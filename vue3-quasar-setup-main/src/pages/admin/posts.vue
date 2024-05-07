@@ -1,7 +1,6 @@
 <template>
   <q-card>
     <q-card-section>
-      {{ selected }}
       <div class="flex items-center q-mb-lg">
         <span class="block text-h6">템플릿 관리</span>
         <q-space />
@@ -28,57 +27,20 @@
         label="등록된 공지사항이 없습니다."
         :event="addTemplate"
       ></BaseTable>
-      <!-- 
-      <q-table
-        v-model:selected="selected"
-        flat
-        bordered
-        row-key="seq"
-        :columns
-        :rows
-        :selected="selected"
-        selection="multiple"
-        hide-selected-banner
-        hide-pagination
-        no-data-label="등록된 공지사항이 없습니다."
-      >
-        <template v-slot:body="props">
-          <q-tr
-            :props="props"
-            @click="changeDialog(props)"
-            class="cursor-pointer"
-          >
-            <q-td>
-              <q-checkbox v-model="selected" :val="props.row"></q-checkbox>
-            </q-td>
-
-            <template v-for="column of columns" :key="column.name">
-              <template v-for="(value, key, i) of props.row" :key="i">
-                <q-td
-                  v-if="key != 'seq' && column.name == key"
-                  :key="key"
-                  :props="props"
-                >
-                  {{ value }}
-                </q-td>
-              </template>
-            </template>
-          </q-tr>
-        </template>
-      </q-table> -->
     </q-card-section>
 
     <!-- pagenation -->
     <q-card-section>
       <div class="row justify-center">
         <q-pagination
+          v-if="rows.length"
           v-model="page.current"
           :min="page.min"
           :max="page.max"
-          :max-pages="5"
+          :max-pages="page.maxPages"
           :boundary-numbers="false"
           :ellipses="false"
-          @update:model-value="console.log($event)"
+          @update:model-value="execute(0, page.value)"
           color="grey"
           active-color="primary"
           rounded
@@ -92,7 +54,11 @@
     </q-card-section>
   </q-card>
   <!-- dialog -->
-  <PostsDialog v-model="isDialog" v-model:form="form" />
+  <PostsDialog
+    v-model="isDialog"
+    v-model:form="form"
+    @update:isDialog="closeTemplage"
+  />
 </template>
 
 <script>
@@ -132,6 +98,7 @@ const columns = [
 import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
+import { onMounted, watch } from 'vue';
 
 const systemStore = useSystemStore();
 const { category } = storeToRefs(systemStore);
@@ -139,10 +106,11 @@ const { category } = storeToRefs(systemStore);
 const isDialog = ref(false);
 const selected = ref([]);
 const page = ref({
-  min: 1,
-  current: 1,
-  max: 10,
+  min: 1, // default value
+  current: 1, // default value
+  max: 1,
 });
+
 // table data
 const rows = ref([]);
 const form = ref({
@@ -157,21 +125,25 @@ const addTemplate = () => {
   isDialog.value = true;
 };
 
-const changeDialog = ({ row }) => {
-  isDialog.value = true;
+const closeTemplage = () => {
+  isDialog.value = false;
+  execute(0, {});
 };
 
+/**
+ * TODO: pinia에 상태관리 변수로 관리
+ */
 watch(systemStore.setUpperSeq, (newValue) => {
   form.value.upperSeq = newValue;
   form.value.lowerSeq = systemStore.setLowerCategory(newValue)[0].value;
 });
 
-const { execute } = useAsyncState(() => aaaaaaaa(), null, {
+const { execute } = useAsyncState(() => getNoticeList(page.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    console.log(res);
-    if (res.status == 200) {
+    console.log(res.data);
+    if (res?.status == 200) {
       const { list } = res.data;
       rows.value = list.notice;
       page.value = list.page;
