@@ -5,9 +5,6 @@
  * @description
  */
 export async function getNoticeList(page) {
-  console.log('-----------------');
-  console.log(page);
-  console.log('-----------------');
   try {
     return await api.post('/admin/posts/get', page);
   } catch (err) {

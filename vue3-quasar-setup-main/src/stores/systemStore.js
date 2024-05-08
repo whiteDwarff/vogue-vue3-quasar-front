@@ -10,6 +10,10 @@ export const useSystemStore = defineStore('system', () => {
     children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
   });
 
+  // state
+  const isPermission = computed(() => !!permission.value);
+  const isCategory = computed(() => !!category.value.menu);
+
   // Setter -----------------------------------------------------------
   const setSystem = ({ list }) => {
     permission.value = list.permission;
@@ -78,6 +82,8 @@ export const useSystemStore = defineStore('system', () => {
   return {
     permission,
     category,
+    isPermission,
+    isCategory,
     setSystem,
     setPermission,
     setCategory,

@@ -25,11 +25,12 @@
         :rows
         rowKey="seq"
         label="등록된 공지사항이 없습니다."
-        :event="addTemplate"
+        :event="openDetailView"
       ></BaseTable>
     </q-card-section>
 
     <!-- pagenation -->
+
     <q-card-section>
       <div class="row justify-center">
         <q-pagination
@@ -75,14 +76,14 @@ const columns = [
     label: '카테고리',
     field: 'category',
     align: 'center',
-    style: 'width: 10%%',
+    style: 'width: 15%%',
   },
   {
     name: 'useYn',
     label: '사용여부',
     field: 'useYn',
     align: 'center',
-    style: 'width: 10%%',
+    style: 'width: 5%',
   },
   {
     name: 'createdAt',
@@ -101,7 +102,7 @@ import { useSystemStore } from 'src/stores/systemStore';
 import { onMounted, watch } from 'vue';
 
 const systemStore = useSystemStore();
-const { category } = storeToRefs(systemStore);
+const { category, isCategory } = storeToRefs(systemStore);
 
 const isDialog = ref(false);
 const selected = ref([]);
@@ -115,34 +116,42 @@ const page = ref({
 const rows = ref([]);
 const form = ref({
   title: '',
-  upperSeq: 0,
-  lowerSeq: 0,
+  upperSeq: null,
+  lowerSeq: null,
   useYn: 'Y',
-  content: '',
+  notice: '',
+  template: '',
 });
 
-const addTemplate = () => {
+const addTemplate = () => (isDialog.value = true);
+
+const openDetailView = ({ row }) => {
   isDialog.value = true;
+  const a = { ...rows.value.filter((data) => data.seq == row.seq) };
+  form.value = {
+    ...a,
+  };
+  console.log(form.value);
 };
 
 const closeTemplage = () => {
   isDialog.value = false;
+  // 데이터 호출
   execute(0, {});
+  // form 초기화
+  form.value = {
+    title: '',
+    upperSeq: null,
+    lowerSeq: null,
+    useYn: 'Y',
+    notice: '',
+    template: '',
+  };
 };
-
-/**
- * TODO: pinia에 상태관리 변수로 관리
- */
-watch(systemStore.setUpperSeq, (newValue) => {
-  form.value.upperSeq = newValue;
-  form.value.lowerSeq = systemStore.setLowerCategory(newValue)[0].value;
-});
-
 const { execute } = useAsyncState(() => getNoticeList(page.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    console.log(res.data);
     if (res?.status == 200) {
       const { list } = res.data;
       rows.value = list.notice;

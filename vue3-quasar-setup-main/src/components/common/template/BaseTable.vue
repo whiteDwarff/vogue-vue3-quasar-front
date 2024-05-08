@@ -13,7 +13,7 @@
   >
     <!-- slot -->
     <template v-slot:body="props">
-      <q-tr :props="props" @click="event" class="cursor-pointer">
+      <q-tr :props="props" @click="event(props)" class="cursor-pointer">
         <q-td>
           <q-checkbox v-model="selected" :val="props.row"></q-checkbox>
         </q-td>
