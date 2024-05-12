@@ -1,13 +1,13 @@
 <template>
   <q-dialog
     v-model="isDialog"
+    @update:model-value="closeDialog"
     no-shake
     transition-hide="none"
     transition-show="none"
   >
     <q-card class="q-pa-md" style="min-width: 300px; max-width: 600px">
       <q-card-section class="flex">
-        {{ form }}
         <q-space />
         <q-btn icon="close" flat dense round :ripple="false" v-close-popup />
       </q-card-section>
@@ -117,6 +117,15 @@
           <div class="flex">
             <q-space />
             <q-btn
+              v-if="form?.seq"
+              @click="$emit('delete:notice')"
+              label="삭제"
+              color="red"
+              outline
+              :ripple="false"
+              class="q-mr-md"
+            />
+            <q-btn
               type="submit"
               label="저장"
               color="teal"
@@ -138,7 +147,7 @@ import { storeToRefs } from 'pinia';
 const systemStore = useSystemStore();
 const { category } = storeToRefs(systemStore);
 
-const emit = defineEmits([]);
+const emit = defineEmits(['delete:notice']);
 
 const isDialog = defineModel('isDialog');
 const form = defineModel('form');
@@ -148,17 +157,24 @@ const tab = ref('notice');
 const updateLowerSeq = (value) => {
   form.value.lowerSeq = systemStore.setLowerCategory(value)[0].value;
 };
+// ----------------------------------------------------------------
 // 등록 및 수정
-const { execute } = useAsyncState(saveNotice, null, {
+const { execute: save } = useAsyncState(saveNotice, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
-    emit('update:isDialog');
     baseNotify('템플릿이 등록되었습니다.');
+    closeDialog(true);
   },
 });
+// 저장
+const handleSubmit = () => save(0, form.value);
 
-const handleSubmit = () => execute(0, form.value);
+// tab이 template일 경우 dialog를 닫아도 tab의 value는 유지됨, tab 초기화
+const closeDialog = (state = false) => {
+  tab.value = 'notice';
+  emit('update:isDialog', state);
+};
 </script>
 
 <style scoped>

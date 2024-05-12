@@ -10,106 +10,113 @@
           outline
           :ripple="false"
           class="q-mx-md"
+          @click="deleteHandler(selected)"
         />
         <q-btn
-          @click="addTemplate"
+          @click="isDialog = true"
           label="등록"
           color="teal"
           outline
           :ripple="false"
         />
       </div>
-      <BaseTable
+
+      <!-- table -->
+      <BaseCheckedTable
         v-model:selected="selected"
-        :columns
+        :columns="postsColumns"
         :rows
         rowKey="seq"
         label="등록된 공지사항이 없습니다."
         :event="openDetailView"
-      ></BaseTable>
+      />
     </q-card-section>
 
     <!-- pagenation -->
+    <q-card-section>
+      <BasePagination
+        v-if="rows.length"
+        v-model:page="page"
+        @update:model-value="executeSelectNoticeList(0, page.value)"
+      />
+    </q-card-section>
 
     <q-card-section>
-      <div class="row justify-center">
-        <q-pagination
-          v-if="rows.length"
-          v-model="page.current"
-          :min="page.min"
-          :max="page.max"
-          :max-pages="page.maxPages"
-          :boundary-numbers="false"
-          :ellipses="false"
-          @update:model-value="execute(0, page.value)"
-          color="grey"
-          active-color="primary"
-          rounded
-          direction-links
-          boundary-links
-          icon-first="keyboard_double_arrow_left"
-          icon-last="keyboard_double_arrow_right"
-          flat
-        />
-      </div>
+      <q-form>
+        <div class="row q-col-gutter-x-lg">
+          <q-select
+            v-model="page.option"
+            :options="postSerchOptions"
+            emit-value
+            map-options
+            dense
+            outlined
+            class="col-12 col-md-3"
+          />
+          <q-select
+            v-if="page.option == 'upperSeq'"
+            v-model="page.value"
+            :options="category.parent"
+            emit-value
+            map-options
+            dense
+            outlined
+            class="col-7 col-md-7"
+          />
+          <q-input
+            v-if="page.option == 'title'"
+            v-model="page.value"
+            dense
+            outlined
+            class="col-7 col-md-7"
+          />
+          <q-select
+            v-if="page.option == 'useYn'"
+            v-model="page.value"
+            :options="useYn"
+            emit-value
+            map-options
+            dense
+            outlined
+            class="col-7 col-md-7"
+          />
+          <q-btn label="검색" class="col-3 col-md-2" unelevated />
+        </div>
+      </q-form>
     </q-card-section>
   </q-card>
+
   <!-- dialog -->
   <PostsDialog
     v-model="isDialog"
     v-model:form="form"
     @update:isDialog="closeTemplage"
+    @delete:notice="deleteHandler(form)"
   />
+  {{ page }}
 </template>
-
-<script>
-const columns = [
-  {
-    name: 'content',
-    label: '구분',
-    field: 'content',
-    align: 'left',
-    style: 'width: 70%',
-  },
-  {
-    name: 'category',
-    label: '카테고리',
-    field: 'category',
-    align: 'center',
-    style: 'width: 15%%',
-  },
-  {
-    name: 'useYn',
-    label: '사용여부',
-    field: 'useYn',
-    align: 'center',
-    style: 'width: 5%',
-  },
-  {
-    name: 'createdAt',
-    label: '작성일',
-    field: 'createdAt',
-    align: 'center',
-    style: 'width: 10%%',
-  },
-];
-</script>
 
 <script setup>
 import { useAsyncState } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
-import { onMounted, watch } from 'vue';
+// options
+import { postsColumns, postSerchOptions, useYn } from './options/index';
 
 const systemStore = useSystemStore();
 const { category, isCategory } = storeToRefs(systemStore);
 
 const isDialog = ref(false);
+// 삭제 목록
 const selected = ref([]);
+// default value
 const page = ref({
-  min: 1, // default value
-  current: 1, // default value
+  min: 1,
+  current: 1,
   max: 1,
+  maxPages: 1,
+  option: 'title',
+  value: '',
 });
 
 // table data
@@ -122,22 +129,28 @@ const form = ref({
   notice: '',
   template: '',
 });
-
-const addTemplate = () => (isDialog.value = true);
-
+// ----------------------------------------------------------------
+// table row 클릭 시 상세 데이터 호출
 const openDetailView = ({ row }) => {
   isDialog.value = true;
-  const a = { ...rows.value.filter((data) => data.seq == row.seq) };
-  form.value = {
-    ...a,
-  };
-  console.log(form.value);
+  executeSelectOneNotice(0, row);
 };
-
-const closeTemplage = () => {
+const { execute: executeSelectOneNotice } = useAsyncState(selectOne, null, {
+  immediate: false,
+  throwError: true,
+  onSuccess: (res) => {
+    if (res?.status == 200) {
+      form.value = { ...res.data.list };
+    }
+  },
+});
+// ----------------------------------------------------------------
+// dialog 닫기
+const closeTemplage = (state) => {
   isDialog.value = false;
-  // 데이터 호출
-  execute(0, {});
+
+  // 등록, 수정 시 데이터 호출, 아이콘 클릭 시 호출 x
+  if (state) executeSelectNoticeList(0, {});
   // form 초기화
   form.value = {
     title: '',
@@ -148,21 +161,47 @@ const closeTemplage = () => {
     template: '',
   };
 };
-const { execute } = useAsyncState(() => getNoticeList(page.value), null, {
-  immediate: true,
+// ----------------------------------------------------------------
+// 페이지 진입 시 list data 호출
+const { execute: executeSelectNoticeList } = useAsyncState(
+  () => getNoticeList(page.value),
+  null,
+  {
+    immediate: true,
+    throwError: true,
+    onSuccess: (res) => {
+      if (res?.status == 200) {
+        const { list } = res.data;
+        rows.value = list.notice;
+        page.value = list.page;
+      }
+    },
+  },
+);
+// ----------------------------------------------------------------
+// template 삭제
+const { execute: executeDeleteNotice } = useAsyncState(deleteNotice, null, {
+  immediate: false,
   throwError: true,
   onSuccess: (res) => {
     if (res?.status == 200) {
-      const { list } = res.data;
-      rows.value = list.notice;
-      page.value = list.page;
+      baseNotify(res.data.message);
+      // postDialog에서 올라온 emit일 경우 dialog close
+      if (isDialog.value) isDialog.value = false;
+      // page 초기회
+      page.value = {
+        min: 1,
+        current: 1,
+        max: 1,
+      };
+      // 데이터 호출
+      executeSelectNoticeList();
     }
   },
 });
-</script>
 
-<style>
-th {
-  text-align: center;
-}
-</style>
+const deleteHandler = async (data) => {
+  if (Object.keys(data).length) await executeDeleteNotice(0, data);
+};
+</script>
+<style></style>
