@@ -4,7 +4,11 @@
  * -------------------------------------------------------------------
  * @description 공지사항, 템플릿 데이터 조회
  */
-export async function getNoticeList(page) {
+export async function getNoticeList(page, isCurrentFlag) {
+  if (isCurrentFlag) {
+    page.current = 1;
+    page.offset = 0;
+  }
   try {
     return await api.post('/admin/posts/get', page);
   } catch (err) {

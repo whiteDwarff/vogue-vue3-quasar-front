@@ -94,78 +94,10 @@ const pageContainerStyles = computed(() => ({
 .border {
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+/* 검색버튼  */
+.search-btn {
+  height: 40px !important;
+  margin-top: auto;
+  padding: 0 !important;
+}
 </style>
-
-<!--
-@TODO: aside 마크업 참고 
-### LIST ###
-<q-list bordered separator>
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
-
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
-
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-        <q-expansion-item default-opened label="대분류">
-          <q-separator />
-
-          <q-item clickable>
-            <q-item-section>Single line item</q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label>Item with caption</q-item-label>
-              <q-item-label caption>Caption</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable>
-            <q-item-section>
-              <q-item-label overline>OVERLINE</q-item-label>
-              <q-item-label>Item with caption</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-expansion-item>
-      </q-list>
-
-
-
--->
