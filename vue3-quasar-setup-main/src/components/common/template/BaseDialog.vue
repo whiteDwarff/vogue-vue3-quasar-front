@@ -6,11 +6,19 @@
     transition-hide="none"
     transition-show="none"
   >
-    <q-card style="min-width: 300px; max-width: 600px"> </q-card>
+    <q-card style="min-width: 300px" :style="{ maxWidth: maxWidth }">
+      <slot> </slot>
+    </q-card>
   </q-dialog>
 </template>
 
 <script setup>
+const props = defineProps({
+  maxWidth: {
+    type: String,
+    default: () => '600px',
+  },
+});
 const model = defineModel();
 </script>
 

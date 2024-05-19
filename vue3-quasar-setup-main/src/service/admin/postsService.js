@@ -48,20 +48,17 @@ export async function saveNotice(form) {
 
 /**
  * @param data ( selected || form)
- * @return { promise } 모든 카테고리 및 사용자 권한 가져오기
+ * @return { promise } message
  * -------------------------------------------------------------------
- * @description 공지사항 등록 및 수정
+ * @description 공지사항 삭제
  */
 export async function deleteNotice(data) {
-  console.log(data, typeof data, Array.isArray(data));
   let arr = [];
   if (Array.isArray(data)) {
     console.log('object');
     arr = data;
-  } else {
-    arr[0] = data;
-  }
-  console.log(arr);
+  } else arr[0] = data;
+
   try {
     return await api.post('/admin/posts/delete', arr);
   } catch (err) {
