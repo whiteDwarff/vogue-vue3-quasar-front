@@ -2,7 +2,7 @@
   <q-card>
     <q-card-section>
       <div class="flex items-center q-mb-lg">
-        <span class="block text-h6">템플릿 관리</span>
+        <span class="block text-h6">게시판 관리</span>
         <q-space />
         <AdminBtnGroup
           @delete="deleteHandler(selected)"
@@ -10,7 +10,6 @@
           @refresh="refreshTemplateView"
         />
       </div>
-
       <!-- table -->
       <BaseCheckedTable
         v-model:selected="selected"
@@ -87,14 +86,17 @@
             </template>
           </q-select>
 
-          <q-btn
-            @click="executeSearch"
-            label="검색"
-            class="col-4 col-md-2 search-btn"
-            color="teal"
-            outline
-            unelevated
-          />
+          <div class="col-4 col-md-2">
+            <q-btn
+              @click="executeSearch"
+              label="검색"
+              outline
+              unelevated
+              color="teal"
+              :ripple="false"
+              style="width: 100%; height: 100%"
+            />
+          </div>
         </div>
       </q-form>
     </q-card-section>
@@ -116,7 +118,7 @@ const initializePageValue = () => {
     min: 1,
     current: 1,
     max: 1,
-    maxPages: 1,
+    maxPages: 10,
     option: 'title',
     value: '',
   };
@@ -146,11 +148,14 @@ const isFlag = ref(false);
 
 // table data
 const rows = ref([]);
+
 const form = ref({
   title: '',
   upperSeq: null,
   lowerSeq: null,
   useYn: 'Y',
+  prependYn: 'N',
+  prepend: [],
   notice: '',
   template: '',
 });
@@ -165,7 +170,7 @@ const { execute: executeSelectOneNotice } = useAsyncState(selectOne, null, {
   throwError: true,
   onSuccess: (res) => {
     if (res?.status == 200) {
-      form.value = { ...res.data.list };
+      form.value = { ...res.data.list.form };
     }
   },
 });
@@ -182,6 +187,8 @@ const closeTemplage = (state) => {
     upperSeq: null,
     lowerSeq: null,
     useYn: 'Y',
+    prependYn: 'N',
+    prepend: [],
     notice: '',
     template: '',
   };
@@ -198,10 +205,11 @@ const { execute: executeSelectNoticeList } = useAsyncState(
       if (res?.status == 200) {
         const { list } = res.data;
         rows.value = list.notice;
-        page.value.min = list.page.min;
-        page.value.current = list.page.current;
-        page.value.max = list.page.max;
-        page.value.maxPages = list.page.maxPages;
+        page.value = {
+          ...list.page,
+          option: page.value.option,
+          value: page.value.value,
+        };
 
         isFlag.value = false;
       }

@@ -94,10 +94,4 @@ const pageContainerStyles = computed(() => ({
 .border {
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
-/* 검색버튼  */
-.search-btn {
-  height: 40px !important;
-  margin-top: auto;
-  padding: 0 !important;
-}
 </style>

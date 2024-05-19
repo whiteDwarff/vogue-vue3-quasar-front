@@ -22,6 +22,8 @@
       - hide-selected-banner  : <q-table>에서 기본으로 제공하는  selected 숨김
         
       - hide-pagination       : <q-table>에서 기본으로 제공하는 pagination 숨김
+
+      - rows-per-page-options : 페이지당 표시할 데이터 제한 x
 		-->
 
   <q-table
@@ -30,6 +32,7 @@
     :columns
     :rows
     :no-data-label="label"
+    :rows-per-page-options="[0]"
     selection="multiple"
     flat
     bordered
@@ -39,7 +42,7 @@
     <!-- 
       - table row를 클릭하여 데이터를 호출하는 이벤트를 발생시키려면 slot을 사용하여 데이터를 랜더링 시켜야함 !!!
       - event props 필수 **
-   -->
+    -->
     <template v-slot:body="props">
       <q-tr :props="props" @click="event(props)" class="cursor-pointer">
         <q-td>
@@ -68,8 +71,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-
 const selected = defineModel('selected');
 const props = defineProps({
   // table header

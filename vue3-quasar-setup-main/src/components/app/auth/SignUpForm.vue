@@ -56,6 +56,7 @@
         dense
         label="휴대폰번호 (-포함)"
         :rules="[validateTel]"
+        mask="###-####-####"
         lazy-rules
         hide-bottom-space
       />

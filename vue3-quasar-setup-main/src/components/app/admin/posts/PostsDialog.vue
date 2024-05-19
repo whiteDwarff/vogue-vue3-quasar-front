@@ -11,7 +11,6 @@
       <!-- form -->
       <q-form @submit.prevent="handleSubmit" class="q-gutter-y-lg">
         <q-input
-          autofocus
           v-model="form.title"
           :rules="[(val) => !!val || '구분명을 입력해주세요.']"
           lazy-rules
@@ -61,6 +60,41 @@
               val="Y"
             />
             <q-radio v-model="form.useYn" label="미사용" val="N" />
+          </div>
+        </div>
+
+        <div class="row items-center">
+          <label class="col-2">말머리</label>
+          <div class="col-10">
+            <q-radio
+              v-model="form.prependYn"
+              label="사용"
+              class="q-mr-lg"
+              val="Y"
+            />
+            <q-radio v-model="form.prependYn" label="미사용" val="N" />
+          </div>
+        </div>
+
+        <!-- prepend -->
+        <div v-if="form.prependYn == 'Y'">
+          <q-input
+            @keypress.enter.prevent="addPrepend"
+            label="말머리 등록 ( 입력 후 ENTER • 최대 10개 )"
+            outlined
+            dense
+          />
+          <!-- chip -->
+          <div class="q-mt-sm q-mb-lg">
+            <q-chip
+              v-for="item of form.prepend"
+              :key="item"
+              @remove="removePrepend(item)"
+              :label="item"
+              color="teal"
+              outline
+              removable
+            />
           </div>
         </div>
 
@@ -151,7 +185,7 @@ const updateLowerSeq = (value) => {
 };
 // ----------------------------------------------------------------
 // 등록 및 수정
-const { execute: save } = useAsyncState(saveNotice, null, {
+const { execute: executeSaveNotice } = useAsyncState(saveNotice, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
@@ -160,12 +194,32 @@ const { execute: save } = useAsyncState(saveNotice, null, {
   },
 });
 // 저장
-const handleSubmit = () => save(0, form.value);
+const handleSubmit = () => {
+  if (form.value.prependYn == 'N' && form.value.prepend.length)
+    form.value.prepend = [];
+  executeSaveNotice(0, form.value);
+};
 
 // tab이 template일 경우 dialog를 닫아도 tab의 value는 유지됨, tab 초기화
 const closeDialog = (state = false) => {
   tab.value = 'notice';
   emit('update:isDialog', state);
+};
+
+const addPrepend = ({ target }) => {
+  const event = target.value;
+  // event가 prepend 배열에 없을때만 추가
+  if (
+    !form.value.prepend.includes(event) &&
+    form.value.prepend.length <= 10 &&
+    event
+  )
+    form.value.prepend.push(event);
+  target.value = '';
+};
+
+const removePrepend = (value) => {
+  form.value.prepend = form.value.prepend.filter((item) => item != value);
 };
 </script>
 
