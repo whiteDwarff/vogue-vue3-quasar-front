@@ -5,6 +5,7 @@
       <q-toolbar-title> default </q-toolbar-title>
 
       <q-space />
+      isAuthState : {{ isAuthState }}
       <q-btn
         v-if="!isAuthState"
         label="로그인 • 회원가입"
@@ -26,7 +27,7 @@
         @click="authStore.setUser()"
       />
     </q-header>
-    <!-- :style="pageContainerStyles" -->
+
     <q-page-container :style="pageContainerStyles">
       <q-page padding class="row q-col-gutter-x-md">
         <!-- aside  -->

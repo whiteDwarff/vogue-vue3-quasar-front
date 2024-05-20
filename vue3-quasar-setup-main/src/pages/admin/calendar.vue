@@ -23,9 +23,7 @@
     <CalencatDialog
       v-model:isDialog="isDialog"
       v-model:form="form"
-      @edit="editSchedule"
-      @delete="deleteSchedule"
-      @update:model-value="form = intlzCalendarForm()"
+      @update:model-value="closeDialog"
     />
   </div>
 </template>
@@ -38,140 +36,71 @@ const intlzCalendarForm = () => {
 
   return {
     id: '',
-    title: '',
-    content: '',
+    title: '', // 제목
+    content: '', // 내용
     start: '',
-    dayStart: `${year}-${month}-${day}`,
-    timeStart: '12:00',
+    dayStart: `${year}-${month}-${day}`, // 시작날짜
+    timeStart: '09:00', // 시작시간
     end: '',
-    dayEnd: '',
-    timeEnd: '',
-    display: 'block',
-    color: '#3788d8',
-    textColor: 'black',
+    dayEnd: `${year}-${month}-${day}`, // 종료날짜
+    timeEnd: '21:00', // 종료시간
+    display: 'block', // 일정, 메모 여부
+    color: '#3788d8', // 배경색상
+    textColor: 'white', // 글자색상
+    option: 'personal',
   };
 };
 </script>
-<script setup>
-import { ref } from 'vue';
-import { baseNotify } from 'src/utils/base-notify';
 
+<script setup>
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import CalencatDialog from 'src/components/common/calendar/CalendarDialog.vue';
+import dayjs from 'dayjs';
 
 const isDialog = ref(false);
 const form = ref(intlzCalendarForm());
+// daygrid에서는 시간 미표시, listGrid에서는 시간 표시
 const displayEventTime = ref(false);
+// calendar의 날짜를 받는 객체
 const day = ref({
-  dayStart: '',
-  dayEnd: '',
+  start: '',
+  end: '',
 });
-const events = ref([
-  {
-    id: 0,
-    title: 'event 1',
-    start: '2024-03-31T00:00:00+09:00',
-    end: '2024-04-03T00:00:00+09:00',
-    color: 'orange',
-    textColor: 'white',
-  },
-  {
-    id: 1,
-    title: 'event 2',
-    start: '2024-04-03',
-    end: '2024-04-04',
-    display: 'block',
-  },
-  {
-    id: 2,
-    title: 'event 3',
-    start: '2024-04-21',
-    end: '2024-04-23',
-    display: 'block',
-    color: 'red',
-  },
-  { id: 3, title: 'lunch', date: '2024-04-02', display: 'list-item' },
-  {
-    id: 4,
-    title: 'vacation',
-    start: '2024-04-11T12:00:00+09:00',
-    end: '2024-04-13T14:15:00+09:00',
-    color: 'purple',
-    display: 'block',
-  },
-  {
-    id: 5,
-    title: 'metting',
-    start: '2024-04-11T12:00:00+09:00',
-    end: '',
-    display: 'list-item',
-  },
-  {
-    id: 6,
-    title: 'work',
-    start: '2024-04-23T09:00:00+09:00',
-    end: '2024-04-23T18:00:00+09:00',
-    color: 'teal',
-    display: 'list-item',
-  },
-  {
-    id: 7,
-    title: 'dinner',
-    start: '2024-04-23T19:00:00+09:00',
-    end: '2024-04-23T20:00:00+09:00',
-    color: 'red',
-    display: 'list-item',
-  },
-  {
-    id: 8,
-    title: 'date',
-    start: '2024-04-23T20:00:00+09:00',
-    end: '2024-04-23T22:00:00+09:00',
-    display: 'list-item',
-  },
-]);
-const editSchedule = (id) => {
-  form.value.start = `${form.value.dayStart}T${form.value.timeStart}:00+09:00`;
-  form.value.end = form.value.dayEnd
-    ? `${form.value.dayEnd}T${form.value.timeEnd}:00+09:00`
-    : '';
+// calendar에 바인딩 될 이벤트 객체
+const events = ref([]);
 
-  if (!id) {
-    form.value.id = findMaxNum() + 1;
-    events.value = [...events.value, { ...form.value }];
-  } else
-    for (let event of events.value)
-      if (event.id == id) event = { ...form.value };
-
-  baseNotify('일정이 등록되었습니다.');
-  isDialog.value = false;
+const closeDialog = (state = false) => {
   form.value = intlzCalendarForm();
+  isDialog.value = false;
+  if (state) execute(day.value);
 };
 
-const deleteSchedule = (e) => {
-  baseNotify(
-    '일정을 삭제하시겠습니까?',
-    null,
-    () => {
-      events.value = events.value.filter((data) => data.id != e);
-      baseNotify('일정이 삭제되었습니다.');
-      isDialog.value = false;
+// DOM이 mount되면 요청
+const { isLoading, execute } = useAsyncState(
+  () => getScheduleList(day.value),
+  null,
+  {
+    immediate: false,
+    throwError: true,
+    onSuccess: (res) => {
+      console.log(res.data);
+      events.value = res.data;
     },
-    true,
-  );
-};
+  },
+);
+
+// 깊은 감시를 통해 day의 값이 바뀔 때 (prev, next click) 데이터 요청
+// TODO: 첫 화면에서 요청이 2번 발생, 해결해야함
+watch(
+  () => day,
+  () => execute(day.value),
+  { deep: true },
+);
 // ------------------------------------------------------------------------------
 // calander
-
-// id값 임의 생성
-const findMaxNum = () => {
-  const arr = [];
-  for (let event of events.value) arr.push(event.id);
-  return Math.max.apply(null, arr);
-};
 const options = ref({
   plugins: [dayGridPlugin, listPlugin, interactionPlugin],
   locale: 'ko', // 한국시간
@@ -193,49 +122,30 @@ const options = ref({
     center: 'title',
     end: 'dayGridMonth,listWeek,listDay',
   },
+  // list-view에 events가 없을 경우
   noEventsContent: () => '등록된 일정이 없습니다.',
-  /**
-   * start : 시작날짜
-   * end : 종료날짜
-   * display : block : bar, list-item: dotted
-   * color : background-color
-   * textColor : text-color
-   */
   events,
   dateClick: (arg) => {
     // 날짜 셀 클릭 시 발생하는 이벤트
     isDialog.value = true;
-    // start를 오늘날짜로 변경
-    form.value.start = arg.dateStr;
+    // day_start를 오늘날짜로 변경
+    form.value.dayStart = arg.dateStr;
   },
   eventClick: ({ event }) => {
+    const eventDate = event.startStr.slice(0, event.startStr.indexOf('T'));
     // popover
-    const popover = document.querySelector(
-      `div[data-date="${event.startStr}"]`,
-    );
+    const popover = document.querySelector(`div[data-date="${eventDate}"]`);
     if (popover != null) popover.style.display = 'none';
 
     form.value = events.value.find((data) => data.id == event.id);
     isDialog.value = true;
   },
-  /**
-   * watch로 server에 데이터 요청하기
-   * TODO: https://ko.vuejs.org/guide/built-ins/teleport
-   *  -> 화면에 들어오면 데이터 요청 -> 데이터 받기 -> 랜더링 시간이 발생함,
-   *  -> teleport로 App.vue, default.vue에 로딩바 보내기
-   * prev, next 버튼 클릭 시 startDay, lastDay 받아오기
-   * SELECT * FROM TABLE NAME
-   * WHERE '2024-02-29T00:00:00+09:00' <= start_day AND '2024-04-09T00:00:00+09:00' >= end_day
-   */
+  // calendar의 날짜가 변경되면 실행되는 메서드
   datesSet: function ({ startStr, endStr }) {
-    day.value.dayStart = startStr;
-    day.value.dayEnd = endStr;
-    console.log(`시작일 : ${startStr}`);
-    console.log(`종료일 : ${endStr}`);
-    console.log(day.value);
-    console.log('---------------------------------');
+    day.value.start = startStr;
+    day.value.end = dayjs(endStr).subtract(1, 'days').format();
   },
-  // calendar의 view가 변경되면 실행되는 메서드
+  // calendar의 grid가 변경되면 실행되는 메서드
   viewDidMount: function ({ view }) {
     displayEventTime.value = view.type == 'dayGridMonth' ? false : true;
   },
@@ -258,23 +168,23 @@ const options = ref({
 </style>
 
 <!--
-  fullcalendar
-  https://velog.io/@chloeun/FullCalendar 참고
-  
-  
-  install
-  ...
-  -  npm i --save @fullcalendar/list
-  -  npm i --save @fullcalendar/core
-  -  npm i --save @fullcalendar/daygrid
-  -  npm i --save @fullcalendar/interaction
-  -  npm i --save @fullcalendar/vue3
-  ...
-  
-  ###########################################
-  chart.js
-  TODO: https://velog.io/@ptq124/Vue-Chart.js-%EC%82%AC%EC%9A%A9%EB%B2%95
-  
-  
-  
-  -->
+fullcalendar
+https://velog.io/@chloeun/FullCalendar 참고
+
+
+install
+...
+-  npm i --save @fullcalendar/list
+-  npm i --save @fullcalendar/core
+-  npm i --save @fullcalendar/daygrid
+-  npm i --save @fullcalendar/interaction
+-  npm i --save @fullcalendar/vue3
+...
+
+###########################################
+chart.js
+TODO: https://velog.io/@ptq124/Vue-Chart.js-%EC%82%AC%EC%9A%A9%EB%B2%95
+
+
+
+-->

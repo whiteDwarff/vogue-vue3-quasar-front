@@ -1,13 +1,13 @@
 <template>
-  <BaseDialog v-model="isDialog" @update:model-value="closeDialog">
-    <q-card-section class="flex">
-      <q-space />
-      <q-btn icon="close" flat dense round :ripple="false" v-close-popup />
-    </q-card-section>
+  <BaseDialog
+    v-model="isDialog"
+    @update:model-value="closeDialog"
+    label="템플릿 작성"
+  >
     <q-card-section class="q-gutter-y-md">
-      <div class="text-center q-mb-lg">
+      <!-- <div class="text-center q-mb-lg">
         <span class="text-h5 text-weight-bold">템플릿 작성</span>
-      </div>
+      </div> -->
       <!-- form -->
       <q-form @submit.prevent="handleSubmit" class="q-gutter-y-lg">
         <q-input
