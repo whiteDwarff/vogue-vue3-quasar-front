@@ -20,22 +20,21 @@ export const useAuthStore = defineStore('auth', () => {
     // Default Value
     {
       seq: null,
-      // 개발용 -> 추후 'ROLE_ANONYMOUS'로 변경
-      idntfCd: 'ROLE_SYS',
+      idntfCd: 'ROLE_ANONYMOUS',
     },
     {
       serializer: StorageSerializers.object,
     },
   );
 
-  console.log(user);
-
   const setUser = (data) => {
     if (data) {
       user.value = data;
     } else {
-      // TODO: Notify로 로그아웃 하시겠습니까? actions 실행 로직 추가
-      user.value = null;
+      user.value = {
+        seq: null,
+        idntfCd: 'ROLE_ANONYMOUS',
+      };
     }
   };
   return {

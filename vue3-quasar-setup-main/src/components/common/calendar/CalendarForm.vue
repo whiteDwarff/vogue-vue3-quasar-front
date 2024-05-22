@@ -81,19 +81,6 @@
       map-options
       options-dense
     />
-    <q-select
-      v-model="form.option"
-      :options="[
-        { label: '개인', value: 'personal' },
-        { label: '부서', value: 'emp' },
-      ]"
-      label="스케줄구분"
-      outlined
-      dense
-      emit-value
-      map-options
-      options-dense
-    />
 
     <q-separator />
 
@@ -151,7 +138,8 @@ const { isLoading, execute: scheduleInsUpd } = useAsyncState(
 const handleSubmit = async () => {
   form.value.start = `${form.value.dayStart}T${form.value.timeStart}:00+09:00`;
   form.value.end = `${form.value.dayEnd}T${form.value.timeEnd}:00+09:00`;
-  await scheduleInsUpd(0, form.value);
+  //  await scheduleInsUpd(0, form.value);
+  console.log(form.value);
 };
 // ------------------------------------------------------------------------------
 // 삭제

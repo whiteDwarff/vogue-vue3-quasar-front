@@ -1,6 +1,7 @@
 <template>
   <div>
     <q-card>
+      {{ form }}
       <q-card-section class="flex">
         <q-space />
         <q-btn
@@ -47,7 +48,6 @@ const intlzCalendarForm = () => {
     display: 'block', // 일정, 메모 여부
     color: '#3788d8', // 배경색상
     textColor: 'white', // 글자색상
-    option: 'personal',
   };
 };
 </script>

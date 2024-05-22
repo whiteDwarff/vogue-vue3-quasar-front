@@ -2,10 +2,11 @@
   <!-- 레이아웃 단위의 root element : q-layot -->
   <q-layout view="lHh Lpr lff" class="bg-grey-2">
     <q-header bordered class="bg-white text-grey-9 flex q-py-md">
-      <q-toolbar-title> default </q-toolbar-title>
+      <q-toolbar-title>
+        <router-link to="/" @click="currentPage = 0"> default </router-link>
+      </q-toolbar-title>
 
       <q-space />
-      isAuthState : {{ isAuthState }}
       <q-btn
         v-if="!isAuthState"
         label="로그인 • 회원가입"
@@ -24,14 +25,14 @@
         rounded
         class="bg-black text-white q-pa-sm"
         :ripple="false"
-        @click="authStore.setUser()"
+        @click="logout"
       />
     </q-header>
 
     <q-page-container :style="pageContainerStyles">
       <q-page padding class="row q-col-gutter-x-md">
         <!-- aside  -->
-        <AsideBar class="col-3 q-pl-none" />
+        <AsideBar v-model="currentPage" class="col-3 q-pl-none" />
 
         <!-- router-view -->
         <router-view class="col-9" />
@@ -46,42 +47,31 @@
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
+import { baseNotify } from 'src/utils/base-notify';
 
 // --------------------------------------------------------------------------
 const authStore = useAuthStore();
-const systemStore = useSystemStore();
 const { isAuthState, user } = storeToRefs(authStore);
-const { system, isSisSystemState } = storeToRefs(systemStore);
 // --------------------------------------------------------------------------
 const route = useRoute();
-
+// 로그인, 회원가입 dialog state
 const isDialog = ref(false);
-// --------------------------------------------------------------------------
-// 카테고리 및 유저권한 셋팅
-/*
-const { execute } = useAsyncState(() => getSystemAll(user.value), null, {
-  immediate: true,
-  throwError: true,
-  onSuccess: (res) => {
-    if (res?.status == 200) {
-      const categorys = res.data.list.category;
+const currentPage = ref(route.fullPath);
 
-      for (let category of categorys) {
-        const childrens = JSON.parse(category.midCategory);
-        const arr = [];
-        for (let children of childrens)
-          if (category.seq == children.upperSeq) arr.push(children);
-        category.midCategory = [...arr];
-      }
-      systemStore.setSystems(res.data.list, categorys);
-      console.log(111);
-    }
-  },
-});
-*/
+const logout = () => {
+  baseNotify(
+    '로그아웃 하시겠습니까?',
+    null,
+    () => {
+      authStore.setUser();
+      baseNotify('로그아웃 되었습니다.');
+    },
+    true,
+  );
+};
 // --------------------------------------------------------------------------
+// route의 meta 속성에 width가 있다면 width, 없다면 1080px
 const pageContainerStyles = computed(() => ({
-  // route의 meta 속성에 width가 있다면 width, 없다면 1080px
   maxWidth: route.meta?.width || '80%',
   margin: '0 auto',
 }));
