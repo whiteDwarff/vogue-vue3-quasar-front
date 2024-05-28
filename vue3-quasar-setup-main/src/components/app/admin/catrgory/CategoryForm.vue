@@ -27,6 +27,7 @@
               color="grey-6"
               icon="refresh"
               :ripple="false"
+              size="17px"
             >
               <q-tooltip> 초기화 </q-tooltip>
             </q-btn>
@@ -167,18 +168,13 @@
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 
-const baseStore = useSystemStore();
-const { category, permission } = storeToRefs(baseStore);
+const systemStore = useSystemStore();
+const { category, permission } = storeToRefs(systemStore);
 
 const emit = defineEmits(['update:formValue']);
-const props = defineProps({
-  options: {
-    type: Array,
-    default: () => [],
-  },
-});
 
 const form = defineModel();
+
 // --------------------------------------------------------------------------
 // 카테고리 등록 및 수정
 const { isLoading: saveLoading, execute: save } = useAsyncState(

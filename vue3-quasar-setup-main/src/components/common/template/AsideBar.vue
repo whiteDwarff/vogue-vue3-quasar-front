@@ -18,7 +18,7 @@
           clickable
           dense
           class="flex items-center text-weight-light"
-          :class="lower.seq == modelValue ? 'active' : ''"
+          :class="setCurrentPage(lower)"
         >
           {{ lower.name }}
         </q-item>
@@ -41,6 +41,7 @@ const { category } = storeToRefs(systemStore);
 
 const router = useRouter();
 const route = useRoute();
+
 // default.vue에서 바인딩한 변수, 현제 페이지 표시용
 const modelValue = defineModel();
 
@@ -53,13 +54,23 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   },
 });
 
+// 현재 페이지에 active class를 추가
+const setCurrentPage = (item) => {
+  // 게시판
+  if (item.postYn == 'Y')
+    return item.url + item.seq === route.fullPath ? 'active' : '';
+  // 관리자화면
+  else return item.url === route.fullPath ? 'active' : '';
+};
+
+// 페이지 이동
 const navigatePage = (obj) => {
   const url = obj.postYn == 'Y' ? obj.url + obj.seq : obj.url;
   router.push(url);
   modelValue.value = obj.seq;
 };
 
-// 로그인 상태가 변경 시 메뉴를 새로 요청
+// 로그인 상태가 변경 시 (로그인, 로그아웃) 메뉴를 새로 요청
 watch(isAuthState, (newValue) => {
   execute();
 });

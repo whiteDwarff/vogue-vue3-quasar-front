@@ -1,6 +1,6 @@
 <template>
   <q-card class="row">
-    <q-card-section class="col-12 col-sm-4">
+    <q-card-section class="col-12 col-md-4">
       <CategoryList
         :category="category.menu"
         v-model="form"
@@ -8,8 +8,8 @@
       />
     </q-card-section>
 
-    <q-card-section class="col-12 col-sm-8" bordered>
-      <CategoryForm v-model="form" :options @update:formValue="resetForm" />
+    <q-card-section class="col-12 col-md-8" bordered>
+      <CategoryForm v-model="form" @update:formValue="resetForm" />
     </q-card-section>
   </q-card>
 </template>
@@ -33,17 +33,23 @@ const initializeForm = () => {
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
+import { watch } from 'vue';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();
 
 const { user } = storeToRefs(authStore);
-const { category } = storeToRefs(systemStore);
+const { category, permission, isPermission } = storeToRefs(systemStore);
 
 const form = ref(initializeForm());
-const options = ref([]);
 
-onMounted(() => resetForm());
+if (!form.value.permission.length)
+  form.value.permission = systemStore.basePermission();
+
+// systemStore의 permission이 셋팅되면 form에 셋팅
+watch(isPermission, () => {
+  form.value.permission = systemStore.basePermission();
+});
 
 const resetForm = () => {
   execute();
