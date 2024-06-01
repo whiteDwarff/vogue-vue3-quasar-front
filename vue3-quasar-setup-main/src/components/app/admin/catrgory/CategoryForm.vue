@@ -1,8 +1,8 @@
 <template>
   <q-card flat class="q-pa-md border">
-    <form @submit.prevent="handleSubmit" class="q-gutter-y-lg">
-      <div class="row items-center">
-        <label class="col-12 col-sm-3">상위타입</label>
+    <form @submit.prevent="handleSubmit" class="q-gutter-y-sm">
+      <div class="row q-col-gutter-y-sm items-center">
+        <label class="col-12 col-md-3 text-weight-bold q-mb-sm">상위타입</label>
         <!-- 
         emit-value : value 속성만 업데이트
         map-option : option명은 label로 사용 
@@ -16,7 +16,8 @@
           emit-value
           map-options
           bottom-slots
-          class="col-12 col-sm-9"
+          outlined
+          class="col-12 col-md-9"
         >
           <template v-slot:after>
             <q-btn
@@ -26,35 +27,39 @@
               color="grey-6"
               icon="refresh"
               :ripple="false"
+              size="17px"
             >
               <q-tooltip> 초기화 </q-tooltip>
             </q-btn>
           </template>
         </q-select>
       </div>
-      <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">카테고리명</label>
-        <q-input v-model="form.name" outlined dense class="col-12 col-sm-9" />
+
+      <div class="row q-col-gutter-y-sm items-center">
+        <label class="col-12 col-md-3 text-weight-bold">카테고리명</label>
+        <q-input v-model="form.name" outlined dense class="col-12 col-md-9" />
       </div>
-      <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">URL</label>
+
+      <div class="row q-col-gutter-y-sm q-py-md items-center">
+        <label class="col-12 col-md-3 text-weight-bold">URL</label>
         <q-input
           v-model="form.url"
           :readonly="form.postYn == 'Y'"
           outlined
           dense
-          class="col-12 col-sm-9"
+          class="col-12 col-md-9"
         />
       </div>
-      <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">정렬</label>
-        <q-input v-model="form.sort" outlined dense class="col-12 col-sm-9" />
+
+      <div class="row q-col-gutter-y-sm items-center">
+        <label class="col-12 col-md-3 text-weight-bold">정렬</label>
+        <q-input v-model="form.sort" outlined dense class="col-12 col-md-9" />
       </div>
 
-      <q-separator />
+      <q-separator class="q-my-lg" />
 
       <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">게시판</label>
+        <label class="col-12 col-sm-3 text-weight-bold">게시판</label>
         <div class="col-12 col-sm-9">
           <q-radio
             v-model="form.postYn"
@@ -67,7 +72,7 @@
         </div>
       </div>
       <div class="row items-center">
-        <label for="" class="col-12 col-sm-3">공개여부</label>
+        <label for="" class="col-12 col-sm-3 text-weight-bold">공개여부</label>
         <div class="col-12 col-sm-9">
           <q-radio
             v-model="form.useYn"
@@ -80,7 +85,7 @@
         </div>
       </div>
 
-      <q-separator />
+      <q-separator class="q-my-lg" />
 
       <q-markup-table>
         <thead>
@@ -163,18 +168,13 @@
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 
-const baseStore = useSystemStore();
-const { category, permission } = storeToRefs(baseStore);
+const systemStore = useSystemStore();
+const { category, permission } = storeToRefs(systemStore);
 
 const emit = defineEmits(['update:formValue']);
-const props = defineProps({
-  options: {
-    type: Array,
-    default: () => [],
-  },
-});
 
 const form = defineModel();
+
 // --------------------------------------------------------------------------
 // 카테고리 등록 및 수정
 const { isLoading: saveLoading, execute: save } = useAsyncState(

@@ -6,19 +6,19 @@
         :key="upper.seq"
         :label="upper.name"
         default-opened
+        dense
+        class="text-weight-bold"
       >
         <q-separator />
 
         <q-item
           v-for="lower of upper.midCategory"
           :key="lower.seq"
+          @click="navigatePage(lower)"
           clickable
-          @click="
-            $router.push(
-              lower.postYn == 'Y' ? `${lower.url}${lower.seq}` : `${lower.url}`,
-            )
-          "
-          class="flex items-center"
+          dense
+          class="flex items-center text-weight-light"
+          :class="setCurrentPage(lower)"
         >
           {{ lower.name }}
         </q-item>
@@ -31,12 +31,19 @@
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
+import { watch } from 'vue';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();
 
-const { user } = storeToRefs(authStore);
+const { user, isAuthState } = storeToRefs(authStore);
 const { category } = storeToRefs(systemStore);
+
+const router = useRouter();
+const route = useRoute();
+
+// default.vue에서 바인딩한 변수, 현제 페이지 표시용
+const modelValue = defineModel();
 
 const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
@@ -46,6 +53,32 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
     if (res.status == 200) systemStore.setSystem(res.data);
   },
 });
+
+// 현재 페이지에 active class를 추가
+const setCurrentPage = (item) => {
+  // 게시판
+  if (item.postYn == 'Y')
+    return item.url + item.seq === route.fullPath ? 'active' : '';
+  // 관리자화면
+  else return item.url === route.fullPath ? 'active' : '';
+};
+
+// 페이지 이동
+const navigatePage = (obj) => {
+  const url = obj.postYn == 'Y' ? obj.url + obj.seq : obj.url;
+  router.push(url);
+  modelValue.value = obj.seq;
+};
+
+// 로그인 상태가 변경 시 (로그인, 로그아웃) 메뉴를 새로 요청
+watch(isAuthState, (newValue) => {
+  execute();
+});
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.active {
+  border-right: 3px solid orange;
+  background-color: #f0f0f0;
+}
+</style>

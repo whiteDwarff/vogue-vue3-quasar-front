@@ -11,7 +11,7 @@ export const useSystemStore = defineStore('system', () => {
   });
 
   // state
-  const isPermission = computed(() => !!permission.value);
+  const isPermission = computed(() => permission.value.length > 0);
   const isCategory = computed(() => !!category.value.menu);
 
   // Setter -----------------------------------------------------------
@@ -58,9 +58,9 @@ export const useSystemStore = defineStore('system', () => {
         idntfCd: item.idntfCd,
         idntfNm: item.idntfNm,
         access: 'Y',
-        add: 'Y',
-        update: 'Y',
-        delete: 'Y',
+        add: null,
+        update: null,
+        delete: null,
       };
       arr.push(obj);
     }
