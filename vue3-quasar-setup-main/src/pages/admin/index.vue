@@ -1,8 +1,11 @@
 <template>
   <div>
-    <q-card>
-      <q-card-section>
-        <q-tabs
+    <q-card class="row">
+      <q-card-section class="col-12 col-sm-4">
+        <IndexList
+          :rows="rows"
+        />
+        <!-- <q-tabs
           v-model="tab"
           dense
           active-color="teal"
@@ -12,12 +15,16 @@
         >
           <q-tab name="list" label="사용자별 권한 목록" :ripple="false" />
           <q-tab name="form" label="등록 • 수정" :ripple="false" />
-        </q-tabs>
+        </q-tabs> -->
+      </q-card-section>
+      
+      <q-card-section class="col-12 col-sm-8" bordered>
+        <IndexDetail v-model="form"  />
       </q-card-section>
 
-      <!-- panels -->
+      <!-- panels 
       <q-tab-panels v-model="tab" animated>
-        <!-- list -->
+        list
         <q-tab-panel name="list">
           <q-table
             v-model:selected="selected"
@@ -38,7 +45,7 @@
             <q-btn label="삭제" flat color="red" unelevated :ripple="false" />
           </q-card-action>
         </q-tab-panel>
-        <!-- form -->
+        form 
         <q-tab-panel name="form">
           <q-form class="q-pa-lg">
             <q-input label="권한그룹코드" :autofocus="true" />
@@ -47,7 +54,7 @@
             <q-input label="정렬" />
           </q-form>
         </q-tab-panel>
-      </q-tab-panels>
+      </q-tab-panels> -->
     </q-card>
     {{ selected }}
   </div>
@@ -58,6 +65,9 @@ import { ref } from 'vue';
 
 const tab = ref('list');
 const selected = ref([]);
+
+// const form = ref(initializeForm());
+// const options = ref([]);
 
 const columns = ref([
   {
