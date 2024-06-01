@@ -10,7 +10,7 @@
           @refresh="refreshTemplateView"
         />
       </div>
-      <!-- table -->
+      <!-- tableㅎ -->
       <BaseCheckedTable
         v-model:selected="selected"
         :columns="postsColumns"
