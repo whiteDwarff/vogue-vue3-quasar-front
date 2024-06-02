@@ -39,15 +39,15 @@ const intlzCalendarForm = () => {
     id: '',
     title: '', // 제목
     content: '', // 내용
-    start: '',
+    start: '', // 시작날짜 + 시작시간
     dayStart: `${year}-${month}-${day}`, // 시작날짜
     timeStart: '09:00', // 시작시간
-    end: '',
+    end: '', // 종료날짜
     dayEnd: `${year}-${month}-${day}`, // 종료날짜
     timeEnd: '21:00', // 종료시간
     display: 'block', // 일정, 메모 여부
     color: '#3788d8', // 배경색상
-    textColor: 'white', // 글자색상
+    textColor: 'white',
   };
 };
 </script>
@@ -62,8 +62,10 @@ import dayjs from 'dayjs';
 
 const isDialog = ref(false);
 const form = ref(intlzCalendarForm());
+
 // daygrid에서는 시간 미표시, listGrid에서는 시간 표시
 const displayEventTime = ref(false);
+
 // calendar의 날짜를 받는 객체
 const day = ref({
   start: '',
@@ -85,9 +87,11 @@ const { isLoading, execute } = useAsyncState(
   {
     immediate: false,
     throwError: true,
-    onSuccess: (res) => {
-      console.log(res.data);
-      events.value = res.data;
+    onSuccess: ({ status, data }) => {
+      if (status == '200') {
+        console.log(data.list.events);
+        events.value = data.list.events;
+      }
     },
   },
 );
@@ -111,7 +115,7 @@ const options = ref({
   // editable: true, // false로 변경 시 draggable 작동 x
   initialView: 'dayGridMonth',
   // initialView: 'listWeek',
-  dayMaxEvents: 3, // 하나의 cell에 표시될 이벤트 개수
+  dayMaxEvents: 4, // 하나의 cell에 표시될 이벤트 개수
   views: {
     dayGridMonth: { buttonText: '월' },
     listWeek: { buttonText: '주' },
@@ -122,15 +126,21 @@ const options = ref({
     center: 'title',
     end: 'dayGridMonth,listWeek,listDay',
   },
+
   // list-view에 events가 없을 경우
   noEventsContent: () => '등록된 일정이 없습니다.',
+
+  // 이벤트 객체 바인딩 **
   events,
+
+  // 날짜 셀 클릭 시 발생하는 이벤트
   dateClick: (arg) => {
-    // 날짜 셀 클릭 시 발생하는 이벤트
     isDialog.value = true;
     // day_start를 오늘날짜로 변경
     form.value.dayStart = arg.dateStr;
   },
+
+  // calendar의 이벤트 요소를 클릭하면 실행되는 메서드
   eventClick: ({ event }) => {
     const eventDate = event.startStr.slice(0, event.startStr.indexOf('T'));
     // popover
@@ -140,16 +150,18 @@ const options = ref({
     form.value = events.value.find((data) => data.id == event.id);
     isDialog.value = true;
   },
+
   // calendar의 날짜가 변경되면 실행되는 메서드
   datesSet: function ({ startStr, endStr }) {
     day.value.start = startStr;
     day.value.end = dayjs(endStr).subtract(1, 'days').format();
   },
+
   // calendar의 grid가 변경되면 실행되는 메서드
   viewDidMount: function ({ view }) {
     displayEventTime.value = view.type == 'dayGridMonth' ? false : true;
   },
-});
+}); // options end
 // ------------------------------------------------------------------------------
 </script>
 
@@ -173,18 +185,15 @@ https://velog.io/@chloeun/FullCalendar 참고
 
 
 install
-...
+
 -  npm i --save @fullcalendar/list
 -  npm i --save @fullcalendar/core
 -  npm i --save @fullcalendar/daygrid
 -  npm i --save @fullcalendar/interaction
 -  npm i --save @fullcalendar/vue3
-...
 
 ###########################################
 chart.js
 TODO: https://velog.io/@ptq124/Vue-Chart.js-%EC%82%AC%EC%9A%A9%EB%B2%95
-
-
 
 -->

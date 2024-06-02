@@ -120,7 +120,7 @@ const emit = defineEmits(['success']);
 const form = defineModel();
 
 // 등록 및 수정
-const { isLoading, execute: scheduleInsUpd } = useAsyncState(
+const { isLoading, execute: executeSaveSchedule } = useAsyncState(
   saveSchedule,
   null,
   {
@@ -138,8 +138,7 @@ const { isLoading, execute: scheduleInsUpd } = useAsyncState(
 const handleSubmit = async () => {
   form.value.start = `${form.value.dayStart}T${form.value.timeStart}:00+09:00`;
   form.value.end = `${form.value.dayEnd}T${form.value.timeEnd}:00+09:00`;
-  await scheduleInsUpd(0, form.value);
-  console.log(form.value);
+  await executeSaveSchedule(0, form.value);
 };
 // ------------------------------------------------------------------------------
 // 삭제
