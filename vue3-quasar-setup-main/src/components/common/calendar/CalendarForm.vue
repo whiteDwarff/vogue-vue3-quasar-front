@@ -71,8 +71,8 @@
       @update:model-value="onChange"
       v-model="form.display"
       :options="[
-        { label: '일정', value: 'block' },
-        { label: '메모', value: 'list-item' },
+        { label: '일정', value: 'list-item' },
+        { label: '메모', value: 'block' },
       ]"
       label="일정구분"
       outlined

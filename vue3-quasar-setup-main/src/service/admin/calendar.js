@@ -10,6 +10,16 @@ export async function getScheduleList(day) {
   }
 }
 
+export async function getSchedule({ id }) {
+  console.log(id);
+  try {
+    return await api.post('/admin/schedule/selectOne', { id });
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
+  }
+}
+
 export async function saveSchedule(form) {
   const authStore = useAuthStore();
   const { user } = storeToRefs(authStore);
