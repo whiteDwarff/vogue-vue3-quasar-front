@@ -1,9 +1,12 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage, StorageSerializers } from '@vueuse/core'; // vueuse
+import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', () => {
   // 로그인 상태를 담는 객체 login: true, logout : false
   const isAuthState = computed(() => !!user.value.seq);
+
+  const router = useRouter();
 
   /**
    * @vueuse
@@ -37,9 +40,22 @@ export const useAuthStore = defineStore('auth', () => {
       };
     }
   };
+  const logout = () => {
+    baseNotify(
+      '로그아웃 하시겠습니까?',
+      null,
+      () => {
+        setUser();
+        router.push('/');
+        baseNotify('로그아웃 되었습니다.');
+      },
+      true,
+    );
+  };
   return {
     isAuthState,
     user,
     setUser,
+    logout,
   };
 });

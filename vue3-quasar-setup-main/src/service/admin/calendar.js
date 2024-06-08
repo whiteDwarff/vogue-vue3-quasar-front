@@ -2,6 +2,7 @@ import { useAuthStore } from 'src/stores/authStore';
 import { storeToRefs } from 'pinia';
 
 export async function getScheduleList(day) {
+  console.log(day);
   try {
     return await api.post('/admin/schedule/get', day);
   } catch (err) {
@@ -11,7 +12,6 @@ export async function getScheduleList(day) {
 }
 
 export async function getSchedule({ id }) {
-  console.log(id);
   try {
     return await api.post('/admin/schedule/selectOne', { id });
   } catch (err) {

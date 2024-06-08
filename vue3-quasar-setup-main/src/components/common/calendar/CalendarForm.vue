@@ -88,7 +88,7 @@
 
     <q-separator />
 
-    <div class="flex">
+    <div v-if="isVerification" class="flex">
       <q-space />
       <q-btn
         v-if="form.id"
@@ -112,8 +112,13 @@
 </template>
 
 <script setup>
+import { useAuthStore } from 'src/stores/authStore';
 import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
 import ColorPalette from './ColorPalette.vue';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+
+const { user } = storeToRefs(useAuthStore());
 
 const emit = defineEmits(['success']);
 
@@ -165,4 +170,9 @@ const handleDelete = (id) => {
 // ------------------------------------------------------------------------------
 const onChange = (value) =>
   (form.value.textColor = value == 'block' ? 'white' : 'black');
+
+// 본인이 등록한 일정이거나 등록인 경우 form 활성화
+const isVerification = computed(() => {
+  return !form.value.id || form.value.author == user.value.seq;
+});
 </script>

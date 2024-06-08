@@ -3,10 +3,6 @@
     <form @submit.prevent="handleSubmit" class="q-gutter-y-sm">
       <div class="row q-col-gutter-y-sm items-center">
         <label class="col-12 col-md-3 text-weight-bold q-mb-sm">상위타입</label>
-        <!-- 
-        emit-value : value 속성만 업데이트
-        map-option : option명은 label로 사용 
-      -->
         <q-select
           :options="category.tree"
           @update:model-value="changeSeqHanlder"

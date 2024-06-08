@@ -25,7 +25,7 @@
         rounded
         class="bg-black text-white q-pa-sm"
         :ripple="false"
-        @click="logout"
+        @click="authStore.logout()"
       />
     </q-header>
 
@@ -58,17 +58,6 @@ const route = useRoute();
 const isDialog = ref(false);
 const currentPage = ref(route.fullPath);
 
-const logout = () => {
-  baseNotify(
-    '로그아웃 하시겠습니까?',
-    null,
-    () => {
-      authStore.setUser();
-      baseNotify('로그아웃 되었습니다.');
-    },
-    true,
-  );
-};
 // --------------------------------------------------------------------------
 // route의 meta 속성에 width가 있다면 width, 없다면 1080px
 const pageContainerStyles = computed(() => ({

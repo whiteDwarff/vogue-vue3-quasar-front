@@ -2,6 +2,21 @@
   <div>
     <q-card>
       <q-card-section class="flex">
+        {{ day }}
+        <q-select
+          v-model="day.author"
+          :options="[
+            { label: '전체일정', value: '' },
+            { label: '개인일정', value: user.seq },
+          ]"
+          label="일정구분"
+          outlined
+          dense
+          emit-value
+          map-options
+          options-dense
+          style="width: 30%"
+        />
         <q-space />
         <q-btn
           @click="isDialog = true"
@@ -52,12 +67,17 @@ const intlzCalendarForm = () => {
 </script>
 
 <script setup>
+import { useAuthStore } from 'src/stores/authStore';
+import { storeToRefs } from 'pinia';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import CalencatDialog from 'src/components/common/calendar/CalendarDialog.vue';
 import dayjs from 'dayjs';
+
+const authStore = useAuthStore();
+const { user, isAuthState } = storeToRefs(authStore);
 
 const isDialog = ref(false);
 const form = ref(intlzCalendarForm());
@@ -69,6 +89,7 @@ const displayEventTime = ref(false);
 const day = ref({
   start: '',
   end: '',
+  author: '',
 });
 // calendar에 바인딩 될 이벤트 객체
 const events = ref([]);
