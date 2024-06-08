@@ -78,6 +78,9 @@ export const useSystemStore = defineStore('system', () => {
     }
     return arr;
   };
+  const setAuthDetail = (idntfCd) => {
+    return permission.value.find((item) => item.idntfCd == idntfCd);
+  };
 
   return {
     permission,
@@ -91,5 +94,6 @@ export const useSystemStore = defineStore('system', () => {
     basePermission,
     setUpperSeq,
     setLowerCategory,
+    setAuthDetail,
   };
 });
