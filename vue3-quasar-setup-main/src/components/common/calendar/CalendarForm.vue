@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit.prevent="handleSubmit" class="q-gutter-y-md" z-max>
+  <q-form @submit.prevent="handleSubmit" class="q-gutter-y-md">
     <q-input v-model="form.title" outlined dense label="제목" />
     <TiptabEditor v-model="form.content" />
 
@@ -88,11 +88,11 @@
 
     <q-separator />
 
-    <div v-if="isVerification" class="flex">
+    <div class="flex">
       <q-space />
       <q-btn
         v-if="form.id"
-        @click="handleDelete(form.id)"
+        @click="handleDelete(form)"
         label="삭제"
         outline
         color="red"
@@ -112,14 +112,14 @@
 </template>
 
 <script setup>
-import { useAuthStore } from 'src/stores/authStore';
 import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
 import ColorPalette from './ColorPalette.vue';
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 
-const { user } = storeToRefs(useAuthStore());
-
+const props = defineProps({
+  handleDelete: {
+    type: Function,
+  },
+});
 const emit = defineEmits(['success']);
 
 const form = defineModel();
@@ -132,6 +132,7 @@ const { isLoading, execute: executeSaveSchedule } = useAsyncState(
     immediate: false,
     throwError: true,
     onSuccess: (res) => {
+      console.log(res);
       if (res?.status == 200) {
         emit('success');
         baseNotify('일정이 등록되었습니다.');
@@ -145,34 +146,7 @@ const handleSubmit = async () => {
   form.value.end = `${form.value.dayEnd}T${form.value.timeEnd}:00+09:00`;
   await executeSaveSchedule(0, form.value);
 };
-// ------------------------------------------------------------------------------
-// 삭제
-const { execute } = useAsyncState(deleteSchedule, null, {
-  immediate: false,
-  throwError: true,
-  onSuccess: (res) => {
-    if (res?.status == 200) {
-      emit('success');
-      baseNotify('일정이 삭제되었습니다.');
-    }
-  },
-});
-const handleDelete = (id) => {
-  baseNotify(
-    '일정을 삭제하시겠습니까?',
-    null,
-    () => {
-      execute(0, id);
-    },
-    true,
-  );
-};
-// ------------------------------------------------------------------------------
+
 const onChange = (value) =>
   (form.value.textColor = value == 'block' ? 'white' : 'black');
-
-// 본인이 등록한 일정이거나 등록인 경우 form 활성화
-const isVerification = computed(() => {
-  return !form.value.id || form.value.author == user.value.seq;
-});
 </script>

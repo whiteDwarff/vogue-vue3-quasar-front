@@ -6,7 +6,7 @@
     transition-hide="none"
     transition-show="none"
   >
-    <q-card style="min-width: 300px" :style="{ maxWidth: maxWidth }">
+    <q-card style="min-width: 600px" :style="{ maxWidth: maxWidth }">
       <q-card-section class="flex">
         <q-space />
         <q-btn icon="close" flat dense round :ripple="false" v-close-popup />

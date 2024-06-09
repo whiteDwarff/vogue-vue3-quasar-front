@@ -2,7 +2,6 @@ import { useAuthStore } from 'src/stores/authStore';
 import { storeToRefs } from 'pinia';
 
 export async function getScheduleList(day) {
-  console.log(day);
   try {
     return await api.post('/admin/schedule/get', day);
   } catch (err) {
@@ -37,9 +36,9 @@ export async function saveSchedule(form) {
   }
 }
 
-export async function deleteSchedule(id) {
+export async function deleteSchedule({ id }) {
   try {
-    return await api.delete(`/schedule/delete?id=${id}`);
+    return await api.post('/admin/schedule/delete', { id });
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);

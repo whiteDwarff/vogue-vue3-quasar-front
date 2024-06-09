@@ -2,7 +2,6 @@
   <div>
     <q-card>
       <q-card-section class="flex">
-        {{ day }}
         <q-select
           v-model="day.author"
           :options="[
@@ -19,7 +18,7 @@
         />
         <q-space />
         <q-btn
-          @click="isDialog = true"
+          @click="(isDialog = true), (viewMode = 'form')"
           outline
           color="teal"
           flat
@@ -38,6 +37,7 @@
     <CalencatDialog
       v-model:isDialog="isDialog"
       v-model:form="form"
+      v-model:viewMode="viewMode"
       @update:model-value="closeDialog"
     />
   </div>
@@ -81,6 +81,7 @@ const { user, isAuthState } = storeToRefs(authStore);
 
 const isDialog = ref(false);
 const form = ref(intlzCalendarForm());
+const viewMode = ref('form');
 
 // daygrid에서는 시간 미표시, listGrid에서는 시간 표시
 const displayEventTime = ref(false);
@@ -121,12 +122,10 @@ const { execute: executSchedule } = useAsyncState(getSchedule, null, {
   immediate: false,
   throwError: true,
   onSuccess: ({ data }) => {
-    console.log(data.list.event);
     form.value = data.list.event;
   },
 });
 // ------------------------------------------------------------------------------
-
 // 깊은 감시를 통해 day의 값이 바뀔 때 (prev, next click) 데이터 요청
 watch(
   () => day,
@@ -165,6 +164,7 @@ const options = ref({
     isDialog.value = true;
     // day_start를 오늘날짜로 변경
     form.value.dayStart = arg.dateStr;
+    viewMode.value = 'form';
   },
   // calendar의 이벤트 요소를 클릭하면 실행되는 메서드
   eventClick: async ({ event }) => {
@@ -175,6 +175,7 @@ const options = ref({
       if (popover != null) popover.style.display = 'none';
 
       isDialog.value = true;
+      viewMode.value = 'detail';
 
       await executSchedule(0, event);
     } catch (err) {
@@ -218,17 +219,9 @@ https://velog.io/@chloeun/FullCalendar 참고
   -  npm i --save @fullcalendar/daygrid
   -  npm i --save @fullcalendar/interaction
   -  npm i --save @fullcalendar/vue3
+  -  npm i dayjs
 
 ----------------------------------------------------------------
-
-# calnendar에 바인딩 되는 이벤트 요소 (데이터)
-
-  - id
-  - title
-  - start
-  - end 
-  - color
-  - textColor 
 
 
 

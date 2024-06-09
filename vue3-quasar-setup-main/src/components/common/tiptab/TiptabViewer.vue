@@ -1,7 +1,7 @@
 <template>
-  <div class="tiptap">
+  <q-card class="tiptap" flat bordered>
     <editor-content class="editor__content" :editor="editor" />
-  </div>
+  </q-card>
 </template>
 
 <script setup>
@@ -9,24 +9,65 @@ import { useEditor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
+import TextStyle from '@tiptap/extension-text-style';
+import TextAlign from '@tiptap/extension-text-align';
+import { Color } from '@tiptap/extension-color';
 
 const props = defineProps({
   content: {
     type: String,
-    default: '',
+    default: () => '',
   },
 });
-const emit = defineEmits(['update:modelValue']);
 
 const editor = useEditor({
   content: props.content,
-  extensions: [StarterKit, Link, Image],
+  extensions: [
+    StarterKit,
+    TextAlign.configure({
+      types: ['heading', 'paragraph'],
+    }),
+    Image.configure({
+      allowBase64: true,
+    }),
+    Link,
+    TextStyle,
+    Color,
+  ],
   // 수정기능 제어
   editable: false,
 });
+
+watch(
+  () => props.content,
+  (newContent) => {
+    if (editor.value) {
+      editor.value.commands.setContent(newContent);
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style lang="scss" src="src/css/tiptab.scss"></style>
+<style lang="scss">
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+.editor__content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  padding: 16px 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: 400px;
+}
+</style>
 
 <!-- 
 

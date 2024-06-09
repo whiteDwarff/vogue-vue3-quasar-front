@@ -36,7 +36,7 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     Placeholder.configure({
-      placeholder: '내용을 작성해주세요.',
+      placeholder: '내용을 입력해주세요.',
     }),
     TextAlign.configure({
       types: ['heading', 'paragraph'],
@@ -74,8 +74,6 @@ watch(
   height: 0;
   pointer-events: none;
 }
-</style>
-<style lang="scss" scoped>
 .editor__content {
   flex: 1;
   display: flex;
@@ -86,6 +84,7 @@ watch(
   height: 400px;
 }
 </style>
+
 <!-- 
 ❗️ component 호출 
   - import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
