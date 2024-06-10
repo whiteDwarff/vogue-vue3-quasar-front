@@ -143,7 +143,6 @@ const options = ref({
   displayEventTime, // 달력에 시간포함 여부
   // editable: true, // false로 변경 시 draggable 작동 x
   initialView: 'dayGridMonth',
-  // initialView: 'listWeek',
   dayMaxEvents: 4, // 하나의 cell에 표시될 이벤트 개수
   views: {
     dayGridMonth: { buttonText: '월' },

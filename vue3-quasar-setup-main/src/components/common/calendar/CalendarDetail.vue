@@ -9,29 +9,33 @@
       </colgroup>
       <tr>
         <th class="text-weight-regular">제목</th>
-        <td colspan="3" class="text-grey-14">{{ form.title }}</td>
+        <td colspan="3" class="text-caption">{{ form.title }}</td>
       </tr>
       <tr>
         <th class="text-weight-regular">작성자</th>
-        <td colspan="3" class="text-grey-14">{{ form.name }}</td>
+        <td colspan="3" class="text-caption text-bold">{{ form.name }}</td>
       </tr>
       <tr>
-        <th class="text-weight-regular">시작일</th>
-        <td class="text-grey-14">{{ form.dayStart }}</td>
-        <th class="text-weight-regular">시작시간</th>
-        <td class="text-grey-14">{{ form.timeStart }}</td>
+        <th class="text-weight-regular text-caption">시작일</th>
+        <td class="text-grey-14 text-caption">{{ form.dayStart }}</td>
+        <th class="text-weight-regular text-caption">시작시간</th>
+        <td class="text-grey-14 text-caption">{{ form.timeStart }}</td>
       </tr>
       <tr>
-        <th class="text-weight-regular">종료일</th>
-        <td class="text-grey-14">{{ form.dayEnd }}</td>
-        <th class="text-weight-regular">종료시간</th>
-        <td class="text-grey-14">{{ form.timeEnd }}</td>
+        <th class="text-weight-regular text-caption">종료일</th>
+        <td class="text-grey-14 text-caption">{{ form.dayEnd }}</td>
+        <th class="text-weight-regular text-caption">종료시간</th>
+        <td class="text-grey-14 text-caption">{{ form.timeEnd }}</td>
       </tr>
       <tr>
-        <th class="text-weight-regular">등록일</th>
-        <td class="text-grey-14">{{ form.created_at }}</td>
-        <th class="text-weight-regular">마지막 수정일</th>
-        <td class="text-grey-14">{{ form?.updated_at }}</td>
+        <th class="text-weight-regular text-caption">등록일</th>
+        <td class="text-grey-14 text-italic text-caption">
+          {{ form.created_at }}
+        </td>
+        <th class="text-weight-regular text-caption">마지막 수정일</th>
+        <td class="text-grey-14 text-italic text-caption">
+          {{ form?.updated_at }}
+        </td>
       </tr>
     </table>
     <TiptabViewer :content="form.content" />

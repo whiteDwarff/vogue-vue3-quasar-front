@@ -1,6 +1,14 @@
 <template>
   <q-form @submit.prevent="handleSubmit" class="q-gutter-y-md">
-    <q-input v-model="form.title" outlined dense label="제목" />
+    <q-input
+      v-model="form.title"
+      outlined
+      dense
+      label="제목"
+      lazy-rules
+      :rules="[(val) => !!val || '제목을 입력해주세요.']"
+      hide-bottom-space
+    />
     <TiptabEditor v-model="form.content" />
 
     <div class="row q-col-gutter-md q-my-md">

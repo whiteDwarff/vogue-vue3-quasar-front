@@ -42,7 +42,9 @@ const editor = useEditor({
       types: ['heading', 'paragraph'],
     }),
     Link,
-    Image,
+    Image.configure({
+      allowBase64: true,
+    }),
     TextStyle,
     Color,
   ],

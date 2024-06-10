@@ -7,7 +7,7 @@
         :label="upper.name"
         default-opened
         dense
-        class="text-weight-bold"
+        class="text-subtitle2"
       >
         <q-separator />
 
