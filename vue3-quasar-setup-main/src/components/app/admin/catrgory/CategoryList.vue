@@ -44,6 +44,7 @@ const { execute } = useAsyncState(selectCategoryInfo, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
+    console.log(res);
     form.value = res.data.list.form;
   },
 });

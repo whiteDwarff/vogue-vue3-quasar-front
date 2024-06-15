@@ -181,6 +181,8 @@ const { isLoading: saveLoading, execute: save } = useAsyncState(
     throwError: true,
     onSuccess: (res) => {
       if (res?.status == 201) {
+        console.log('------');
+        console.log(res);
         baseNotify(res.data.message);
         emit('update:formValue', true);
       }
@@ -224,10 +226,14 @@ const handleDelete = () => {
 };
 // --------------------------------------------------------------------------
 const changeSeqHanlder = (value) => {
-  const selectedOption = category.value.parent.find(
+  console.log(value);
+  const selectedOption = category.value.tree.find(
     (data) => data.value == value,
   );
+
+  // root 선택시 depth : 0, 상위메뉴 선택 시  depth : 1
   form.value.depth = selectedOption?.depth + 1;
+
   for (let item of form.value.permission) {
     if (form.value.depth < 2) {
       item.add = null;

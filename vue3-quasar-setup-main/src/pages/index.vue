@@ -1,8 +1,6 @@
 <template>
   <!-- 페이지 단위의 root element :  q-page -->
-  <div>auth : {{ user }}</div>
-  <div>category : {{ category }}</div>
-  <div>system: {{ system }}</div>
+  <div></div>
 </template>
 
 <script setup>

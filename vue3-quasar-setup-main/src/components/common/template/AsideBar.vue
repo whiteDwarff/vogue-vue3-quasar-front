@@ -1,6 +1,24 @@
 <template>
   <q-card>
     <q-list bordered separator>
+      <q-item class="full-width">
+        <q-btn
+          @click="$router.push('/posts/add')"
+          class="full-width"
+          unelevated
+          color="secondary"
+          :ripple="false"
+        >
+          <q-avatar
+            size="xs"
+            color="white"
+            text-color="teal"
+            icon="add"
+            class="q-mx-md"
+          />
+          <span> 게시글 작성</span>
+        </q-btn>
+      </q-item>
       <q-expansion-item
         v-for="upper of category.menu"
         :key="upper.seq"
@@ -10,7 +28,6 @@
         class="text-subtitle2"
       >
         <q-separator />
-
         <q-item
           v-for="lower of upper.midCategory"
           :key="lower.seq"

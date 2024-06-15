@@ -141,6 +141,7 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       // https: true
       open: true, // VITE build 시점에 brower 활성화 여부
+      hotReload: true,
       // CORS 설정
       proxy: {
         '/api': {

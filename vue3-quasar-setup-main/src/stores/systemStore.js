@@ -10,11 +10,16 @@ export const useSystemStore = defineStore('system', () => {
     children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
   });
 
-  // state
+  // State -----------------------------------------------------------
+
+  // permission이 store에 존재하는지 true : false
   const isPermission = computed(() => permission.value.length > 0);
+  // category가 store에 존재하는지 true : false
   const isCategory = computed(() => !!category.value.menu);
 
   // Setter -----------------------------------------------------------
+
+  // permission, category를 store에 저장
   const setSystem = ({ list }) => {
     permission.value = list.permission;
     category.value.menu = setMenuList(list.category);
@@ -23,11 +28,11 @@ export const useSystemStore = defineStore('system', () => {
     category.value.parent = list.parent;
     category.value.children = list.children;
   };
-
+  // permission 등록 및 수정 후 store에 다시 저장
   const setPermission = ({ permission }) => {
     permission.value = permission;
   };
-
+  // category 등록 및 수정 후 store에 다시 저장
   const setCategory = ({ list }) => {
     category.value.menu = setMenuList(list.category);
     category.value.menu = list.category;
@@ -50,7 +55,7 @@ export const useSystemStore = defineStore('system', () => {
     }
     return categorys || [];
   };
-
+  // 관리자 > 카테고리 관리 > 접근관리 및 CRUD 상태 셋팅 (접근권한, 등록, 수정, 삭제)
   const basePermission = () => {
     let arr = [];
     for (let item of permission.value) {
@@ -81,6 +86,21 @@ export const useSystemStore = defineStore('system', () => {
   const setAuthDetail = (idntfCd) => {
     return permission.value.find((item) => item.idntfCd == idntfCd);
   };
+  // 파라미터로 들어온 seq와 children의 upperSeq가 동일한 서브 카테고리 반환
+  const selectByUpperCategory = (seq) => {
+    return category.value.children.filter((data) => data.upperSeq == seq);
+  };
+  // 파라미터로 들어온 seq와 children의 value가 같다면 말머리 반환
+  const selectByprepend = (seq) => {
+    let arr = [];
+    for (let item of category.value.children) {
+      if (item.value == seq) {
+        arr = [...item.prepend];
+        if (arr.length) arr.unshift('선택 안 함');
+      }
+    }
+    return arr;
+  };
 
   return {
     permission,
@@ -95,5 +115,7 @@ export const useSystemStore = defineStore('system', () => {
     setUpperSeq,
     setLowerCategory,
     setAuthDetail,
+    selectByUpperCategory,
+    selectByprepend,
   };
 });

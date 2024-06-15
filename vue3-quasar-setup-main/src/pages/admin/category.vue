@@ -20,7 +20,7 @@ const initializeForm = () => {
     seq: 0,
     upperSeq: 1,
     name: '',
-    url: '/post/',
+    url: '/posts/',
     sort: '',
     postYn: 'Y',
     useYn: 'Y',

@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <q-form>
     <q-card flat bordered>
       <q-card-section>
         <span class="text-h6">{{ props.title }}</span>
@@ -10,35 +10,49 @@
       <q-card-section>
         <div class="row q-col-gutter-md">
           <q-select
+            @update:model-value="form.upperSeq = $event"
             v-model="form.ctgry"
             :options="category.parent"
-            :options-dense="true"
-            name="ctgry"
-            outlined
             dense
-            label="카테고리"
+            options-dense
+            emit-value
+            map-options
+            bottom-slots
+            outlined
+            label="상위카테고리"
             class="col-12 col-sm-4"
           />
           <q-select
-            v-model="form.sub_strgry"
-            :options
-            :options-dense="true"
-            name="sub_ctgry"
-            outlined
+            v-model="form.lowerSeq"
+            :options="systemStore.selectByUpperCategory(form.upperSeq)"
             dense
+            options-dense
+            emit-value
+            map-options
+            bottom-slots
+            outlined
             label="서브 카테고리"
             class="col-12 col-sm-4"
           />
           <q-select
             v-model="form.prepend"
             :options
-            :options-dense="true"
-            name="prepend"
+            options-dense
             outlined
             dense
             label="말머리"
             class="col-12 col-sm-4"
-          />
+            :readonly="!options.length"
+          >
+            <!-- option이 없을 경우 -->
+            <template v-slot:no-option>
+              <q-item dense>
+                <q-item-section class="text-italic text-grey text-caption">
+                  등록된 말머리가 없습니다.
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </div>
         <q-input
           v-model="form.title"
@@ -82,14 +96,38 @@
         </div>
       </q-card-section>
     </q-card>
-  </form>
+  </q-form>
 </template>
 
 <script setup>
+import { storeToRefs } from 'pinia';
+import { useSystemStore } from 'src/stores/systemStore';
+import { watch } from 'vue';
+
+const systemStore = useSystemStore();
+const { category } = storeToRefs(systemStore);
+
 const props = defineProps(['title']);
 const form = defineModel();
 
-const options = ref(['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle']);
+// 상위카테고리 선택 시 해당 카테고리에 맞는 하위 카테고리의 0번째 값을 form.lowerSeq로 설정
+watch(
+  () => form.value.upperSeq,
+  () => {
+    const category = systemStore.selectByUpperCategory(form.value.upperSeq);
+    form.value.lowerSeq = category[0].value;
+  },
+);
+// 하위카테고리 선택 시 해당 카테고리에 맞는 말머리의 0번째를 form.prepend로 설정
+watch(
+  () => form.value.lowerSeq,
+  () => {
+    options.value = systemStore.selectByprepend(form.value.lowerSeq);
+    form.value.prepend = options.length ? prepend[0] : '';
+  },
+);
+
+const options = ref([]);
 </script>
 
 <style scoped>

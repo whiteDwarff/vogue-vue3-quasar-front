@@ -5,10 +5,6 @@
     label="템플릿 작성"
   >
     <q-card-section class="q-gutter-y-md">
-      <!-- <div class="text-center q-mb-lg">
-        <span class="text-h5 text-weight-bold">템플릿 작성</span>
-      </div> -->
-      <!-- form -->
       <q-form @submit.prevent="handleSubmit" class="q-gutter-y-lg">
         <q-input
           v-model="form.title"
@@ -22,7 +18,7 @@
         <div class="row q-col-gutter-x-md">
           <q-select
             v-model="form.upperSeq"
-            :options="category.parent.filter((data) => data.postYn == 'Y')"
+            :options="category.parent"
             :rules="[(val) => !!val || '대분류를 선택해주세요.']"
             lazy-rules
             hide-bottom-space
@@ -169,6 +165,7 @@
 <script setup>
 import { useSystemStore } from 'src/stores/systemStore';
 import { storeToRefs } from 'pinia';
+import { baseNotify } from 'src/utils/base-notify';
 
 const systemStore = useSystemStore();
 const { category } = storeToRefs(systemStore);
@@ -197,7 +194,12 @@ const { execute: executeSaveNotice } = useAsyncState(saveNotice, null, {
 const handleSubmit = () => {
   if (form.value.prependYn == 'N' && form.value.prepend.length)
     form.value.prepend = [];
-  executeSaveNotice(0, form.value);
+  baseNotify(
+    '<div style="text-align: center">현재 템플릿 외에 해당 게시판의 모든 템플릿은 미사용으로 변경됩니다. <br>저장하시겠습니까?</div>',
+    { html: true, timeout: 5000 },
+    () => executeSaveNotice(0, form.value),
+    true,
+  );
 };
 
 // tab이 template일 경우 dialog를 닫아도 tab의 value는 유지됨, tab 초기화
@@ -211,7 +213,7 @@ const addPrepend = ({ target }) => {
   // event가 prepend 배열에 없을때만 추가
   if (
     !form.value.prepend.includes(event) &&
-    form.value.prepend.length <= 10 &&
+    form.value.prepend.length < 10 &&
     event
   )
     form.value.prepend.push(event);

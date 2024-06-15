@@ -10,13 +10,13 @@ import { ref } from 'vue';
 import PostWriteForm from 'src/components/app/posts/PostWriteForm.vue';
 
 const form = ref({
-  ctgry: '',
-  sub_strgry: '',
+  upperSeq: '',
+  lowerSeq: '',
   prepend: '',
   title: '',
   content: '',
-  public_yn: true,
-  comments_yn: true,
+  publicYn: true,
+  commentsYn: true,
 });
 </script>
 
