@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PostWriteForm v-model="form" title="글쓰기" />
+    <PostWriteForm v-model="form" title="게시글 작성" />
   </div>
 </template>
 
@@ -10,13 +10,14 @@ import { ref } from 'vue';
 import PostWriteForm from 'src/components/app/posts/PostWriteForm.vue';
 
 const form = ref({
+  seq: '',
   upperSeq: '',
   lowerSeq: '',
   prepend: '',
   title: '',
   content: '',
   publicYn: true,
-  commentsYn: true,
+  commentYn: true,
 });
 </script>
 

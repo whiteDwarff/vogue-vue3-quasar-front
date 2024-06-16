@@ -92,14 +92,24 @@ export const useSystemStore = defineStore('system', () => {
   };
   // 파라미터로 들어온 seq와 children의 value가 같다면 말머리 반환
   const selectByprepend = (seq) => {
-    let arr = [];
+    let prepend = [];
+    let notice;
+    let template;
     for (let item of category.value.children) {
       if (item.value == seq) {
-        arr = [...item.prepend];
-        if (arr.length) arr.unshift('선택 안 함');
+        prepend = [...item.prepend];
+        template = item?.template || '';
+        notice = item?.notice || '';
+
+        if (prepend.length) prepend.unshift('선택 안 함');
       }
     }
-    return arr;
+
+    return {
+      prepend,
+      template,
+      notice,
+    };
   };
 
   return {

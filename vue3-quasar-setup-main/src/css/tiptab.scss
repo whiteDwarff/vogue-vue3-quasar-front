@@ -147,7 +147,7 @@
         &:after {
           z-index: 2;
           position: absolute;
-          content: "";
+          content: '';
           left: 0;
           right: 0;
           top: 0;
@@ -175,73 +175,73 @@
       cursor: ew-resize;
       cursor: col-resize;
     }
-    *[data-text-align="left"] {
+    *[data-text-align='left'] {
       text-align: left !important;
     }
-    *[data-text-align="center"] {
+    *[data-text-align='center'] {
       text-align: center !important;
     }
-    *[data-text-align="right"] {
+    *[data-text-align='right'] {
       text-align: right !important;
     }
-    *[data-text-align="justify"] {
+    *[data-text-align='justify'] {
       text-align: justify !important;
     }
-    ul[data-type="todo_list"] {
-      .o-todo-item[data-text-align="center"] {
+    ul[data-type='todo_list'] {
+      .o-todo-item[data-text-align='center'] {
         -webkit-box-pack: center !important;
         justify-content: center !important;
       }
-      .o-todo-item[data-text-align="right"] {
+      .o-todo-item[data-text-align='right'] {
         -webkit-box-pack: end !important;
         -ms-flex-pack: end !important;
         justify-content: flex-end !important;
       }
     }
-    *[data-indent="1"] {
+    *[data-indent='1'] {
       margin-left: 30px !important;
     }
-    *[data-indent="2"] {
+    *[data-indent='2'] {
       margin-left: 60px !important;
     }
-    *[data-indent="3"] {
+    *[data-indent='3'] {
       margin-left: 90px !important;
     }
-    *[data-indent="4"] {
+    *[data-indent='4'] {
       margin-left: 120px !important;
     }
-    *[data-indent="5"] {
+    *[data-indent='5'] {
       margin-left: 150px !important;
     }
-    *[data-indent="6"] {
+    *[data-indent='6'] {
       margin-left: 180px !important;
     }
-    *[data-indent="7"] {
+    *[data-indent='7'] {
       margin-left: 210px !important;
     }
-    *[data-line-height="1"] {
+    *[data-line-height='1'] {
       line-height: 1 !important;
     }
-    *[data-line-height="1.15"] {
+    *[data-line-height='1.15'] {
       line-height: 1.15 !important;
     }
-    *[data-line-height="1.5"] {
+    *[data-line-height='1.5'] {
       line-height: 1.5 !important;
     }
-    *[data-line-height="2"] {
+    *[data-line-height='2'] {
       line-height: 2 !important;
     }
-    *[data-line-height="2.5"] {
+    *[data-line-height='2.5'] {
       line-height: 2.5 !important;
     }
-    *[data-line-height="3"] {
+    *[data-line-height='3'] {
       line-height: 3 !important;
     }
   }
-  ul[data-type="todo_list"] {
+  ul[data-type='todo_list'] {
     padding-left: 0;
   }
-  li[data-type="todo_item"] {
+  li[data-type='todo_item'] {
     display: flex;
     flex-direction: row;
   }
@@ -259,18 +259,18 @@
         margin-bottom: 0;
       }
     }
-    & > ul[data-type="todo_list"] {
+    & > ul[data-type='todo_list'] {
       margin: 0.5rem 0;
     }
   }
-  li[data-done="true"] {
+  li[data-done='true'] {
     & > .todo-content {
       & > p {
         text-decoration: line-through;
       }
     }
   }
-  li[data-done="false"] {
+  li[data-done='false'] {
     text-decoration: none;
   }
   pre {
@@ -348,7 +348,7 @@
 }
 .tiptap .tiptap-menubar,
 .tiptap .tiptap-menububble {
-  height: 40px;
+  // height: 40px;
   background: #e9ecf4;
 }
 .tiptap .tiptap-menubar .o-menubar-btn,

@@ -1,6 +1,6 @@
 <template>
   <q-card class="tiptap" flat bordered>
-    <editor-content class="editor__content" :editor="editor" />
+    <editor-content class="editor__viewer" :editor="editor" />
   </q-card>
 </template>
 
@@ -58,14 +58,14 @@ watch(
   height: 0;
   pointer-events: none;
 }
-.editor__content {
+.editor__viewer {
   flex: 1;
   display: flex;
   overflow-y: auto;
   padding: 16px 20px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  height: 400px;
+  height: auto;
 }
 </style>
 

@@ -12,37 +12,42 @@ export function baseNotify(
   callback = null,
   actions = false,
 ) {
-  let option = {};
+  return new Promise((resolve) => {
+    let option = {};
 
-  if (options) option = { ...options };
+    if (options) option = { ...options };
 
-  if (actions) {
-    option = {
-      timeout: 2000,
-      progress: true,
+    if (actions) {
+      option = {
+        timeout: 2000,
+        progress: true,
+        ...option,
+        actions: [
+          {
+            label: '취소',
+            color: 'red',
+            handler: () => {
+              resolve(false);
+              //return false;
+            },
+          },
+          {
+            label: '확인',
+            handler: () => {
+              if (callback) callback();
+              resolve(true);
+              //return true;
+            },
+          },
+        ],
+      };
+    }
+    Notify.create({
+      message,
+      html: true,
       ...option,
-      actions: [
-        {
-          label: '취소',
-          color: 'red',
-          handler: () => {
-            return;
-          },
-        },
-        {
-          label: '확인',
-          handler: () => {
-            if (callback) callback();
-          },
-        },
-      ],
-    };
-  }
-  Notify.create({
-    message,
-    html: true,
-    ...option,
-    timeout: option?.timeout || 500,
-    actions: option?.actions || '',
+      timeout: option?.timeout || 500,
+      actions: option?.actions || '',
+    });
   });
 }

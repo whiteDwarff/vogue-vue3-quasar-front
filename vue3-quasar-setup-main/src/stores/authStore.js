@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const router = useRouter();
 
+  const getUserSeq = computed(() => user.value.seq);
   /**
    * @vueuse
    * @doc :https://vueuse.org/
@@ -54,6 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
   };
   return {
     isAuthState,
+    getUserSeq,
     user,
     setUser,
     logout,
