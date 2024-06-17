@@ -19,7 +19,6 @@ export async function savePosts(form, userId) {
  * @description 게시글 조회
  */
 export async function getPostsDetail(params) {
-  console.log(params);
   try {
     return await api.post('/posts/selectOne', params);
   } catch (err) {

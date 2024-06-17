@@ -1,6 +1,13 @@
 <template>
   <q-card>
     <q-list bordered separator>
+      <q-item>
+        <UserProfile :user>
+          <template #caption>
+            <div></div>
+          </template>
+        </UserProfile>
+      </q-item>
       <q-item class="full-width">
         <q-btn
           @click="$router.push('/posts/add')"
@@ -66,7 +73,6 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    console.log(res.data.list);
     if (res.status == 200) systemStore.setSystem(res.data);
   },
 });
@@ -75,7 +81,7 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
 const setCurrentPage = (item) => {
   // 게시판
   if (item.postYn == 'Y')
-    return item.url + item.seq === route.fullPath ? 'active' : '';
+    return route.fullPath.includes(item.url + item.seq) ? 'active' : '';
   // 관리자화면
   else return item.url === route.fullPath ? 'active' : '';
 };

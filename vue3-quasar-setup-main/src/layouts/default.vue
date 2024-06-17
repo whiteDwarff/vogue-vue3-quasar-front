@@ -74,4 +74,7 @@ const pageContainerStyles = computed(() => ({
 .border {
   border: 1px solid rgba(0, 0, 0, 0.12);
 }
+.decoration-none {
+  text-decoration: none;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <q-card class="tiptap" flat bordered>
+  <q-card class="tiptap" flat :bordered="bordered">
     <editor-content class="editor__viewer" :editor="editor" />
   </q-card>
 </template>
@@ -17,6 +17,11 @@ const props = defineProps({
   content: {
     type: String,
     default: () => '',
+  },
+  // border 여부
+  bordered: {
+    type: Boolean,
+    default: () => true,
   },
 });
 
