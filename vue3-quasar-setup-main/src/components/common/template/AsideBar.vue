@@ -1,14 +1,27 @@
 <template>
   <q-card>
     <q-list bordered separator>
-      <q-item>
-        <UserProfile :user>
+      <q-item class="q-pa-none">
+        <!-- 로그인 상태 -->
+        <UserProfile v-if="isAuthState" :user size="40" div="가입일">
           <template #caption>
             <div></div>
           </template>
         </UserProfile>
+        <!-- 로그인 상태가 아닌 경우 -->
+        <div v-else class="full-width flex items-center justify-center q-py-md">
+          <q-btn
+            @click="$emit('update:dialog', 'SignUpForm')"
+            label="가입하기"
+            class="bg-grey-14 text-white text-bold"
+            style="width: 85%"
+            unelevated
+            :ripple="false"
+          />
+          <!-- 로그인 후 이용해주세요. -->
+        </div>
       </q-item>
-      <q-item class="full-width">
+      <q-item v-if="isAuthState" class="full-width q-py-md">
         <q-btn
           @click="$router.push('/posts/add')"
           class="full-width"
@@ -55,7 +68,6 @@
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
-import { watch } from 'vue';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();
@@ -65,6 +77,8 @@ const { category } = storeToRefs(systemStore);
 
 const router = useRouter();
 const route = useRoute();
+
+defineEmits(['update:dialog']);
 
 // default.vue에서 바인딩한 변수, 현제 페이지 표시용
 const modelValue = defineModel();

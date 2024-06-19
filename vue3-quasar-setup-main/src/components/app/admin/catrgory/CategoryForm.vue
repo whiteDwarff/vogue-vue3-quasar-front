@@ -2,7 +2,7 @@
   <q-card flat class="q-pa-md border">
     <form @submit.prevent="handleSubmit" class="q-gutter-y-sm">
       <div class="row q-col-gutter-y-sm items-center">
-        <label class="col-12 col-md-3 text-weight-bold q-mb-sm">상위타입</label>
+        <label class="col-12 col-md-3 text-subtitle2 q-mb-sm">상위타입</label>
         <q-select
           :options="category.tree"
           @update:model-value="changeSeqHanlder"
@@ -32,12 +32,12 @@
       </div>
 
       <div class="row q-col-gutter-y-sm items-center">
-        <label class="col-12 col-md-3 text-weight-bold">카테고리명</label>
+        <label class="col-12 col-md-3 text-subtitle2">카테고리명</label>
         <q-input v-model="form.name" outlined dense class="col-12 col-md-9" />
       </div>
 
       <div class="row q-col-gutter-y-sm q-py-md items-center">
-        <label class="col-12 col-md-3 text-weight-bold">URL</label>
+        <label class="col-12 col-md-3 text-subtitle2">URL</label>
         <q-input
           v-model="form.url"
           :readonly="form.postYn == 'Y'"
@@ -48,14 +48,14 @@
       </div>
 
       <div class="row q-col-gutter-y-sm items-center">
-        <label class="col-12 col-md-3 text-weight-bold">정렬</label>
+        <label class="col-12 col-md-3 text-subtitle2">정렬</label>
         <q-input v-model="form.sort" outlined dense class="col-12 col-md-9" />
       </div>
 
       <q-separator class="q-my-lg" />
 
       <div class="row items-center">
-        <label class="col-12 col-sm-3 text-weight-bold">게시판</label>
+        <label class="col-12 col-sm-3 text-subtitle2">게시판</label>
         <div class="col-12 col-sm-9">
           <q-radio
             v-model="form.postYn"
@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="row items-center">
-        <label for="" class="col-12 col-sm-3 text-weight-bold">공개여부</label>
+        <label for="" class="col-12 col-sm-3 text-subtitle2">공개여부</label>
         <div class="col-12 col-sm-9">
           <q-radio
             v-model="form.useYn"

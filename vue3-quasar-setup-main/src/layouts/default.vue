@@ -15,7 +15,7 @@
         rounded
         class="bg-black text-white q-pa-sm"
         :ripple="false"
-        @click="isDialog = true"
+        @click="changeDialog('SignInForm')"
       />
       <q-btn
         v-if="isAuthState"
@@ -32,14 +32,18 @@
     <q-page-container :style="pageContainerStyles">
       <q-page padding class="row q-col-gutter-x-md">
         <!-- aside  -->
-        <AsideBar v-model="currentPage" class="col-3 q-pl-none" />
+        <AsideBar
+          @update:dialog="changeDialog"
+          v-model="currentPage"
+          class="col-3 q-pl-none"
+        />
 
         <!-- router-view -->
         <router-view class="col-9" />
       </q-page>
     </q-page-container>
 
-    <AuthDialog v-model="isDialog" />
+    <AuthDialog v-model="isDialog" v-model:viewMode="viewMode" />
   </q-layout>
 </template>
 
@@ -47,7 +51,6 @@
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
 import { useSystemStore } from 'src/stores/systemStore';
-import { baseNotify } from 'src/utils/base-notify';
 
 // --------------------------------------------------------------------------
 const authStore = useAuthStore();
@@ -56,14 +59,20 @@ const { isAuthState, user } = storeToRefs(authStore);
 const route = useRoute();
 // 로그인, 회원가입 dialog state
 const isDialog = ref(false);
+const viewMode = ref('SignInForm');
 const currentPage = ref(route.fullPath);
 
 // --------------------------------------------------------------------------
 // route의 meta 속성에 width가 있다면 width, 없다면 1080px
 const pageContainerStyles = computed(() => ({
-  maxWidth: route.meta?.width || '80%',
+  maxWidth: route.meta?.width || '90%',
   margin: '0 auto',
 }));
+
+const changeDialog = ($event) => {
+  isDialog.value = true;
+  viewMode.value = $event;
+};
 </script>
 
 <style>

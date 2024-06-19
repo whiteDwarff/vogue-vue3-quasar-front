@@ -25,12 +25,12 @@
 
 <script setup>
 import { defineAsyncComponent } from 'vue';
-import FindByEmailForm from './FindByEmailForm.vue';
 
 const value = defineModel();
 
 // 반응형 상태 값
-const viewMode = ref('SignInForm');
+const viewMode = defineModel('viewMode');
+//const viewMode = ref('SignInForm');
 const changeViewMode = (mode) => (viewMode.value = mode);
 // Google ReCaptch token
 const token = ref('');

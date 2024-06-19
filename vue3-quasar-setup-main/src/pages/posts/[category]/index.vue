@@ -1,5 +1,13 @@
 <template>
-  <div style="width: 800px">posts/id/index</div>
+  <div>
+    <q-card></q-card>
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router';
+
+const route = useRoute();
+const router = useRouter();
+console.log(route.params);
+</script>
