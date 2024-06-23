@@ -4,10 +4,10 @@ export const useSystemStore = defineStore('system', () => {
   const permission = ref([]); // 사용자의 권한 저장
 
   const category = ref({
-    menu: [], // 기본 카테고리 ( aside )
-    tree: [], // 카테고리를 트리 형식으로 저장 ( root > NOTICE )
-    parent: [], // depth가 1인 카테고리만 저장  (key, label, seq)
-    children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
+    // menu: [], // 기본 카테고리 ( aside )
+    // tree: [], // 카테고리를 트리 형식으로 저장 ( root > NOTICE )
+    // parent: [], // depth가 1인 카테고리만 저장  (key, label, seq)
+    // children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
   });
 
   // State -----------------------------------------------------------
@@ -20,13 +20,10 @@ export const useSystemStore = defineStore('system', () => {
   // Setter -----------------------------------------------------------
 
   // permission, category를 store에 저장
-  const setSystem = ({ list }) => {
-    permission.value = list.permission;
-    category.value.menu = setMenuList(list.category);
-    category.value.menu = list.category;
-    category.value.tree = list.tree;
-    category.value.parent = list.parent;
-    category.value.children = list.children;
+  const setSystem = ({ result }) => {
+    permission.value = result.permission;
+    category.value = { ...result };
+    delete category.value.permission;
   };
   // permission 등록 및 수정 후 store에 다시 저장
   const setPermission = ({ permission }) => {

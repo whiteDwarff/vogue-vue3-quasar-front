@@ -87,7 +87,9 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: (res) => {
-    if (res.status == 200) systemStore.setSystem(res.data);
+    const { data } = res;
+    console.log(data);
+    if (res.status == 200) systemStore.setSystem(data);
   },
 });
 
@@ -102,6 +104,7 @@ const setCurrentPage = (item) => {
 
 // 페이지 이동
 const navigatePage = (obj) => {
+  console.log(obj);
   const url = obj.postYn == 'Y' ? obj.url + obj.seq : obj.url;
   router.push(url);
   modelValue.value = obj.seq;
@@ -109,6 +112,7 @@ const navigatePage = (obj) => {
 
 // 로그인 상태가 변경 시 (로그인, 로그아웃) 메뉴를 새로 요청
 watch(isAuthState, (newValue) => {
+  console.log(isAuthState.value);
   execute();
 });
 </script>

@@ -59,7 +59,7 @@ const { isLoading, execute } = useAsyncState(findByEmail, null, {
   throwError: true,
   onSuccess: (res) => {
     if (res?.status == 200) {
-      const email = [...res.data.list.email];
+      const email = [...res.data.response.email];
       const findAt = email.indexOf('@');
       const criteria = parseInt(findAt / 3);
 

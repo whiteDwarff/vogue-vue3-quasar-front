@@ -186,7 +186,7 @@ const { execute: executrSavePosts } = useAsyncState(savePosts, null, {
   onSuccess: ({ data }) => {
     if (data.status == 'OK') {
       baseNotify(data.message);
-      router.push(`/posts/${data.list.lowerSeq}/${data.list.seq}`);
+      router.push(`/posts/${data.response.lowerSeq}/${data.response.seq}`);
     }
   },
 });

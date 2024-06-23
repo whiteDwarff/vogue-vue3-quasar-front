@@ -5,8 +5,9 @@
  * @description
  */
 export async function getSystemAll({ idntfCd }) {
+  console.log('CD : ' + idntfCd);
   try {
-    return await api.get(`/system/getSystemAll?idntfCd=${idntfCd}`);
+    return await api.POST(`/system/getSystemAll?idntfCd=${idntfCd}`);
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);

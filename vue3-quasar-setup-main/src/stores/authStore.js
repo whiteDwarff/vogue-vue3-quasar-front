@@ -31,9 +31,9 @@ export const useAuthStore = defineStore('auth', () => {
     },
   );
 
-  const setUser = (data) => {
-    if (data) {
-      user.value = data;
+  const setUser = (data = null) => {
+    if (data?.result) {
+      user.value = { ...data.result };
     } else {
       user.value = {
         seq: null,

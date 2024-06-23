@@ -170,7 +170,7 @@ const { execute: executeSelectOneNotice } = useAsyncState(selectOne, null, {
   throwError: true,
   onSuccess: (res) => {
     if (res?.status == 200) {
-      form.value = { ...res.data.list.form };
+      form.value = { ...res.data.response.form };
     }
   },
 });

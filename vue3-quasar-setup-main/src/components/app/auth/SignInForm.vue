@@ -78,9 +78,9 @@ const { isLoading, execute } = useAsyncState(signIn, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
-    if (res?.status == 200) {
+    if (res.status == 200) {
       emit('closeDialog');
-      authStore.setUser(res.data.list.user);
+      authStore.setUser(res.data);
     }
   },
 });

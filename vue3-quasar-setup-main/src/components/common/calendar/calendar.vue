@@ -110,8 +110,8 @@ const { isLoading, execute: executeScheduleList } = useAsyncState(
     throwError: true,
     onSuccess: ({ status, data }) => {
       if (status == '200') {
-        console.log(data.list.events);
-        events.value = data.list.events;
+        console.log(data.response.events);
+        events.value = data.response.events;
       }
     },
   },
@@ -122,7 +122,7 @@ const { execute: executSchedule } = useAsyncState(getSchedule, null, {
   immediate: false,
   throwError: true,
   onSuccess: ({ data }) => {
-    form.value = data.list.event;
+    form.value = data.response.event;
   },
 });
 // ------------------------------------------------------------------------------
