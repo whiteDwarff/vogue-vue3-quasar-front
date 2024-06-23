@@ -86,10 +86,9 @@ const modelValue = defineModel();
 const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
-  onSuccess: (res) => {
-    const { data } = res;
+  onSuccess: ({ data }) => {
     console.log(data);
-    if (res.status == 200) systemStore.setSystem(data);
+    if (data.status.code == 'OK') systemStore.setSystem(data);
   },
 });
 

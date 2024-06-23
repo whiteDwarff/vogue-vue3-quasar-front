@@ -1,5 +1,6 @@
 <template>
   <q-list bordered separator>
+    {{ form }}
     <q-item v-for="item of category" :key="item.seq">
       <q-item-section>
         <q-item
@@ -44,8 +45,7 @@ const { execute } = useAsyncState(selectCategoryInfo, null, {
   immediate: false,
   throwError: true,
   onSuccess: (res) => {
-    console.log(res);
-    form.value = res.data.response.form;
+    form.value = res.data;
   },
 });
 

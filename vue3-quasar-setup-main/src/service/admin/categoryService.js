@@ -37,7 +37,7 @@ export async function saveCategory(form) {
  */
 export async function selectCategoryInfo(seq) {
   try {
-    return await api.get(`/admin/category/selectOne?seq=${seq}`);
+    return await api.post('/admin/category/selectOne', { seq });
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);

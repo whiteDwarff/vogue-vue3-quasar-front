@@ -77,11 +77,11 @@ const form = ref({
 const { isLoading, execute } = useAsyncState(signIn, null, {
   immediate: false,
   throwError: true,
-  onSuccess: (res) => {
-    if (res.status == 200) {
+  onSuccess: ({ data }) => {
+    if (data.status.code == 'OK') {
       emit('closeDialog');
-      authStore.setUser(res.data);
-    }
+      authStore.setUser(data);
+    } else getErrorMessage(data.status.code);
   },
 });
 
