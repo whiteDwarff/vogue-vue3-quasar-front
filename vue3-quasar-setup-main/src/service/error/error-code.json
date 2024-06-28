@@ -1,3 +1,4 @@
 {
-  "409": "등록된 정보가 존재합니다."
+  "UNAUTHORIZED": "비밀번호가 일치하지 않습니다.",
+  "FORBIDDEN": "Google Recaptcha 검증에 실패하였습니다."
 }

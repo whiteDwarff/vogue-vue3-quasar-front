@@ -17,7 +17,7 @@
 <script>
 const initializeForm = () => {
   return {
-    seq: 0,
+    seq: null,
     upperSeq: 1,
     name: '',
     url: '/posts/',

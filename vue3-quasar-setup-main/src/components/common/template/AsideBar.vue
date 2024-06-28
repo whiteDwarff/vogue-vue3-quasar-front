@@ -88,7 +88,7 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   throwError: true,
   onSuccess: ({ data }) => {
     console.log(data);
-    if (data.status.code == 'OK') systemStore.setSystem(data);
+    if (data.status == 'OK') systemStore.setSystem(data);
   },
 });
 
@@ -111,7 +111,6 @@ const navigatePage = (obj) => {
 
 // 로그인 상태가 변경 시 (로그인, 로그아웃) 메뉴를 새로 요청
 watch(isAuthState, (newValue) => {
-  console.log(isAuthState.value);
   execute();
 });
 </script>

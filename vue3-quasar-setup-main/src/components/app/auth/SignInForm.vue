@@ -78,10 +78,10 @@ const { isLoading, execute } = useAsyncState(signIn, null, {
   immediate: false,
   throwError: true,
   onSuccess: ({ data }) => {
-    if (data.status.code == 'OK') {
+    if (data.status == 'OK') {
       emit('closeDialog');
       authStore.setUser(data);
-    } else getErrorMessage(data.status.code);
+    } else getErrorMessage(data);
   },
 });
 

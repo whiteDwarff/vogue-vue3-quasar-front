@@ -1,5 +1,6 @@
 <template>
   <q-card flat class="q-pa-md border">
+    {{ form }}
     <form @submit.prevent="handleSubmit" class="q-gutter-y-sm">
       <div class="row q-col-gutter-y-sm items-center">
         <label class="col-12 col-md-3 text-subtitle2 q-mb-sm">상위타입</label>
@@ -179,11 +180,9 @@ const { isLoading: saveLoading, execute: save } = useAsyncState(
   {
     immediate: false,
     throwError: true,
-    onSuccess: (res) => {
-      if (res?.status == 201) {
-        console.log('------');
-        console.log(res);
-        baseNotify(res.data.message);
+    onSuccess: ({ data }) => {
+      if (data.status == 'OK') {
+        baseNotify('저장에 성공하였습니다.');
         emit('update:formValue', true);
       }
     },
@@ -226,7 +225,6 @@ const handleDelete = () => {
 };
 // --------------------------------------------------------------------------
 const changeSeqHanlder = (value) => {
-  console.log(value);
   const selectedOption = category.value.tree.find(
     (data) => data.value == value,
   );

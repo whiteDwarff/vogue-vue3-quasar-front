@@ -25,6 +25,7 @@ export const useSystemStore = defineStore('system', () => {
     category.value.tree = data.tree;
     category.value.parent = data.parent;
     category.value.children = data.children;
+    permission.value = data.permission;
   };
   // permission 등록 및 수정 후 store에 다시 저장
   const setPermission = ({ permission }) => {

@@ -1,6 +1,5 @@
 <template>
   <q-list bordered separator>
-    {{ form }}
     <q-item v-for="item of category" :key="item.seq">
       <q-item-section>
         <q-item

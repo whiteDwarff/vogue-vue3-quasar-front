@@ -1,8 +1,8 @@
 /**
  * @param none
- * @return { promise } 모든 카테고리 및 사용자 권한 가져오기
+ * @return { promise }
  * -------------------------------------------------------------------
- * @description
+ * @description 모든 카테고리 및 사용자 권한 가져오기
  */
 export async function getCategory() {
   try {
@@ -14,16 +14,13 @@ export async function getCategory() {
 }
 /**
  * @param form
- * @return { promise } 카테고리 등록
+ * @return { promise }
  * -------------------------------------------------------------------
- * @description form의 seq값의 존재 여부에 따라 등록 및 수정
+ * @description 카테고리 저장 및 수정
  */
 export async function saveCategory(form) {
   try {
-    // id가 없다면 insert
-    if (!form.seq) return await api.post('/admin/category/insert', form);
-    // id가 있다면 update
-    return await api.patch('/admin/category/update', form);
+    return await api.post('/admin/category/save', form);
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);
@@ -31,9 +28,9 @@ export async function saveCategory(form) {
 }
 /**
  * @param form
- * @return { promise } 클릭한 카테고리 상세 조회
+ * @return { promise }
  * -------------------------------------------------------------------
- * @description CategoryList에서 클릭한 카테고리의 상세 데이터를 받아온다.
+ * @description 클릭한 카테고리 상세 조회
  */
 export async function selectCategoryInfo(seq) {
   try {
@@ -45,13 +42,13 @@ export async function selectCategoryInfo(seq) {
 }
 /**
  * @param form
- * @return { promise } 카테고리 + 권한 삭제
+ * @return { promise }
  * -------------------------------------------------------------------
- * @description
+ * @description 카테고리, 권한, 템플릿 삭제
  */
-export async function deleteCategory({ seq }) {
+export async function deleteCategory(data) {
   try {
-    return await api.delete(`/admin/category/delete?seq=${seq}`);
+    return await api.post('/admin/category/delete', data);
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);
