@@ -30,11 +30,11 @@
       <tr>
         <th class="text-weight-regular text-caption">등록일</th>
         <td class="text-grey-14 text-italic text-caption">
-          {{ form.created_at }}
+          {{ form.createdAt }}
         </td>
         <th class="text-weight-regular text-caption">마지막 수정일</th>
         <td class="text-grey-14 text-italic text-caption">
-          {{ form?.updated_at }}
+          {{ form?.updatedAt }}
         </td>
       </tr>
     </table>

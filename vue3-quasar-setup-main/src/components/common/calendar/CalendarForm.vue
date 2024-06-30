@@ -139,11 +139,10 @@ const { isLoading, execute: executeSaveSchedule } = useAsyncState(
   {
     immediate: false,
     throwError: true,
-    onSuccess: (res) => {
-      console.log(res);
-      if (res?.status == 200) {
-        emit('success');
+    onSuccess: ({ data }) => {
+      if (data.status == 'OK') {
         baseNotify('일정이 등록되었습니다.');
+        emit('success', data.event);
       }
     },
   },

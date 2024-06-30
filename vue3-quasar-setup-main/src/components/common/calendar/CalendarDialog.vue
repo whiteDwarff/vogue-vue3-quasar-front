@@ -4,9 +4,10 @@
       <CalendarForm
         v-if="viewMode == 'form'"
         v-model="form"
-        @success="$emit('update:modelValue', true)"
+        @success="saveScehedule"
         :handleDelete
       />
+      <!-- @success="$emit('update:modelValue', true)" -->
       <CalendarDetail
         v-if="viewMode == 'detail'"
         v-model:form="form"
@@ -28,6 +29,12 @@ const emit = defineEmits(['']);
 const isDialog = defineModel('isDialog');
 const form = defineModel('form');
 const viewMode = defineModel('viewMode');
+
+const saveScehedule = (data) => {
+  form.value = data;
+  viewMode.value = 'detail';
+  emit('update:modelValue');
+};
 
 // ------------------------------------------------------------------------------
 // 삭제

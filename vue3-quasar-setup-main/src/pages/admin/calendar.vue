@@ -38,7 +38,7 @@
       v-model:isDialog="isDialog"
       v-model:form="form"
       v-model:viewMode="viewMode"
-      @update:model-value="closeDialog"
+      @update:model-value="executeScheduleList(day)"
     />
   </div>
 </template>
@@ -95,11 +95,6 @@ const day = ref({
 // calendar에 바인딩 될 이벤트 객체
 const events = ref([]);
 
-const closeDialog = (state = false) => {
-  form.value = intlzCalendarForm();
-  isDialog.value = false;
-  if (state) executeScheduleList(day.value);
-};
 // ------------------------------------------------------------------------------
 // 일정목록 가져오기
 const { isLoading, execute: executeScheduleList } = useAsyncState(
@@ -108,11 +103,8 @@ const { isLoading, execute: executeScheduleList } = useAsyncState(
   {
     immediate: false,
     throwError: true,
-    onSuccess: ({ status, data }) => {
-      if (status == '200') {
-        console.log(data.response.events);
-        events.value = data.response.events;
-      }
+    onSuccess: ({ data }) => {
+      if (data.status == 'OK') events.value = data.events;
     },
   },
 );
@@ -122,7 +114,7 @@ const { execute: executSchedule } = useAsyncState(getSchedule, null, {
   immediate: false,
   throwError: true,
   onSuccess: ({ data }) => {
-    form.value = data.response.event;
+    if (data.status == 'OK') form.value = data.event;
   },
 });
 // ------------------------------------------------------------------------------
@@ -208,25 +200,3 @@ const options = ref({
   text-decoration: none;
 }
 </style>
-
-<!--
-https://velog.io/@chloeun/FullCalendar 참고
-
-# install
-
-  -  npm i --save @fullcalendar/list
-  -  npm i --save @fullcalendar/core
-  -  npm i --save @fullcalendar/daygrid
-  -  npm i --save @fullcalendar/interaction
-  -  npm i --save @fullcalendar/vue3
-  -  npm i dayjs
-
-----------------------------------------------------------------
-
-
-
-###########################################
-chart.js
-TODO: https://velog.io/@ptq124/Vue-Chart.js-%EC%82%AC%EC%9A%A9%EB%B2%95
-
--->
