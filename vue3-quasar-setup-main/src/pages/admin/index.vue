@@ -4,10 +4,11 @@
       <q-card-section class="col-12 col-md-4">
         <IndexList :permission @getAuthDetail="getAuthDetail($event)" />
         {{ permission }}
+        <p>ddd</p>
       </q-card-section>
 
       <q-card-section class="col-12 col-md-8" bordered>
-        <IndexDetail v-model="selected" />
+        <IndexDetail v-model="selected" :permission @getList="execute" />
       </q-card-section>
     </q-card>
     {{ selected }}
@@ -28,6 +29,15 @@ const selected = ref({});
 const getAuthDetail = (e) => {
   selected.value = { ...systemStore.setAuthDetail(e) };
 };
+
+const { execute } = useAsyncState(() => getMenuList(user.value), null, {
+  immediate: false,
+  throwError: true,
+  onSuccess: ({ data }) => {
+    console.log(data);
+    if (data.status == 'OK') systemStore.setSystem(data);
+  },
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -36,6 +36,9 @@
           outlined
           dense
           class="col-12 col-sm-9"
+          :rules="[(val) => !!val || '권한그룹명을 입력해주세요.']"
+          hide-bottom-space
+          lazy-rules
         />
       </div>
       <div class="row items-center">
@@ -45,6 +48,9 @@
           outlined
           dense
           class="col-12 col-sm-9"
+          :rules="[(val) => !!val || '메모를 입력해주세요.']"
+          hide-bottom-space
+          lazy-rules
         />
       </div>
       <div class="row items-center">
@@ -54,6 +60,9 @@
           outlined
           dense
           class="col-12 col-sm-9"
+          :rules="[(val) => !!val || '정렬을 입력해주세요.']"
+          hide-bottom-space
+          lazy-rules
         />
       </div>
 
@@ -84,15 +93,66 @@
           class="q-mr-md"
           :ripple="false"
         />
-        <q-btn color="teal" label="저장" outline :ripple="false" />
+        <q-btn
+          color="teal"
+          label="저장"
+          outline
+          :ripple="false"
+          @click="beforeChk"
+        />
       </div>
     </q-form>
   </q-card>
 </template>
 
 <script setup>
+import axios from 'src/boot/axios';
+import { baseNotify } from 'src/utils/base-notify';
+
+const props = defineProps({
+  permission: {
+    type: Array,
+    default: () => [],
+  },
+});
 // optionModel
 const selected = defineModel();
+const emit = defineEmits(['getList']);
 
-const clearAll = () => (selected.value = {});
+const clearAll = () => (selected.value = { usyn: 'Y' });
+
+const beforeChk = () => {
+  let mode = '';
+  const isPkData = props.permission.find(
+    (item) => item.idntfCd === selected.value.idntfCd,
+  );
+  console.log(isPkData);
+
+  if (!isPkData) mode = 'S';
+  else mode = 'U';
+
+  console.log(mode);
+
+  // if (!selected.value.idntfCd)
+  //   return baseNotify('권한그룹코드를 입력해주세요.', { type: 'warning' });
+  // if (!selected.value.idntfNm)
+  //   return baseNotify('권한그룹명을 입력해주세요.', { type: 'warning' });
+  // if (!selected.value.sort)
+  //   return baseNotify('정렬을 입력해주세요.', { type: 'warning' });
+
+  try {
+    const result = api.post('/admin/index/savePermission', {
+      selected: selected.value,
+      mode: mode,
+    });
+    if (result.status == 'OK') {
+      baseNotify('저장에 성공하였습니다.');
+      clearAll();
+      emit('getList');
+    }
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
+  }
+};
 </script>
