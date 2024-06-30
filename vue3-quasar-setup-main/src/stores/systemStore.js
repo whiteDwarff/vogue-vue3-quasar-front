@@ -27,10 +27,7 @@ export const useSystemStore = defineStore('system', () => {
     category.value.children = data.children;
     permission.value = data.permission;
   };
-  // permission 등록 및 수정 후 store에 다시 저장
-  const setPermission = ({ permission }) => {
-    permission.value = permission;
-  };
+
   // category 등록 및 수정 후 store에 다시 저장
   const setCategory = ({ list }) => {
     category.value.menu = setMenuList(list.category);
@@ -71,9 +68,6 @@ export const useSystemStore = defineStore('system', () => {
     return arr;
   };
 
-  const setUpperSeq = () => {
-    return category.value.parent[0]?.value;
-  };
   const setLowerCategory = (seq) => {
     const arr = [];
 
@@ -90,25 +84,40 @@ export const useSystemStore = defineStore('system', () => {
     return category.value.children.filter((data) => data.upperSeq == seq);
   };
   // 파라미터로 들어온 seq와 children의 value가 같다면 말머리 반환
-  const selectByprepend = (seq) => {
-    let prepend = [];
-    let notice;
-    let template;
-    for (let item of category.value.children) {
-      if (item.value == seq) {
-        prepend = [...item.prepend];
-        template = item?.template || '';
-        notice = item?.notice || '';
-
-        if (prepend.length) prepend.unshift('선택 안 함');
+  const selectByprepend = ({ upperSeq, lowerSeq }) => {
+    for (let parent of category.value.menu) {
+      if (parent.seq == upperSeq) {
+        for (let child of parent.midCategory) {
+          if (child.seq == lowerSeq) {
+            return child;
+          }
+        }
       }
     }
 
-    return {
-      prepend,
-      template,
-      notice,
-    };
+    // let prepend = [];
+    // let notice;
+    // let template;
+    // for (let item of category.value.children) {
+    //   console.log('-----------------');
+    //   console.log(item);
+    //   console.log('-----------------');
+    //   if (item.value == seq) {
+    //     // prepend = [...item.prepend];
+    //     template = item?.template || '';
+    //     notice = item?.notice || '';
+    //     if (prepend.length) prepend.unshift('선택 안 함');
+    //   }
+    // }
+    // return {
+    //   prepend,
+    //   template,
+    //   notice,
+    // };
+  };
+  //게시판 카테고리만 반환
+  const getPostCategory = () => {
+    return category.value.parent.filter((data) => data.postYn == 'Y');
   };
 
   return {
@@ -117,14 +126,13 @@ export const useSystemStore = defineStore('system', () => {
     isPermission,
     isCategory,
     setSystem,
-    setPermission,
     setCategory,
     setMenuList,
     basePermission,
-    setUpperSeq,
     setLowerCategory,
     setAuthDetail,
     selectByUpperCategory,
     selectByprepend,
+    getPostCategory,
   };
 });

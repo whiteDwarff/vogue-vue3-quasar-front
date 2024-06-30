@@ -1,6 +1,5 @@
 <template>
   <q-card flat class="q-pa-md border">
-    {{ form }}
     <form @submit.prevent="handleSubmit" class="q-gutter-y-sm">
       <div class="row q-col-gutter-y-sm items-center">
         <label class="col-12 col-md-3 text-subtitle2 q-mb-sm">상위타입</label>
@@ -202,7 +201,7 @@ const { isLoading: deleteLoading, execute } = useAsyncState(
     throwError: true,
     onSuccess: (res) => {
       if (res?.status == 200) {
-        baseNotify(res.data.message);
+        baseNotify('삭제가 완료되었습니다.');
         emit('update:formValue');
       }
     },

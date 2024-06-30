@@ -74,9 +74,9 @@ const { execute } = useAsyncState(
   {
     immediate: true,
     throwError: true,
-    onSuccess: (res) => {
-      console.log(res);
-      posts.value = res.data.response;
+    onSuccess: ({ data }) => {
+      console.log(data);
+      posts.value = data;
     },
   },
 );

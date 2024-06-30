@@ -25,7 +25,7 @@ export async function getNoticeList(page, isCurrentFlag) {
 
 export async function selectOne({ seq }) {
   try {
-    return await api.get(`/admin/posts/selectOne/${seq}`);
+    return await api.post('/admin/posts/selectOne', { seq });
   } catch (err) {
     console.log(err);
     getErrorMessage(err.response);

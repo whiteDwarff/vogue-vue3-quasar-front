@@ -15,20 +15,19 @@ export function baseNotify(
   return new Promise((resolve) => {
     let option = {};
 
-    if (options) option = { ...options };
+    // if (options) option = { ...options };
 
     if (actions) {
       option = {
         timeout: 2000,
         progress: true,
-        ...option,
+        ...options,
         actions: [
           {
             label: '취소',
             color: 'red',
             handler: () => {
               resolve(false);
-              //return false;
             },
           },
           {
@@ -36,7 +35,6 @@ export function baseNotify(
             handler: () => {
               if (callback) callback();
               resolve(true);
-              //return true;
             },
           },
         ],

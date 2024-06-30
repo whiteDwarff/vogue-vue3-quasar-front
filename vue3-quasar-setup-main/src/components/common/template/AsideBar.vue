@@ -87,7 +87,6 @@ const { execute } = useAsyncState(() => getMenuList(user.value), null, {
   immediate: true,
   throwError: true,
   onSuccess: ({ data }) => {
-    console.log(data);
     if (data.status == 'OK') systemStore.setSystem(data);
   },
 });

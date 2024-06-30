@@ -18,7 +18,7 @@
         <div class="row q-col-gutter-x-md">
           <q-select
             v-model="form.upperSeq"
-            :options="category.parent"
+            :options="systemStore.getPostCategory()"
             :rules="[(val) => !!val || '대분류를 선택해주세요.']"
             lazy-rules
             hide-bottom-space
@@ -185,9 +185,11 @@ const updateLowerSeq = (value) => {
 const { execute: executeSaveNotice } = useAsyncState(saveNotice, null, {
   immediate: false,
   throwError: true,
-  onSuccess: (res) => {
-    baseNotify('템플릿이 등록되었습니다.');
-    closeDialog(true);
+  onSuccess: ({ data }) => {
+    if (data.status == 'OK') {
+      baseNotify('템플릿이 등록되었습니다.');
+      closeDialog(true);
+    } else baseNotify('템플릿이 등록에 실패하였습니다.', { type: 'warning' });
   },
 });
 // 저장

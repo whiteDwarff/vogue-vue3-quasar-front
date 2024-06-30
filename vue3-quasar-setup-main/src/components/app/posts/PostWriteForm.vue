@@ -9,10 +9,11 @@
 
       <q-card-section class="q-gutter-y-md">
         <div class="row q-col-gutter-sm">
+          <!-- @update:model-value="form.upperSeq = $event" -->
           <q-select
-            @update:model-value="form.upperSeq = $event"
+            @update:model-value="onChangeUpperSeqHandler"
             v-model="form.upperSeq"
-            :options="category.parent"
+            :options="systemStore.getPostCategory()"
             :rules="[(val) => !!val || '상위 카테고리를 선택해주세요.']"
             lazy-rules
             hide-bottom-space
@@ -25,7 +26,7 @@
             class="col-12 col-sm-4"
           />
           <q-select
-            @update:model-value="changeLoweSeq"
+            @update:model-value="onChangeLowerSeqHandler"
             v-model="form.lowerSeq"
             :options="options.category"
             :rules="[(val) => !!val || '하위 카테고리를 선택해주세요.']"
@@ -130,63 +131,36 @@ const options = ref({
   category: [],
   prepend: [],
   notice: '',
-  templateLength: 0, // 카테고리 변경 시 확인하기 위함
-  prev: null, // 이전 하위카테고리
 });
-
-// 상위카테고리 선택 시 해당 카테고리에 맞는 하위 카테고리의 0번째 값을 form.lowerSeq로 설정
-watch(
-  () => form.value.upperSeq,
-  () => {
-    const category = systemStore.selectByUpperCategory(form.value.upperSeq);
-    form.value.lowerSeq = category[0].value;
-    // 하위카테고리 선택 시 게시글관리 > 등록한 템플릿과 말머리 배열 가져오기
-    onChangeLowerSeqHandler(form.value.lowerSeq);
-    // <select> 태그는 key와 value 속성 필요, category 객체에는 해당 속성이 포함
-    options.value.category = category;
-  },
-);
-//
-const changeLoweSeq = (e) => {
-  // 이전에 선택한 하위 카테고리를 저장
-  options.value.prev = form.value.lowerSeq;
-  // 게시판의 템플릿과 작성한 게시글이 다른 경우 ( 판매자가 글을 작성했다~~ 유추 )
-  if (options.value.templateLength != form.value.content.length) {
-    baseNotify(
-      '카테고리 변경 시 작성중인 게시글이 초기화 됩니다. 변경하시겠습니까?',
-      null,
-      null,
-      true,
-      // 사용자가 '확인' 버튼 클릭, 새로운 하위 카테고리 셋팅
-      // 사용자가 '취소' 클릭, options에 저장된 하위 카테고리를 form.lowerSeq로 할당
-    ).then((result) => {
-      result
-        ? onChangeLowerSeqHandler(e)
-        : (form.value.lowerSeq = options.value.prev);
-    });
-    // 기존 템플릿이 변경되지 않은 경우
-  } else onChangeLowerSeqHandler(e);
+// 상위 카테고리가 변경되면 메서드 실행
+const onChangeUpperSeqHandler = (e) => {
+  // upperSeq 값 할당
+  form.value.upperSeq = e;
+  const category = systemStore.selectByUpperCategory(form.value.upperSeq);
+  // <select> 태그는 key와 value 속성 필요, category 객체에는 해당 속성이 포함
+  options.value.category = category;
+  onChangeLowerSeqHandler(category[0].value);
 };
-
+// 하위 카테고리가 변경되면 메서드 실행
 const onChangeLowerSeqHandler = (e) => {
-  const { notice, template, prepend } = systemStore.selectByprepend(e);
+  form.value.lowerSeq = e;
+  const { notice, template, prepend } = systemStore.selectByprepend(form.value);
+  options.value.notice = notice;
+  options.value.prepend = [...prepend];
+  if (options.value.prepend.length) options.value.prepend.unshift('선택 안 함');
 
   form.value.content = template;
-  form.value.prepend = prepend.length ? prepend[0] : '';
-
-  options.value.prepend = prepend;
-  options.value.notice = notice;
-  options.value.templateLength = template.length;
-  options.value.prev = form.value.lowerSeq;
+  form.value.prepend = options.value.prepend[0];
 };
 
-const { execute: executrSavePosts } = useAsyncState(savePosts, null, {
+const { execute: executeSavePosts } = useAsyncState(savePosts, null, {
   immediate: false,
   throwError: true,
   onSuccess: ({ data }) => {
+    console.log(data);
     if (data.status == 'OK') {
-      baseNotify(data.message);
-      router.push(`/posts/${data.response.lowerSeq}/${data.response.seq}`);
+      baseNotify('등록이 완료되었습니다.');
+      router.push(`/posts/${data.lowerSeq}/${data.seq}`);
     }
   },
 });
@@ -199,7 +173,7 @@ const handleSubmit = async () => {
   if (!form.value.content)
     return baseNotify('내용을 입력해주세요.', { type: 'warning' });
 
-  await executrSavePosts(0, form.value, authStore.getUserSeq);
+  await executeSavePosts(0, form.value, authStore.getUserSeq);
 };
 </script>
 

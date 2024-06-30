@@ -48,7 +48,7 @@
             v-if="page.option == 'upperSeq'"
             v-model="page.value"
             @update:model-value="executeSearch()"
-            :options="category.parent"
+            :options="systemStore.getPostCategory()"
             emit-value
             map-options
             dense
@@ -168,9 +168,10 @@ const openDetailView = ({ row }) => {
 const { execute: executeSelectOneNotice } = useAsyncState(selectOne, null, {
   immediate: false,
   throwError: true,
-  onSuccess: (res) => {
-    if (res?.status == 200) {
-      form.value = { ...res.data.response.form };
+  onSuccess: ({ data }) => {
+    console.log(data);
+    if (data.status == 'OK') {
+      form.value = { ...data.form };
     }
   },
 });
@@ -201,16 +202,14 @@ const { execute: executeSelectNoticeList } = useAsyncState(
   {
     immediate: true,
     throwError: true,
-    onSuccess: (res) => {
-      if (res?.status == 200) {
-        const { list } = res.data;
-        rows.value = list.notice;
+    onSuccess: ({ data }) => {
+      if (data.status == 'OK') {
+        rows.value = data.notice;
         page.value = {
-          ...list.page,
+          ...data.page,
           option: page.value.option,
           value: page.value.value,
         };
-
         isFlag.value = false;
       }
     },
