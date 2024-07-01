@@ -30,6 +30,6 @@
 </template>
 
 <script setup>
-const page = defineModel('page');
+const page = defineModel();
 const emit = defineEmits(['update:modelValue']);
 </script>

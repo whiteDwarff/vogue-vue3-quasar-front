@@ -24,6 +24,7 @@
       - hide-pagination       : <q-table>에서 기본으로 제공하는 pagination 숨김
 
       - rows-per-page-options : 페이지당 표시할 데이터 제한 x
+
 		-->
 
   <q-table
@@ -31,9 +32,9 @@
     :row-key="rowKey"
     :columns
     :rows
+    :selection
     :no-data-label="label"
     :rows-per-page-options="[0]"
-    selection="multiple"
     flat
     bordered
     hide-selected-banner
@@ -45,7 +46,7 @@
     -->
     <template v-slot:body="props">
       <q-tr :props="props" @click="event(props)" class="cursor-pointer">
-        <q-td>
+        <q-td v-if="checked">
           <q-checkbox
             v-model="props.selected"
             :val="props.row"
@@ -71,8 +72,15 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+
 const selected = defineModel('selected');
 const props = defineProps({
+  // checked 여부에 따라 computed를 통해 checkbox 생성
+  checked: {
+    type: Boolean,
+    default: false,
+  },
   // table header
   columns: {
     type: Array,
@@ -95,4 +103,8 @@ const props = defineProps({
   // primary key
   rowKey: [String, Number],
 });
+
+console.log(props.rows);
+
+const selection = computed(() => (props.checked ? 'multiple' : 'none'));
 </script>

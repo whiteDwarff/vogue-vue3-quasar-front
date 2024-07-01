@@ -26,3 +26,17 @@ export async function getPostsDetail(params) {
     getErrorMessage(err.response);
   }
 }
+/**
+ * @param  { params }
+ * @return { promise }
+ * -------------------------------------------------------------------
+ * @description 게시글 목록 조회
+ */
+export async function selectByPaging(params) {
+  try {
+    return await api.post('/posts/selectByPaging', params);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
+  }
+}

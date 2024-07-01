@@ -11,13 +11,14 @@
         />
       </div>
       <!-- table -->
-      <BaseCheckedTable
+      <BaseTable
         v-model:selected="selected"
         :columns="postsColumns"
         :rows
         rowKey="seq"
         label="등록된 템플릿이 없습니다."
         :event="openDetailView"
+        :checked="true"
       />
     </q-card-section>
 
@@ -25,7 +26,7 @@
     <q-card-section>
       <BasePagination
         v-if="rows.length"
-        v-model:page="page"
+        v-model="page"
         @update:model-value="executeSelectNoticeList(0, page.value)"
       />
     </q-card-section>
