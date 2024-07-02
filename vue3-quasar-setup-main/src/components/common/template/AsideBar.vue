@@ -102,7 +102,6 @@ const setCurrentPage = (item) => {
 
 // 페이지 이동
 const navigatePage = (obj) => {
-  console.log(obj);
   const url = obj.postYn == 'Y' ? obj.url + obj.seq : obj.url;
   router.push(url);
   modelValue.value = obj.seq;

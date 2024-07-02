@@ -29,6 +29,7 @@ const initializePageValue = (option) => {
 };
 </script>
 <script setup>
+import { watch } from 'vue';
 import { columns } from '../../posts/options.js';
 
 const route = useRoute();
@@ -37,6 +38,13 @@ const page = ref(initializePageValue(route.params));
 // table row
 const rows = ref([]);
 
+watch(
+  () => route.params.category,
+  () => {
+    executeSelectByPaging(route.params);
+  },
+);
+
 const { execute: executeSelectByPaging } = useAsyncState(
   () => selectByPaging(page.value),
   null,
@@ -44,6 +52,7 @@ const { execute: executeSelectByPaging } = useAsyncState(
     immediate: true,
     throwError: true,
     onSuccess: ({ data }) => {
+      // console.log(data);
       page.value = {
         ...data.page,
         ...route.params,

@@ -2,21 +2,18 @@ export const postsColumns = [
   {
     name: 'content',
     label: '구분',
-    field: 'content',
     align: 'left',
     style: 'width: 70%',
   },
   {
     name: 'category',
     label: '카테고리',
-    field: 'category',
     align: 'center',
     style: 'width: 15%',
   },
   {
     name: 'useYn',
     label: '사용여부',
-    field: 'useYn',
     align: 'center',
     style: 'width: 5%',
   },
