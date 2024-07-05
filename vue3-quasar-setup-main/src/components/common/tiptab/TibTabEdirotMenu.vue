@@ -118,7 +118,7 @@
       :color="editor.isActive('blockquote') ? 'blue' : null"
     />
     <q-btn flat dense icon="sym_o_image" @click="handleImageMenu" />
-    <q-btn flat dense icon="sym_o_photo_library" />
+    <q-btn flat dense icon="sym_o_photo_library" @click="file.click()" />
 
     <q-btn
       flat
@@ -176,10 +176,14 @@
       @click="editor.chain().focus().redo().run()"
       :disabled="!editor.can().chain().focus().redo().run()"
     />
+    <input ref="file" type="file" hidden multiple @change="readURL($event)" />
   </div>
+  <div></div>
 </template>
 
 <script setup>
+import { useAsyncState } from '@vueuse/core';
+
 const props = defineProps({
   editor: {
     type: Object,
@@ -226,6 +230,19 @@ const handleImageMenu = () => {
   if (url) {
     props.editor.chain().focus().setImage({ src: url }).run();
   }
+};
+// -----------------------------------------------------------
+// image upload
+const file = ref(null);
+
+const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
+  immediate: false,
+  throwError: true,
+  onSuccess: () => {},
+});
+
+const readURL = async ({ target }) => {
+  await executeReadImageURL(0, target.files);
 };
 </script>
 

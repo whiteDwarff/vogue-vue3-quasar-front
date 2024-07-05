@@ -1,6 +1,6 @@
 <template>
   <q-card flat bordered>
-    <q-form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleSubmit" enctype="multipart/form-data">
       <q-card-section>
         <span class="text-h6">{{ props.title }}</span>
       </q-card-section>
@@ -110,7 +110,7 @@
           />
         </div>
       </q-card-section>
-    </q-form>
+    </form>
   </q-card>
 </template>
 

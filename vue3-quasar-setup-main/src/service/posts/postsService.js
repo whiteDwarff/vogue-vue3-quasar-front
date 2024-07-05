@@ -40,3 +40,21 @@ export async function selectByPaging(params) {
     getErrorMessage(err.response);
   }
 }
+
+export async function readImageURL(images) {
+  try {
+    if (images.length) {
+      const form = new FormData();
+      for (let i = 0; i < images.length; i++) form.append('images', images[i]);
+
+      // TODO: url 파라미터로 받게 변경
+      return await api.post('/posts/images', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+}
