@@ -4,7 +4,7 @@
       <q-card-section>
         <span class="text-h6">{{ props.title }}</span>
       </q-card-section>
-
+      <img src="src/assets/" alt="" />
       <q-separator inset class="q-mb-sm bg-black" />
 
       <q-card-section class="q-gutter-y-md">
@@ -91,8 +91,14 @@
             </p>
           </div>
         </div>
+        <froala
+          id="edit"
+          :tag="'textarea'"
+          :config="config"
+          v-model:value="model"
+        ></froala>
 
-        <TiptabEditor v-model="form.content" />
+        <!-- <TiptabEditor v-model="form.content" /> -->
 
         <div class="outlined flex">
           <q-checkbox v-model="form.publicYn" label="공개 설정" />
@@ -175,6 +181,45 @@ const handleSubmit = async () => {
 
   await executeSavePosts(0, form.value, authStore.getUserSeq);
 };
+
+// -------------------------------------------------------------
+// floala test
+const config = ref({
+  // events: {
+  //   initialized: function () {
+  //     console.log('initialized');
+  //   },
+  // },
+  toolbarButtons: [
+    'fontSize',
+    'textColor',
+    'backgroundColor',
+    'highLighted',
+    'alignLeft',
+    'alignCenter',
+    'alignRight',
+    'formatOL',
+    'formatUL',
+    'italic',
+    'underline',
+    'strikeThrough',
+    'bold',
+    'fontFamily',
+    'inlineClass',
+    'insertHR',
+    'insertTable',
+    'insertLink',
+    'insertImage',
+    'emoticons',
+    'fullscreen',
+    'undo',
+    'redo',
+  ],
+  attribution: false, // froala logo hide
+  quickInsertEnabled: false, // quick insert button hide
+  placeholderText: '내용을 입력해주세요.',
+});
+const model = ref('');
 </script>
 
 <style scoped>

@@ -183,6 +183,7 @@
 
 <script setup>
 import { useAsyncState } from '@vueuse/core';
+import g from 'vue-froala-wysiwyg';
 
 const props = defineProps({
   editor: {
@@ -242,7 +243,16 @@ const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
 });
 
 const readURL = async ({ target }) => {
-  await executeReadImageURL(0, target.files);
+  const { data } = await executeReadImageURL(0, target.files);
+  for (let image of data) {
+    props.editor.chain().focus().setImage({ src: image.filePath }).run();
+  }
+
+  // for (let image of images) {
+  // }
+  // for (let img of images.data) {
+  //   props.editor.chain().focus().setImage({ src: img.filePath }).run();
+  // }
 };
 </script>
 
