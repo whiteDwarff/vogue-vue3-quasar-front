@@ -19,6 +19,7 @@ export function baseNotify(
 
     if (actions) {
       option = {
+        type: 'info',
         timeout: 2000,
         progress: true,
         ...options,
@@ -43,9 +44,15 @@ export function baseNotify(
     Notify.create({
       message,
       html: true,
-      ...option,
+      ...options,
       timeout: option?.timeout || 500,
       actions: option?.actions || '',
     });
   });
 }
+
+/**
+ *    type: 'warning',
+ *
+ *
+ */

@@ -74,7 +74,23 @@
         />
       </q-menu>
     </q-btn>
+    <!-- indent -->
+    <q-btn
+      flat
+      dense
+      icon="sym_o_format_quote"
+      @click="editor.chain().focus().toggleBlockquote().run()"
+      :color="editor.isActive('blockquote') ? 'blue' : null"
+    />
     <!-- text-decoration -->
+    <q-btn
+      flat
+      dense
+      icon="sym_o_format_underlined"
+      @click="editor.chain().focus().toggleUnderline().run()"
+      :disabled="!editor.can().chain().focus().toggleStrike().run()"
+      :color="editor.isActive('underline') ? 'blue' : null"
+    />
     <q-btn
       flat
       dense
@@ -110,16 +126,13 @@
       @click="editor.chain().focus().toggleCodeBlock().run()"
       :color="editor.isActive('codeBlock') ? 'blue' : null"
     />
-    <q-btn
-      flat
-      dense
-      icon="sym_o_format_quote"
-      @click="editor.chain().focus().toggleBlockquote().run()"
-      :color="editor.isActive('blockquote') ? 'blue' : null"
-    />
+    <q-separator vertical inset spaced />
+    <!-- 웹에 저장된 이미지의 URL 셋팅 -->
     <q-btn flat dense icon="sym_o_image" @click="handleImageMenu" />
+    <!-- 이미지를 서버에 저장 후 서버 URL 셋팅 -->
     <q-btn flat dense icon="sym_o_photo_library" @click="file.click()" />
-
+    <q-separator vertical inset spaced />
+    <!-- heading 1 -->
     <q-btn
       flat
       dense
@@ -127,6 +140,7 @@
       @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
       :color="editor.isActive('heading', { level: 1 }) ? 'blue' : null"
     />
+    <!-- heading 2 -->
     <q-btn
       flat
       dense
@@ -134,6 +148,7 @@
       @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
       :color="editor.isActive('heading', { level: 2 }) ? 'blue' : null"
     />
+    <!-- heading 3 -->
     <q-btn
       flat
       dense
@@ -141,6 +156,8 @@
       @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
       :color="editor.isActive('heading', { level: 3 }) ? 'blue' : null"
     />
+    <q-separator vertical inset spaced />
+    <!-- unOrder list button -->
     <q-btn
       flat
       dense
@@ -148,6 +165,7 @@
       @click="editor.chain().focus().toggleBulletList().run()"
       :color="editor.isActive('bulletList') ? 'blue' : null"
     />
+    <!-- order list button -->
     <q-btn
       flat
       dense
@@ -155,13 +173,15 @@
       @click="editor.chain().focus().toggleOrderedList().run()"
       :color="editor.isActive('orderedList') ? 'blue' : null"
     />
-
+    <!-- horizontal button -->
     <q-btn
       flat
       dense
       icon="sym_o_horizontal_rule"
       @click="editor.chain().focus().setHorizontalRule().run()"
     />
+    <q-separator vertical inset spaced />
+    <!-- undo button -->
     <q-btn
       flat
       dense
@@ -169,6 +189,7 @@
       @click="editor.chain().focus().undo().run()"
       :disabled="!editor.can().chain().focus().undo().run()"
     />
+    <!-- redo button -->
     <q-btn
       flat
       dense
@@ -176,7 +197,13 @@
       @click="editor.chain().focus().redo().run()"
       :disabled="!editor.can().chain().focus().redo().run()"
     />
-    <input ref="file" type="file" hidden multiple @change="readURL($event)" />
+    <input
+      ref="file"
+      type="file"
+      hidden
+      multiple
+      @change="handleImageSetting($event)"
+    />
   </div>
   <div></div>
 </template>
@@ -189,13 +216,17 @@ const props = defineProps({
   editor: {
     type: Object,
   },
+  event: {
+    type: Function,
+  },
 });
 const icon = ref({
   align: 'sym_o_format_align_left',
   color: '#000',
 });
 const color = ref(null);
-
+// -----------------------------------------------------------
+// insert Link
 const handleLinkMenu = () => {
   if (props.editor.isActive('link')) {
     props.editor.chain().focus().unsetLink().run();
@@ -212,7 +243,6 @@ const handleLinkMenu = () => {
   // empty
   if (url === '') {
     props.editor.chain().focus().extendMarkRange('link').unsetLink().run();
-
     return;
   }
 
@@ -224,10 +254,10 @@ const handleLinkMenu = () => {
     .setLink({ href: url })
     .run();
 };
-
+// -----------------------------------------------------------
+// image url insert
 const handleImageMenu = () => {
-  const url = window.prompt('URL');
-
+  const url = window.prompt('이미지 URL을 입력해주세요.');
   if (url) {
     props.editor.chain().focus().setImage({ src: url }).run();
   }
@@ -236,23 +266,20 @@ const handleImageMenu = () => {
 // image upload
 const file = ref(null);
 
-const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
-  immediate: false,
-  throwError: true,
-  onSuccess: () => {},
-});
-
-const readURL = async ({ target }) => {
-  const { data } = await executeReadImageURL(0, target.files);
-  for (let image of data) {
-    props.editor.chain().focus().setImage({ src: image.filePath }).run();
+const handleImageSetting = async (e) => {
+  try {
+    const images = await props.event(e);
+    for (let image of images)
+      props.editor
+        .chain()
+        .focus()
+        .setImage({
+          src: process.env.SERVER_PORT + image.filePath,
+        })
+        .run();
+  } catch {
+    baseNotify('이미지 저장 실패', { type: 'warning' });
   }
-
-  // for (let image of images) {
-  // }
-  // for (let img of images.data) {
-  //   props.editor.chain().focus().setImage({ src: img.filePath }).run();
-  // }
 };
 </script>
 

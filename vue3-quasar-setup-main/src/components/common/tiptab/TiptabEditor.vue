@@ -1,14 +1,13 @@
 <template>
   <q-card class="tiptap" flat bordered>
-    <TibTabEdirotMenu :editor="editor" />
-
+    <TibTabEdirotMenu :editor="editor" :event />
     <q-separator />
-
     <editor-content class="editor__content" :editor="editor" />
   </q-card>
 </template>
 
 <script setup>
+// @TODO: https://tiptap.dev/docs/editor/extensions/marks/highlight
 import { watch } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import { Color } from '@tiptap/extension-color';
@@ -19,6 +18,9 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import TextStyle from '@tiptap/extension-text-style';
 import TextAlign from '@tiptap/extension-text-align';
+import ImageResize from 'tiptap-extension-resize-image';
+import Underline from '@tiptap/extension-underline';
+import Highlight from '@tiptap/extension-highlight';
 
 import TibTabEdirotMenu from './TibTabEdirotMenu.vue';
 
@@ -27,6 +29,9 @@ const props = defineProps({
   modelValue: {
     type: String,
     default: '',
+  },
+  event: {
+    type: Function,
   },
 });
 const emit = defineEmits(['update:modelValue']);
@@ -42,11 +47,14 @@ const editor = useEditor({
       types: ['heading', 'paragraph'],
     }),
     Link,
-    Image.configure({
-      allowBase64: true,
-    }),
+    // Image.configure({
+    //   allowBase64: true,
+    // }), Duplicated 문제로 주석처리 (ImageResize와 중복)
+    ImageResize,
     TextStyle,
     Color,
+    Underline,
+    Highlight.configure({ multicolor: true }),
   ],
   // editor에 변화가 일어났을 때 ~
   // 사용자의 입력 등...
@@ -90,10 +98,12 @@ watch(
 <!-- 
 ❗️ component 호출 
   - import TiptabEditor from 'src/components/common/tiptab/TiptabEditor.vue';
+  - 서버에 이미지 저장 시 :event 프롭스 전달 필수
+      • event: { type: Function }
+      • event는 상위 컴포넌트에서 정의 후 prop 바인딩
 
 ❗️ component 사용
-  - tiptab이 <form> 요새에 있는 경우 @submit.prevent 필수
- 
+  - tiptab이 <form>에 있는 경우 @submit.prevent 필수
 -----------------------------------------------------------------
   <template>
     <q-card class="tiptap" flat bordered>
@@ -103,9 +113,8 @@ watch(
     </q-card>
   </template>
   <script setup>
-  import { ref } from 'vue';
+  import TiptabViewer from 'src/components/tiptab/TiptabEditor.vue';
   const content = ref('');
   </script>
-  <style lang="scss" src="src/css/tibtab.scss"></style>
 -----------------------------------------------------------------
- -->
+-->

@@ -1,10 +1,9 @@
 <template>
   <q-card flat bordered>
-    <form @submit.prevent="handleSubmit" enctype="multipart/form-data">
+    <q-form @submit.prevent="handleSubmit" enctype="multipart/form-data">
       <q-card-section>
         <span class="text-h6">{{ props.title }}</span>
       </q-card-section>
-      <img src="src/assets/" alt="" />
       <q-separator inset class="q-mb-sm bg-black" />
 
       <q-card-section class="q-gutter-y-md">
@@ -91,14 +90,8 @@
             </p>
           </div>
         </div>
-        <froala
-          id="edit"
-          :tag="'textarea'"
-          :config="config"
-          v-model:value="model"
-        ></froala>
 
-        <!-- <TiptabEditor v-model="form.content" /> -->
+        <TiptabEditor v-model="form.content" :event="readURL" />
 
         <div class="outlined flex">
           <q-checkbox v-model="form.publicYn" label="공개 설정" />
@@ -116,7 +109,7 @@
           />
         </div>
       </q-card-section>
-    </form>
+    </q-form>
   </q-card>
 </template>
 
@@ -124,6 +117,7 @@
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 import { useAuthStore } from 'src/stores/authStore';
+import { baseNotify } from 'src/utils/base-notify';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();
@@ -138,6 +132,7 @@ const options = ref({
   prepend: [],
   notice: '',
 });
+// -----------------------------------------------------------
 // 상위 카테고리가 변경되면 메서드 실행
 const onChangeUpperSeqHandler = (e) => {
   // upperSeq 값 할당
@@ -147,6 +142,7 @@ const onChangeUpperSeqHandler = (e) => {
   options.value.category = category;
   onChangeLowerSeqHandler(category[0].value);
 };
+// -----------------------------------------------------------
 // 하위 카테고리가 변경되면 메서드 실행
 const onChangeLowerSeqHandler = (e) => {
   form.value.lowerSeq = e;
@@ -158,7 +154,8 @@ const onChangeLowerSeqHandler = (e) => {
   form.value.content = template;
   form.value.prepend = options.value.prepend[0];
 };
-
+// -----------------------------------------------------------
+// submit
 const { execute: executeSavePosts } = useAsyncState(savePosts, null, {
   immediate: false,
   throwError: true,
@@ -170,7 +167,6 @@ const { execute: executeSavePosts } = useAsyncState(savePosts, null, {
     }
   },
 });
-
 const handleSubmit = async () => {
   const prepend = form.value.prepend;
   // 말머리가 '선택안함' 인 경우 빈 값으로 초기화
@@ -181,45 +177,22 @@ const handleSubmit = async () => {
 
   await executeSavePosts(0, form.value, authStore.getUserSeq);
 };
-
-// -------------------------------------------------------------
-// floala test
-const config = ref({
-  // events: {
-  //   initialized: function () {
-  //     console.log('initialized');
-  //   },
-  // },
-  toolbarButtons: [
-    'fontSize',
-    'textColor',
-    'backgroundColor',
-    'highLighted',
-    'alignLeft',
-    'alignCenter',
-    'alignRight',
-    'formatOL',
-    'formatUL',
-    'italic',
-    'underline',
-    'strikeThrough',
-    'bold',
-    'fontFamily',
-    'inlineClass',
-    'insertHR',
-    'insertTable',
-    'insertLink',
-    'insertImage',
-    'emoticons',
-    'fullscreen',
-    'undo',
-    'redo',
-  ],
-  attribution: false, // froala logo hide
-  quickInsertEnabled: false, // quick insert button hide
-  placeholderText: '내용을 입력해주세요.',
+// -----------------------------------------------------------
+// image upload
+const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
+  immediate: false,
+  throwError: true,
 });
-const model = ref('');
+
+const readURL = async ({ target }) => {
+  try {
+    const { data } = await executeReadImageURL(0, target.files);
+    return data;
+  } catch (err) {
+    baseNotify('이미지 저장 실패', { type: 'warning' });
+    return null;
+  }
+};
 </script>
 
 <style scoped>
