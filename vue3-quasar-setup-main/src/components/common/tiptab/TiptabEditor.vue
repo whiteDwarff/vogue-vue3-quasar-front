@@ -48,8 +48,11 @@ const editor = useEditor({
     }),
     Link,
     // Image.configure({
+    //   HTMLAttributes: {
+    //     class: 'editor__image',
+    //   },
     //   allowBase64: true,
-    // }), Duplicated 문제로 주석처리 (ImageResize와 중복)
+    // }), // Duplicated 문제로 주석처리 (ImageResize와 중복)
     ImageResize,
     TextStyle,
     Color,

@@ -6,20 +6,45 @@
       dense
       icon="sym_o_border_color"
       @click="color.click()"
-      :style="{ color: icon.color }"
+      :style="{ color: setIconColor(editor.getAttributes('textStyle')) }"
     >
+      <q-tooltip class="bg-grey"> 선택 후 ENTER </q-tooltip>
       <input
         ref="color"
         type="color"
-        @input="
-          editor.chain().focus().setColor($event.target.value).run(),
-            (icon.color = $event.target.value)
-        "
+        @input="editor.chain().focus().setColor($event.target.value).run()"
         :value="editor.getAttributes('textStyle').color || '#000000'"
         style="width: 0px"
         class="invisible"
       />
     </q-btn>
+    <!-- background-color -->
+    <q-btn
+      flat
+      dense
+      icon="sym_o_palette"
+      @click="highlight.click()"
+      :style="{
+        color: setIconColor(editor.getAttributes('highlight')),
+      }"
+    >
+      <q-tooltip class="bg-grey"> 선택 후 ENTER </q-tooltip>
+      <input
+        ref="highlight"
+        type="color"
+        @input="
+          editor
+            .chain()
+            .focus()
+            .toggleHighlight({ color: $event.target.value })
+            .run()
+        "
+        :value="editor.getAttributes('highLight').color || '#ffffff'"
+        style="width: 0px"
+        class="invisible"
+      />
+    </q-btn>
+    <q-separator vertical inset spaced />
     <!-- bold -->
     <q-btn
       flat
@@ -113,24 +138,19 @@
     <q-btn
       flat
       dense
-      icon="code"
-      @click="editor.chain().focus().toggleCode().run()"
-      :disabled="!editor.can().chain().focus().toggleCode().run()"
-      :color="editor.isActive('code') ? 'blue' : null"
-    />
-    <!-- code -->
-    <q-btn
-      flat
-      dense
       icon="sym_o_code_blocks"
       @click="editor.chain().focus().toggleCodeBlock().run()"
       :color="editor.isActive('codeBlock') ? 'blue' : null"
     />
     <q-separator vertical inset spaced />
     <!-- 웹에 저장된 이미지의 URL 셋팅 -->
-    <q-btn flat dense icon="sym_o_image" @click="handleImageMenu" />
+    <q-btn flat dense icon="sym_o_image" @click="handleImageMenu">
+      <q-tooltip class="bg-grey"> 이미지 URL 입력 </q-tooltip>
+    </q-btn>
     <!-- 이미지를 서버에 저장 후 서버 URL 셋팅 -->
-    <q-btn flat dense icon="sym_o_photo_library" @click="file.click()" />
+    <q-btn flat dense icon="sym_o_photo_library" @click="file.click()">
+      <q-tooltip class="bg-grey"> 이미지 업로드 </q-tooltip>
+    </q-btn>
     <q-separator vertical inset spaced />
     <!-- heading 1 -->
     <q-btn
@@ -210,7 +230,6 @@
 
 <script setup>
 import { useAsyncState } from '@vueuse/core';
-import g from 'vue-froala-wysiwyg';
 
 const props = defineProps({
   editor: {
@@ -222,9 +241,13 @@ const props = defineProps({
 });
 const icon = ref({
   align: 'sym_o_format_align_left',
-  color: '#000',
 });
 const color = ref(null);
+const highlight = ref(null);
+
+const setIconColor = ({ color }) => {
+  return color != '#ffffff' ? color : '#ccc';
+};
 // -----------------------------------------------------------
 // insert Link
 const handleLinkMenu = () => {
@@ -269,14 +292,20 @@ const file = ref(null);
 const handleImageSetting = async (e) => {
   try {
     const images = await props.event(e);
-    for (let image of images)
-      props.editor
-        .chain()
-        .focus()
-        .setImage({
-          src: process.env.SERVER_PORT + image.filePath,
-        })
-        .run();
+    for (let image of images) {
+      console.log(process.env.SERVER_PORT + image.filePath);
+      props.editor.commands.setImage({
+        src: process.env.SERVER_PORT + image.filePath,
+        alt: 'image',
+      });
+      // props.editor
+      //   .chain()
+      //   .focus()
+      //   .setImage({
+      //     src: process.env.SERVER_PORT + image.filePath,
+      //   })
+      //   .run();
+    }
   } catch {
     baseNotify('이미지 저장 실패', { type: 'warning' });
   }
