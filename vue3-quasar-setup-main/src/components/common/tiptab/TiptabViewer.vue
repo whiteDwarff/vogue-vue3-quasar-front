@@ -61,29 +61,6 @@ watch(
 </script>
 
 <style lang="scss" src="src/css/tiptab.scss"></style>
-<style lang="scss">
-.tiptap p.is-editor-empty:first-child::before {
-  color: #adb5bd;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
-}
-.editor__viewer {
-  flex: 1;
-  display: flex;
-  overflow-y: auto;
-  padding: 16px 20px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  height: auto;
-}
-.editor__viewer img {
-  display: block;
-  cursor: inherit !important;
-}
-</style>
-
 <!-- 
 ❗️ component 호출 
     - import TiptabViewer from 'src/components/common/tiptab/TiptabViewer.vue';

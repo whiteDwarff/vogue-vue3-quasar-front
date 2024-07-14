@@ -290,21 +290,17 @@ const handleImageMenu = () => {
 const file = ref(null);
 
 const handleImageSetting = async (e) => {
+  console.log(props.editor.commands);
   try {
     const images = await props.event(e);
     for (let image of images) {
-      console.log(process.env.SERVER_PORT + image.filePath);
       props.editor.commands.setImage({
         src: process.env.SERVER_PORT + image.filePath,
         alt: 'image',
+        class: 'editor__image',
       });
-      // props.editor
-      //   .chain()
-      //   .focus()
-      //   .setImage({
-      //     src: process.env.SERVER_PORT + image.filePath,
-      //   })
-      //   .run();
+      props.editor.commands.enter();
+      props.editor.commands.enter();
     }
   } catch {
     baseNotify('이미지 저장 실패', { type: 'warning' });

@@ -12,7 +12,12 @@
       </q-card-section>
       <!-- pagenation -->
       <q-card-section>
-        <BasePagination v-if="rows.length" v-model="page" />
+        <BasePagination
+          v-if="rows.length"
+          v-model:page="page"
+          @update:model-value="executeSelectByPaging(0, page)"
+        />
+        <!-- @update:model-value="executeSelectByPaging(0, page)" -->
       </q-card-section>
     </q-card>
   </div>
@@ -22,14 +27,13 @@
 const initializePageValue = (option) => {
   return {
     min: 1,
-    current: 1,
     max: 1,
+    current: 1,
     ...option,
   };
 };
 </script>
 <script setup>
-import { watch } from 'vue';
 import { columns } from '../../posts/options.js';
 
 const route = useRoute();
@@ -40,8 +44,9 @@ const rows = ref([]);
 
 watch(
   () => route.params.category,
-  () => {
-    executeSelectByPaging(route.params);
+  (newValue, oldValue) => {
+    page.value = { ...initializePageValue({ category: newValue }) };
+    executeSelectByPaging(page.value);
   },
 );
 
@@ -52,7 +57,6 @@ const { execute: executeSelectByPaging } = useAsyncState(
     immediate: true,
     throwError: true,
     onSuccess: ({ data }) => {
-      // console.log(data);
       page.value = {
         ...data.page,
         ...route.params,

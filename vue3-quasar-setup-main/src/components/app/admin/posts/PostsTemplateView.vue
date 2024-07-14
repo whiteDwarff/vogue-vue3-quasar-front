@@ -26,7 +26,7 @@
     <q-card-section>
       <BasePagination
         v-if="rows.length"
-        v-model="page"
+        v-model:page="page"
         @update:model-value="executeSelectNoticeList(0, page.value)"
       />
     </q-card-section>

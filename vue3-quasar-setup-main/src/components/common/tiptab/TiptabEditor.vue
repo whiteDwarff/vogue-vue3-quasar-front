@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-// @TODO: https://tiptap.dev/docs/editor/extensions/marks/highlight
 import { watch } from 'vue';
 import { useEditor, EditorContent } from '@tiptap/vue-3';
 import { Color } from '@tiptap/extension-color';
@@ -47,13 +46,13 @@ const editor = useEditor({
       types: ['heading', 'paragraph'],
     }),
     Link,
+    ImageResize,
     // Image.configure({
     //   HTMLAttributes: {
     //     class: 'editor__image',
     //   },
     //   allowBase64: true,
     // }), // Duplicated 문제로 주석처리 (ImageResize와 중복)
-    ImageResize,
     TextStyle,
     Color,
     Underline,
@@ -79,24 +78,6 @@ watch(
 </script>
 
 <style lang="scss" src="src/css/tiptab.scss"></style>
-<style lang="scss">
-.tiptap p.is-editor-empty:first-child::before {
-  color: #adb5bd;
-  content: attr(data-placeholder);
-  float: left;
-  height: 0;
-  pointer-events: none;
-}
-.editor__content {
-  flex: 1;
-  display: flex;
-  overflow-y: auto;
-  padding: 16px 20px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  height: 400px;
-}
-</style>
 
 <!-- 
 ❗️ component 호출 
