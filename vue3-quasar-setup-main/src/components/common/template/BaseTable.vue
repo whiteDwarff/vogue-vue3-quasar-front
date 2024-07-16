@@ -93,6 +93,9 @@ const selection = computed(() => (props.checked ? 'multiple' : 'none'));
 #base-table th {
   font-weight: bold !important;
 }
+#base-table th.text-left {
+  text-align: center;
+}
 </style>
 <!--
 			Quasar <q-table>

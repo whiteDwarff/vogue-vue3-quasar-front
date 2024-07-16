@@ -67,19 +67,25 @@
 <script setup>
 import TiptabViewer from 'src/components/common/tiptab/TiptabViewer.vue';
 
+const router = useRouter();
+const route = useRoute();
+
 const posts = ref({});
-const { execute } = useAsyncState(
-  () => getPostsDetail(useRoute().params),
-  null,
-  {
-    immediate: true,
-    throwError: true,
-    onSuccess: ({ data }) => {
-      console.log(data);
-      posts.value = data;
-    },
+
+const { execute } = useAsyncState(() => getPostsDetail(route.params), null, {
+  immediate: true,
+  throwError: true,
+  onSuccess: ({ data }) => {
+    if (data.status == 'OK') posts.value = data;
+    // route.param.posts에 일치하는 게시글이 없다면 해당 카테고리로 리다이렉트
+    else {
+      router.push(`/posts/${route.params.category}`);
+      baseNotify('존재하지 않는 게시글입니다.', {
+        type: 'warning',
+      });
+    }
   },
-);
+});
 </script>
 
 <style scoped>
