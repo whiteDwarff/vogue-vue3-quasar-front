@@ -16,10 +16,44 @@
         <BasePagination
           v-if="rows.length"
           v-model:page="page"
-          @update:model-value="executeSelectByPaging(0, page)"
+          @update:model-value="getTableRow"
         />
         <!-- @update:model-value="executeSelectByPaging(0, page)" -->
       </q-card-section>
+      <q-card-section>
+        <div class="row q-col-gutter-x-md q-col-gutter-y-sm">
+          <q-select
+            v-model="option.label"
+            @update:model-value="getTableRow"
+            :options="searchOption"
+            emit-value
+            map-options
+            dense
+            outlined
+            class="col-12 col-md-3"
+          />
+          <q-input
+            v-model="option.value"
+            @enter="getTableRow"
+            class="col-8 col-md-7"
+            dense
+            outlined
+          />
+          <div class="col-4 col-md-2">
+            <q-btn
+              @click="getTableRow"
+              label="검색"
+              dense
+              outline
+              unelevated
+              color="teal"
+              :ripple="false"
+              style="width: 100%; height: 100%"
+            />
+          </div>
+        </div>
+      </q-card-section>
+      {{ option }}
     </q-card>
   </div>
 </template>
@@ -40,10 +74,17 @@ import { columns } from '../../posts/options.js';
 import { selectOne } from 'src/service/admin/postsService.js';
 import { useRouter } from 'vue-router';
 
+import { searchOption } from '../options.js';
 const route = useRoute();
 const router = useRouter();
 
+// paging options
 const page = ref(initializePageValue(route.params));
+// search options
+const option = ref({
+  label: searchOption[0].value,
+  value: '',
+});
 // table row
 const rows = ref([]);
 
@@ -53,11 +94,26 @@ watch(
   () => route.params.category,
   (newValue, oldValue) => {
     page.value = { ...initializePageValue({ category: newValue }) };
-    executeSelectByPaging(page.value);
+    option.value.label = '';
+    option.value.value = '';
+    getTableRow();
   },
 );
+
+// 검색조건과 페이지네이션 적용
+const getTableRow = () => {
+  executeSelectByPaging(0, {
+    ...page.value,
+    ...option.value,
+  });
+};
+
 const { execute: executeSelectByPaging } = useAsyncState(
-  () => selectByPaging(page.value),
+  () =>
+    selectByPaging({
+      ...page.value,
+      ...option.value,
+    }),
   null,
   {
     immediate: true,

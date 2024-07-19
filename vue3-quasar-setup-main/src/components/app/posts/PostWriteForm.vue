@@ -93,7 +93,7 @@
 
         <TiptabEditor v-model="form.content" :event="readURL" />
 
-        <div class="outlined flex">
+        <div class="outlined flex q-pa-sm">
           <q-checkbox v-model="form.publicYn" label="공개 설정" />
           <q-checkbox v-model="form.commentYn" label="댓글 허용" />
 
@@ -117,7 +117,6 @@
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 import { useAuthStore } from 'src/stores/authStore';
-import { baseNotify } from 'src/utils/base-notify';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();

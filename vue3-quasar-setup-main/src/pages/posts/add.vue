@@ -5,10 +5,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-import PostWriteForm from 'src/components/app/posts/PostWriteForm.vue';
-
 const form = ref({
   seq: '',
   upperSeq: '',

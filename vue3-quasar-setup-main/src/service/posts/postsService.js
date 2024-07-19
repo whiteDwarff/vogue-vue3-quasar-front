@@ -33,6 +33,7 @@ export async function getPostsDetail(params) {
  * @description 게시글 목록 조회
  */
 export async function selectByPaging(params) {
+  console.log(params);
   try {
     return await api.post('/posts/selectByPaging', params);
   } catch (err) {
