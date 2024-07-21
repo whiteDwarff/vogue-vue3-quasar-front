@@ -18,7 +18,6 @@
           v-model:page="page"
           @update:model-value="getTableRow"
         />
-        <!-- @update:model-value="executeSelectByPaging(0, page)" -->
       </q-card-section>
       <q-card-section>
         <div class="row q-col-gutter-x-md q-col-gutter-y-sm">
@@ -53,33 +52,35 @@
           </div>
         </div>
       </q-card-section>
-      {{ option }}
     </q-card>
   </div>
 </template>
 
 <script>
-const initializePageValue = (option) => {
+const initializePageValue = (category) => {
   return {
-    min: 1,
-    max: 1,
     current: 1,
-    ...option,
+    maxPages: 10,
+    category,
   };
 };
 </script>
 <script setup>
-import { useAsyncState } from '@vueuse/core';
+import { storeToRefs } from 'pinia';
+import { useSystemStore } from 'src/stores/systemStore';
+
 import { columns } from '../../posts/options.js';
 import { selectOne } from 'src/service/admin/postsService.js';
-import { useRouter } from 'vue-router';
-
 import { searchOption } from '../options.js';
+
+const systemStore = useSystemStore();
+systemStore.updateLoadingState();
+
 const route = useRoute();
 const router = useRouter();
 
 // paging options
-const page = ref(initializePageValue(route.params));
+const page = ref(initializePageValue(route.params.category));
 // search options
 const option = ref({
   label: searchOption[0].value,
@@ -89,20 +90,22 @@ const option = ref({
 const rows = ref([]);
 
 // ------------------------------------------------------------------
-// 게시판이 바뀔 때 해당 게시판에 맞는 데터 요청
+// 게시판이 바뀔 때 해당 게시판에 맞는 데이터 요청
 watch(
   () => route.params.category,
   (newValue, oldValue) => {
-    page.value = { ...initializePageValue({ category: newValue }) };
+    page.value = { ...initializePageValue(newValue) };
     option.value.label = '';
     option.value.value = '';
-    getTableRow();
+    systemStore.updateLoadingState();
+    executeSelectByPaging(0, page.value);
   },
 );
 
 // 검색조건과 페이지네이션 적용
-const getTableRow = () => {
-  executeSelectByPaging(0, {
+const getTableRow = async () => {
+  systemStore.updateLoadingState();
+  await executeSelectByPaging(0, {
     ...page.value,
     ...option.value,
   });
@@ -119,27 +122,20 @@ const { execute: executeSelectByPaging } = useAsyncState(
     immediate: true,
     throwError: true,
     onSuccess: ({ data }) => {
-      page.value = {
-        ...data.page,
-        ...route.params,
-      };
-      rows.value = data.list;
+      if (data.status == 'OK') {
+        systemStore.updateLoadingState();
+        page.value = {
+          ...data.page,
+          ...route.params,
+        };
+        rows.value = data.list;
+      }
     },
   },
 );
+
 // ------------------------------------------------------------------
 const clickTableRow = async ({ row }) => {
   router.push(`/posts/${row.lowerseq}/${row.seq}`);
 };
-/*
-https://velog.io/@yiwonjin/vue-router3-state%EA%B0%9D%EC%B2%B4%EB%A1%9C-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%82%AC%EC%9D%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EB%8B%AC
-
-const { execute: executeSelectOne } = useAsyncState(getPostsDetail, null, {
-  immediate: false,
-  throwError: true,
-  onSuccess: (data) => {
-    console.log(data);
-  },
-});
-*/
 </script>

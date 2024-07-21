@@ -33,7 +33,7 @@ export async function getPostsDetail(params) {
  * @description 게시글 목록 조회
  */
 export async function selectByPaging(params) {
-  console.log(params);
+  //if (!params.current) params.current = 1;
   try {
     return await api.post('/posts/selectByPaging', params);
   } catch (err) {
@@ -41,13 +41,17 @@ export async function selectByPaging(params) {
     getErrorMessage(err.response);
   }
 }
-
+/**
+ * @param  { images }
+ * @return { promise }
+ * -------------------------------------------------------------------
+ * @description 게시글 이미지 저장
+ */
 export async function readImageURL(images) {
   try {
     if (images.length) {
       const form = new FormData();
       for (let i = 0; i < images.length; i++) form.append('images', images[i]);
-
       // TODO: url 파라미터로 받게 변경
       return await api.post('/posts/images', form, {
         headers: {
@@ -57,5 +61,19 @@ export async function readImageURL(images) {
     }
   } catch (err) {
     console.log(err.message);
+  }
+}
+/**
+ * @param  { params }
+ * @return { promise }
+ * -------------------------------------------------------------------
+ * @description 게시글 삭제
+ */
+export async function deleteByPost(param) {
+  try {
+    return await api.post('/posts/delete', params);
+  } catch (err) {
+    console.log(err);
+    getErrorMessage(err.response);
   }
 }

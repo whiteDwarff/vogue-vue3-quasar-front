@@ -1,7 +1,11 @@
 <template>
   <!-- 레이아웃 단위의 root element : q-layot -->
   <q-layout view="lHh Lpr lff" class="bg-grey-2">
-    <q-header bordered class="bg-white text-grey-9 flex q-py-md">
+    <q-header
+      bordered
+      class="bg-white text-grey-9 flex q-py-md"
+      style="z-index: 1"
+    >
       <q-toolbar-title>
         <router-link to="/" @click="currentPage = 0"> default </router-link>
       </q-toolbar-title>
@@ -43,7 +47,10 @@
       </q-page>
     </q-page-container>
 
+    <!-- login, join -->
     <AuthDialog v-model="isDialog" v-model:viewMode="viewMode" />
+
+    <LoadingSpinner v-model="loadingState" />
   </q-layout>
 </template>
 
@@ -54,7 +61,10 @@ import { useSystemStore } from 'src/stores/systemStore';
 
 // --------------------------------------------------------------------------
 const authStore = useAuthStore();
+const systemStore = useSystemStore();
+
 const { isAuthState, user } = storeToRefs(authStore);
+const { loadingState } = storeToRefs(systemStore);
 // --------------------------------------------------------------------------
 const route = useRoute();
 // 로그인, 회원가입 dialog state

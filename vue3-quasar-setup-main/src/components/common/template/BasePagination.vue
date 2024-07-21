@@ -10,8 +10,8 @@
 			- 데이터가 있을때만 랜더링 시키려면 상위 컴포넌트에서 v-if="rows.length" 추가
 		-->
     <q-pagination
-      :min="page.min"
-      :max="page.max"
+      :min="page?.min || 1"
+      :max="page?.max || 1"
       :max-pages="page.maxPages"
       v-model="page.current"
       :boundary-numbers="false"

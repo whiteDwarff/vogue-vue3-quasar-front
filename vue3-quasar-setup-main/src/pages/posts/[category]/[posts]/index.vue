@@ -1,11 +1,11 @@
 <template>
   <div>
     <q-card>
-      <!-- <div>/posts/[id]/[id] , 92/6</div> -->
       <q-card-section>
         <router-link
           :to="`/posts/${posts.categorySeq}`"
           class="q-ml-sm q-mb-md text-teal flex items-center decoration-none"
+          style="margin: 0"
           >{{ posts.categoryNm }}
           <q-icon name="sym_o_chevron_right" size="18px"
         /></router-link>
@@ -35,6 +35,34 @@
             <q-btn flat dense :ripple="false" class="text-weight-regular"
               >URL 복사</q-btn
             >
+            <!-- 현재 게시글의 작성자와 로그인 사용자가 동일하다면 렌더링 -->
+            <template v-if="posts.authorSeq == user.seq">
+              <q-btn
+                rounded
+                flat
+                dense
+                icon="sym_o_more_vert"
+                size="sm"
+                :ripple="false"
+                text-color="grey-14"
+              >
+                <q-menu>
+                  <q-list dense>
+                    <q-item clickable>
+                      <q-item-section>
+                        <q-item-label>수정</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item clickable>
+                      <q-item-section>
+                        <q-item-label class="text-red">삭제</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </template>
           </div>
         </div>
       </q-card-section>
@@ -65,7 +93,11 @@
   </div>
 </template>
 <script setup>
-import TiptabViewer from 'src/components/common/tiptab/TiptabViewer.vue';
+import { storeToRefs } from 'pinia';
+import { useAuthStore } from 'src/stores/authStore';
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
 
 const router = useRouter();
 const route = useRoute();

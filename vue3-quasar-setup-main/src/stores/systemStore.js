@@ -10,6 +10,8 @@ export const useSystemStore = defineStore('system', () => {
     children: [], // depth가 2인 카테고리만 저장 (key, label, seq)
   });
 
+  const loadingState = ref(false); // 로딩상태
+
   // State -----------------------------------------------------------
 
   // permission이 store에 존재하는지 true : false
@@ -94,31 +96,13 @@ export const useSystemStore = defineStore('system', () => {
         }
       }
     }
-
-    // let prepend = [];
-    // let notice;
-    // let template;
-    // for (let item of category.value.children) {
-    //   console.log('-----------------');
-    //   console.log(item);
-    //   console.log('-----------------');
-    //   if (item.value == seq) {
-    //     // prepend = [...item.prepend];
-    //     template = item?.template || '';
-    //     notice = item?.notice || '';
-    //     if (prepend.length) prepend.unshift('선택 안 함');
-    //   }
-    // }
-    // return {
-    //   prepend,
-    //   template,
-    //   notice,
-    // };
   };
   //게시판 카테고리만 반환
   const getPostCategory = () => {
     return category.value.parent.filter((data) => data.postYn == 'Y');
   };
+
+  const updateLoadingState = () => (loadingState.value = !loadingState.value);
 
   return {
     permission,
@@ -134,5 +118,7 @@ export const useSystemStore = defineStore('system', () => {
     selectByUpperCategory,
     selectByprepend,
     getPostCategory,
+    loadingState,
+    updateLoadingState,
   };
 });

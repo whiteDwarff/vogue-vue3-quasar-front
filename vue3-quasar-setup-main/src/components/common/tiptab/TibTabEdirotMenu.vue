@@ -290,20 +290,17 @@ const handleImageMenu = () => {
 const file = ref(null);
 
 const handleImageSetting = async (e) => {
-  console.log(props.editor.commands);
   try {
     const images = await props.event(e);
     for (let image of images) {
-      props.editor.commands.setImage({
-        src: process.env.SERVER_PORT + image.filePath,
-        alt: 'image',
-        class: 'editor__image',
-      });
-      props.editor.commands.enter();
-      props.editor.commands.enter();
+      let uploadImg = `<img src='${
+        process.env.SERVER_PORT + image.filePath
+      }' class='editor__image' alt='image'> `;
+      props.editor.commands.insertContent(uploadImg);
     }
-  } catch {
+  } catch (err) {
     baseNotify('이미지 저장 실패', { type: 'warning' });
+    console.log(err);
   }
 };
 </script>
