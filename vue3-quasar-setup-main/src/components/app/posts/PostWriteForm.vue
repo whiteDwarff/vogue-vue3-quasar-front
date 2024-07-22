@@ -8,7 +8,6 @@
 
       <q-card-section class="q-gutter-y-md">
         <div class="row q-col-gutter-sm">
-          <!-- @update:model-value="form.upperSeq = $event" -->
           <q-select
             @update:model-value="onChangeUpperSeqHandler"
             v-model="form.upperSeq"
@@ -27,7 +26,7 @@
           <q-select
             @update:model-value="onChangeLowerSeqHandler"
             v-model="form.lowerSeq"
-            :options="options.category"
+            :options="systemStore.getPostLowCategory(form.upperSeq)"
             :rules="[(val) => !!val || '하위 카테고리를 선택해주세요.']"
             hide-bottom-space
             lazy-rules
@@ -41,13 +40,13 @@
           />
           <q-select
             v-model="form.prepend"
-            :options="options.prepend"
+            :options="systemStore.selectByprepend(form, true)"
             options-dense
             outlined
             dense
             label="말머리"
             class="col-12 col-sm-4"
-            :readonly="!options.prepend.length"
+            :readonly="!options.prepend.length && !form.prepend"
           >
             <!-- option이 없을 경우 -->
             <template v-slot:no-option>
@@ -137,8 +136,8 @@ const onChangeUpperSeqHandler = (e) => {
   // upperSeq 값 할당
   form.value.upperSeq = e;
   const category = systemStore.selectByUpperCategory(form.value.upperSeq);
+  console.log(category);
   // <select> 태그는 key와 value 속성 필요, category 객체에는 해당 속성이 포함
-  options.value.category = category;
   onChangeLowerSeqHandler(category[0].value);
 };
 // -----------------------------------------------------------
@@ -153,6 +152,7 @@ const onChangeLowerSeqHandler = (e) => {
   form.value.content = template;
   form.value.prepend = options.value.prepend[0];
 };
+
 // -----------------------------------------------------------
 // submit
 const { execute: executeSavePosts } = useAsyncState(savePosts, null, {
@@ -171,8 +171,7 @@ const handleSubmit = async () => {
   // 말머리가 '선택안함' 인 경우 빈 값으로 초기화
   form.value.prepend = prepend == '선택 안 함' ? '' : prepend;
   // 내용이 작성되지 않은 경우 notify 반환
-  if (!form.value.content)
-    return baseNotify('내용을 입력해주세요.', { type: 'warning' });
+  if (!form.value.content) return baseNotify('내용을 입력해주세요.');
 
   await executeSavePosts(0, form.value, authStore.getUserSeq);
 };

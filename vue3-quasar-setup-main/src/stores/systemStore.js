@@ -86,22 +86,25 @@ export const useSystemStore = defineStore('system', () => {
     return category.value.children.filter((data) => data.upperSeq == seq);
   };
   // 파라미터로 들어온 seq와 children의 value가 같다면 말머리 반환
-  const selectByprepend = ({ upperSeq, lowerSeq }) => {
+  const selectByprepend = ({ upperSeq, lowerSeq }, isEmpty = false) => {
     for (let parent of category.value.menu) {
       if (parent.seq == upperSeq) {
         for (let child of parent.midCategory) {
           if (child.seq == lowerSeq) {
-            return child;
+            return isEmpty ? child.prepend : child;
           }
         }
       }
     }
   };
-  //게시판 카테고리만 반환
+  //게시판 상위 카테고리만 반환
   const getPostCategory = () => {
     return category.value.parent.filter((data) => data.postYn == 'Y');
   };
-
+  // 게시판 하위 카테고리 반환
+  const getPostLowCategory = (seq) => {
+    return category.value.children.filter((data) => data.upperSeq == seq);
+  };
   const updateLoadingState = () => (loadingState.value = !loadingState.value);
 
   return {
@@ -120,5 +123,6 @@ export const useSystemStore = defineStore('system', () => {
     getPostCategory,
     loadingState,
     updateLoadingState,
+    getPostLowCategory,
   };
 });

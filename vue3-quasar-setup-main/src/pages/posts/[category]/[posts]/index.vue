@@ -48,13 +48,13 @@
               >
                 <q-menu>
                   <q-list dense>
-                    <q-item clickable>
+                    <q-item clickable @click="editPost">
                       <q-item-section>
                         <q-item-label>수정</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-separator />
-                    <q-item clickable>
+                    <q-item clickable @click="fetchedDelete">
                       <q-item-section>
                         <q-item-label class="text-red">삭제</q-item-label>
                       </q-item-section>
@@ -90,11 +90,15 @@
         </div>
       </q-card-section>
     </q-card>
+    <!-- isLoading이 true인 경우 body로 teleport -->
+    <TeleportSpinner v-model="isLoading" />
   </div>
 </template>
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
+import { baseNotify } from 'src/utils/base-notify';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
@@ -104,20 +108,62 @@ const route = useRoute();
 
 const posts = ref({});
 
-const { execute } = useAsyncState(() => getPostsDetail(route.params), null, {
-  immediate: true,
-  throwError: true,
-  onSuccess: ({ data }) => {
-    if (data.status == 'OK') posts.value = data;
-    // route.param.posts에 일치하는 게시글이 없다면 해당 카테고리로 리다이렉트
-    else {
-      router.push(`/posts/${route.params.category}`);
-      baseNotify('존재하지 않는 게시글입니다.', {
+const { isLoading, execute } = useAsyncState(
+  () => getPostsDetail(route.params),
+  null,
+  {
+    immediate: true,
+    throwError: true,
+    onSuccess: ({ data }) => {
+      if (data.status == 'OK') posts.value = data;
+      // route.param.posts에 일치하는 게시글이 없다면 해당 카테고리로 리다이렉트
+      else {
+        router.push(`/posts/${route.params.category}`);
+        baseNotify('존재하지 않는 게시글입니다.', {
+          type: 'warning',
+        });
+      }
+    },
+  },
+);
+// ---------------------------------------------------------------------------
+// 게시글 수정
+const editPost = async () => {
+  await baseNotify(
+    '게시글을 수정하시겠습니까?',
+    null,
+    () => router.push(`/posts/add?seq=${posts.value.postSeq}`),
+    true,
+  );
+};
+// ---------------------------------------------------------------------------
+// 게시글 삭제
+const fetchedDelete = async () => {
+  await baseNotify(
+    '게시글을 삭제하시겠습니까?',
+    null,
+    () => deleteByPost(),
+    true,
+  );
+};
+// 게시글 삭제 서비스 로직
+const deleteByPost = async () => {
+  isLoading.value = true;
+  try {
+    const { data } = await api.post('/posts/delete', posts.value);
+    if (data.status == 'OK') {
+      isLoading.value = false;
+      baseNotify('게시글이 삭제되었습니다.');
+      router.push(`/posts/${posts.value.categorySeq}`);
+    } else {
+      baseNotify('게시글 삭제에 실패하였습니다.', {
         type: 'warning',
       });
     }
-  },
-});
+  } catch (err) {
+    console.log(err);
+  }
+};
 </script>
 
 <style scoped>

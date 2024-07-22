@@ -53,6 +53,8 @@
         </div>
       </q-card-section>
     </q-card>
+    <!-- isLoading이 true인 경우 body로 teleport -->
+    <TeleportSpinner v-model="isLoading" />
   </div>
 </template>
 
@@ -60,7 +62,6 @@
 const initializePageValue = (category) => {
   return {
     current: 1,
-    maxPages: 10,
     category,
   };
 };
@@ -74,7 +75,7 @@ import { selectOne } from 'src/service/admin/postsService.js';
 import { searchOption } from '../options.js';
 
 const systemStore = useSystemStore();
-systemStore.updateLoadingState();
+// systemStore.updateLoadingState();
 
 const route = useRoute();
 const router = useRouter();
@@ -97,21 +98,21 @@ watch(
     page.value = { ...initializePageValue(newValue) };
     option.value.label = '';
     option.value.value = '';
-    systemStore.updateLoadingState();
+    // systemStore.updateLoadingState();
     executeSelectByPaging(0, page.value);
   },
 );
 
 // 검색조건과 페이지네이션 적용
 const getTableRow = async () => {
-  systemStore.updateLoadingState();
+  // systemStore.updateLoadingState();
   await executeSelectByPaging(0, {
     ...page.value,
     ...option.value,
   });
 };
 
-const { execute: executeSelectByPaging } = useAsyncState(
+const { isLoading, execute: executeSelectByPaging } = useAsyncState(
   () =>
     selectByPaging({
       ...page.value,
@@ -123,7 +124,7 @@ const { execute: executeSelectByPaging } = useAsyncState(
     throwError: true,
     onSuccess: ({ data }) => {
       if (data.status == 'OK') {
-        systemStore.updateLoadingState();
+        // systemStore.updateLoadingState();
         page.value = {
           ...data.page,
           ...route.params,

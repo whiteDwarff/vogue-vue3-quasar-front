@@ -116,10 +116,7 @@
 // page는 초기화가 자주됨, 함수로 리턴되는 오브젝트를 사용
 const initializePageValue = () => {
   return {
-    min: 1,
     current: 1,
-    max: 1,
-    maxPages: 10,
     option: 'title',
     value: '',
   };
