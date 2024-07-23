@@ -4,24 +4,20 @@
       <q-card-section>
         <router-link
           :to="`/posts/${posts.categorySeq}`"
-          class="q-ml-sm q-mb-md text-teal flex items-center decoration-none"
-          style="margin: 0"
+          class="q-ml-sm text-teal decoration-none"
           >{{ posts.categoryNm }}
           <q-icon name="sym_o_chevron_right" size="18px"
         /></router-link>
 
-        <p class="text-h5 q-pl-sm text-weight-bold">{{ posts.title }}</p>
+        <p class="text-h5 q-pl-sm q-pt-sm text-weight-bold">
+          {{ posts.title }}
+        </p>
 
         <div class="row">
-          <UserProfile :user="posts" class="col-12 col-sm-7">
+          <UserProfile :user="posts" div="등록일" class="col-12 col-sm-7">
             <template #caption>
               <div>
-                <span class="text-grey-14 text-caption q-mr-sm">{{
-                  posts.createdAt
-                }}</span>
-                <span class="text-grey-14 text-caption"
-                  >조회 {{ posts.readCount }}</span
-                >
+                <span class="text-caption">조회 {{ posts.readCount }}</span>
               </div>
             </template>
           </UserProfile>

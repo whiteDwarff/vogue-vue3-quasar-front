@@ -99,6 +99,15 @@
           <q-space />
 
           <q-btn
+            v-if="form.seq"
+            @click="undo"
+            :ripple="false"
+            label="취소"
+            color="grey-14"
+            unelevated
+            class="q-mr-md q-py-sm q-px-lg"
+          />
+          <q-btn
             :ripple="false"
             label="제출"
             color="teal"
@@ -110,12 +119,15 @@
       </q-card-section>
     </q-form>
   </q-card>
+  <TeleportSpinner v-model="isLoading" />
 </template>
 
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useSystemStore } from 'src/stores/systemStore';
 import { useAuthStore } from 'src/stores/authStore';
+import { baseNotify } from 'src/utils/base-notify';
+import { baseConfirm } from 'src/utils/base-dialog';
 
 const authStore = useAuthStore();
 const systemStore = useSystemStore();
@@ -124,19 +136,20 @@ const { category } = storeToRefs(systemStore);
 const router = useRouter();
 
 const props = defineProps(['title']);
+
 const form = defineModel();
 const options = ref({
   category: [],
   prepend: [],
   notice: '',
 });
+const saveStr = ref(useRoute().query.seq ? '수정' : '등록');
 // -----------------------------------------------------------
 // 상위 카테고리가 변경되면 메서드 실행
 const onChangeUpperSeqHandler = (e) => {
   // upperSeq 값 할당
   form.value.upperSeq = e;
   const category = systemStore.selectByUpperCategory(form.value.upperSeq);
-  console.log(category);
   // <select> 태그는 key와 value 속성 필요, category 객체에는 해당 속성이 포함
   onChangeLowerSeqHandler(category[0].value);
 };
@@ -149,23 +162,30 @@ const onChangeLowerSeqHandler = (e) => {
   options.value.prepend = [...prepend];
   if (options.value.prepend.length) options.value.prepend.unshift('선택 안 함');
 
-  form.value.content = template;
+  if (form.value.content) {
+    if (template) baseNotify('본문에 매니저가 설정한 글양식이 추가되었습니다.');
+    form.value.content = template + form.value.content;
+  } else form.value.content = template;
   form.value.prepend = options.value.prepend[0];
 };
 
 // -----------------------------------------------------------
 // submit
-const { execute: executeSavePosts } = useAsyncState(savePosts, null, {
-  immediate: false,
-  throwError: true,
-  onSuccess: ({ data }) => {
-    console.log(data);
-    if (data.status == 'OK') {
-      baseNotify('등록이 완료되었습니다.');
-      router.push(`/posts/${data.lowerSeq}/${data.seq}`);
-    }
+const { isLoading, execute: executeSavePosts } = useAsyncState(
+  savePosts,
+  null,
+  {
+    immediate: false,
+    throwError: true,
+    onSuccess: ({ data }) => {
+      console.log(data);
+      if (data.status == 'OK') {
+        baseNotify(`${saveStr.value}이 완료되었습니다.`);
+        router.push(`/posts/${data.lowerSeq}/${data.seq}`);
+      }
+    },
   },
-});
+);
 const handleSubmit = async () => {
   const prepend = form.value.prepend;
   // 말머리가 '선택안함' 인 경우 빈 값으로 초기화
@@ -173,9 +193,26 @@ const handleSubmit = async () => {
   // 내용이 작성되지 않은 경우 notify 반환
   if (!form.value.content) return baseNotify('내용을 입력해주세요.');
 
-  await executeSavePosts(0, form.value, authStore.getUserSeq);
+  await baseNotify(
+    `게시글을 ${saveStr.value}하시겠습니까?`,
+    null,
+    () => executeSavePosts(0, form.value, authStore.getUserSeq),
+    true,
+  );
 };
 // -----------------------------------------------------------
+const undo = () => {
+  baseConfirm('수정을 취소하시겠습니까?');
+  // await baseNotify(
+  //   '수정을 취소하시겠습니까?',
+  //   null,
+  //   () => {
+  //     router.push(`/posts/${form.value.lowerSeq}`);
+  //   },
+  //   true,
+  // );
+};
+
 // image upload
 const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
   immediate: false,

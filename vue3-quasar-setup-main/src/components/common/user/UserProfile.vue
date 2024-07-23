@@ -17,13 +17,15 @@
         </q-item-label>
         <!-- 가입일, 게시글 작성일 -->
         <q-item-label>
-          <div>
+          <div class="flex items-center">
             <span
               v-if="user?.createdAt"
               :class="div ? 'subtitle2' : 'text-grey-14'"
               class="text-caption q-mr-sm"
               >{{ div }} {{ user.createdAt }}</span
             >
+
+            <slot name="caption"> </slot>
             <span class="text-grey-14 text-caption"></span>
           </div>
         </q-item-label>

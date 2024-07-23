@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ form }}
     <PostWriteForm
       v-model="form"
       :title="seq ? '게시글 수정' : '게시글 작성'"
