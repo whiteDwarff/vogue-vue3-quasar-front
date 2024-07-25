@@ -61,6 +61,7 @@ export async function selectEditInfo(params) {
  * @description 게시글 이미지 저장
  */
 export async function readImageURL(images) {
+  console.log(images);
   try {
     if (images.length) {
       const form = new FormData();

@@ -148,7 +148,13 @@
       <q-tooltip class="bg-grey"> 이미지 URL 입력 </q-tooltip>
     </q-btn>
     <!-- 이미지를 서버에 저장 후 서버 URL 셋팅 -->
-    <q-btn flat dense icon="sym_o_photo_library" @click="file.click()">
+    <q-btn
+      v-if="dir"
+      flat
+      dense
+      icon="sym_o_photo_library"
+      @click="file.click()"
+    >
       <q-tooltip class="bg-grey"> 이미지 업로드 </q-tooltip>
     </q-btn>
     <q-separator vertical inset spaced />
@@ -222,7 +228,7 @@
       type="file"
       hidden
       multiple
-      @change="handleImageSetting($event)"
+      @change="readImageURL($event)"
     />
   </div>
   <div></div>
@@ -235,8 +241,8 @@ const props = defineProps({
   editor: {
     type: Object,
   },
-  event: {
-    type: Function,
+  dir: {
+    type: String,
   },
 });
 const icon = ref({
@@ -289,18 +295,32 @@ const handleImageMenu = () => {
 // image upload
 const file = ref(null);
 
-const handleImageSetting = async (e) => {
-  try {
-    const images = await props.event(e);
-    for (let image of images) {
-      let uploadImg = `<img src='${
-        process.env.SERVER_PORT + image.filePath
-      }' class='editor__image' alt='image'> `;
-      props.editor.commands.insertContent(uploadImg);
+const readImageURL = async ({ target }) => {
+  const images = target.files;
+  if (images.length) {
+    try {
+      const form = new FormData();
+      for (let i = 0; i < images.length; i++) form.append('images', images[i]);
+      // 이미지 저장 경로 설정
+      // TODO:server.webMvcConfig에 해당 경로 설정 확인 **
+      form.append('dir', props.dir);
+
+      const { data } = await api.post('/system/imageUpload', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      // 저장한 이미지 editor에 바인딩
+      for (let image of data) {
+        let uploadImg = `<img src='${
+          process.env.SERVER_PORT + image.filePath
+        }' class='editor__image' alt='image'> `;
+
+        props.editor.commands.insertContent(uploadImg);
+      }
+    } catch {
+      baseNotify('이미지 저장 실패', { type: 'warning' });
     }
-  } catch (err) {
-    baseNotify('이미지 저장 실패', { type: 'warning' });
-    console.log(err);
   }
 };
 </script>

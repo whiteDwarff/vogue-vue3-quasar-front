@@ -1,6 +1,6 @@
 <template>
   <q-card class="tiptap" flat bordered>
-    <TibTabEdirotMenu :editor="editor" :event />
+    <TibTabEdirotMenu :editor="editor" :dir />
     <q-separator />
     <editor-content class="editor__content" :editor="editor" />
   </q-card>
@@ -29,8 +29,8 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  event: {
-    type: Function,
+  dir: {
+    type: String,
   },
 });
 const emit = defineEmits(['update:modelValue']);

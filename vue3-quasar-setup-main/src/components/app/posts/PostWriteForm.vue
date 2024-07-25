@@ -90,7 +90,7 @@
           </div>
         </div>
 
-        <TiptabEditor v-model="form.content" :event="readURL" />
+        <TiptabEditor v-model="form.content" dir="posts" />
 
         <div class="outlined flex q-pa-sm">
           <q-checkbox v-model="form.publicYn" label="공개 설정" />
@@ -201,32 +201,15 @@ const handleSubmit = async () => {
   );
 };
 // -----------------------------------------------------------
-const undo = () => {
-  baseConfirm('수정을 취소하시겠습니까?');
-  // await baseNotify(
-  //   '수정을 취소하시겠습니까?',
-  //   null,
-  //   () => {
-  //     router.push(`/posts/${form.value.lowerSeq}`);
-  //   },
-  //   true,
-  // );
-};
-
-// image upload
-const { execute: executeReadImageURL } = useAsyncState(readImageURL, null, {
-  immediate: false,
-  throwError: true,
-});
-
-const readURL = async ({ target }) => {
-  try {
-    const { data } = await executeReadImageURL(0, target.files);
-    return data;
-  } catch (err) {
-    baseNotify('이미지 저장 실패', { type: 'warning' });
-    return null;
-  }
+const undo = async () => {
+  await baseNotify(
+    '수정을 취소하시겠습니까?',
+    null,
+    () => {
+      router.push(`/posts/${form.value.lowerSeq}`);
+    },
+    true,
+  );
 };
 </script>
 

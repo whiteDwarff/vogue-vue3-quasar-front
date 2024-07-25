@@ -129,11 +129,11 @@
         <q-tab-panels v-model="tab" animated class="border q-mt-none panels">
           <!-- notice -->
           <q-tab-panel name="notice" class="q-pt-lg">
-            <TiptabEditor v-model="form.notice" />
+            <TiptabEditor v-model="form.notice" dir="notice" />
           </q-tab-panel>
           <!-- template -->
           <q-tab-panel name="template" class="q-pt-lg">
-            <TiptabEditor v-model="form.template" />
+            <TiptabEditor v-model="form.template" dir="template" />
           </q-tab-panel>
         </q-tab-panels>
 
