@@ -3,10 +3,16 @@
  *  */
 export const columns = [
   {
+    name: 'rowNum',
+    label: '',
+    align: 'center',
+    style: '5%',
+  },
+  {
     name: 'title',
     label: '제목',
     align: 'left',
-    style: 'width: 60%; font-weight: bold',
+    style: 'width: 55%; font-weight: bold',
   },
   {
     name: 'name',

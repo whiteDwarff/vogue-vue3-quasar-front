@@ -33,7 +33,7 @@
           />
           <q-input
             v-model="option.value"
-            @enter="getTableRow"
+            @keyup.enter="getTableRow"
             class="col-8 col-md-7"
             dense
             outlined
@@ -75,7 +75,6 @@ import { selectOne } from 'src/service/admin/postsService.js';
 import { searchOption } from '../options.js';
 
 const systemStore = useSystemStore();
-// systemStore.updateLoadingState();
 
 const route = useRoute();
 const router = useRouter();
@@ -84,8 +83,8 @@ const router = useRouter();
 const page = ref(initializePageValue(route.params.category));
 // search options
 const option = ref({
-  label: searchOption[0].value,
-  value: '',
+  label: route.query?.label || searchOption[0].value,
+  value: route.query?.value || '',
 });
 // table row
 const rows = ref([]);
@@ -105,6 +104,20 @@ watch(
 
 // 검색조건과 페이지네이션 적용
 const getTableRow = async () => {
+  if (option.value.label)
+    router.push({
+      query: {
+        ...router.query,
+        ...option.value,
+      },
+    });
+  if (page.value.current > 1)
+    router.push({
+      query: {
+        ...router.query,
+        current: page.value.current,
+      },
+    });
   // systemStore.updateLoadingState();
   await executeSelectByPaging(0, {
     ...page.value,

@@ -71,10 +71,13 @@
 
       <q-card-section>
         <div class="flex items-center">
-          <div class="q-my-auto q-mr-md flex items-center">
+          <div
+            class="q-my-auto q-mr-md flex items-center cursor-pointer"
+            @click="toggleLiked"
+          >
             <!-- 좋아요 테이블 설계 후 좋아요 여부에 따라 이모지 변경 -->
-            <q-icon name="sym_o_favorite" color="red" />
-            <!-- <q-icon name="favorite" color="red" /> -->
+            <q-icon v-if="posts?.isLiked" name="favorite" color="red" />
+            <q-icon v-else name="sym_o_favorite" color="red" />
             <span class="q-mx-xs">좋아요</span>
             <span class="text-weight-bold"> {{ posts.likeCount }}</span>
           </div>
@@ -93,8 +96,6 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/authStore';
-import { baseNotify } from 'src/utils/base-notify';
-import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
@@ -103,25 +104,28 @@ const router = useRouter();
 const route = useRoute();
 
 const posts = ref({});
+// ---------------------------------------------------------------------------
+// 상세 데이터 호출
+const obj = {
+  postSeq: parseInt(route.params.posts),
+  categorySeq: parseInt(route.params.category),
+  userSeq: user.value.seq,
+};
 
-const { isLoading, execute } = useAsyncState(
-  () => getPostsDetail(route.params),
-  null,
-  {
-    immediate: true,
-    throwError: true,
-    onSuccess: ({ data }) => {
-      if (data.status == 'OK') posts.value = data;
-      // route.param.posts에 일치하는 게시글이 없다면 해당 카테고리로 리다이렉트
-      else {
-        router.push(`/posts/${route.params.category}`);
-        baseNotify('존재하지 않는 게시글입니다.', {
-          type: 'warning',
-        });
-      }
-    },
+const { isLoading, execute } = useAsyncState(() => getPostsDetail(obj), null, {
+  immediate: true,
+  throwError: true,
+  onSuccess: ({ data }) => {
+    if (data.status == 'OK') posts.value = data;
+    // route.param.posts에 일치하는 게시글이 없다면 해당 카테고리로 리다이렉트
+    else {
+      router.push(`/posts/${route.params.category}`);
+      baseNotify('존재하지 않는 게시글입니다.', {
+        type: 'warning',
+      });
+    }
   },
-);
+});
 // ---------------------------------------------------------------------------
 // 게시글 수정
 const editPost = async () => {
@@ -158,6 +162,31 @@ const deleteByPost = async () => {
     }
   } catch (err) {
     console.log(err);
+  }
+};
+// ---------------------------------------------------------------------------
+// 좋아요 상태 업데이트
+const toggleLiked = async () => {
+  // 사용자가 로그인 상태가 아니라면 함수 종료
+  if (!user.value.seq) return;
+
+  let obj = {
+    postSeq: parseInt(route.params.posts),
+    userSeq: user.value.seq,
+  };
+  try {
+    const { data } = await api.post('/posts/toggleLiked', obj);
+    if (data.status == 'OK') {
+      // 좋아요 상태 업데이트
+      posts.value.isLiked = data.result;
+      // 좋아요 개수 증감
+      if (data.result) posts.value.likeCount += 1;
+      else if (!data.result && posts.value.likeCount > 0)
+        posts.value.likeCount -= 1;
+    }
+  } catch (err) {
+    console.log(err);
+    baseNotify('네트워크 통신이 원활하지 않습니다.');
   }
 };
 </script>
