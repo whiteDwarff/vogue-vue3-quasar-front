@@ -300,7 +300,23 @@ const readImageURL = async ({ target }) => {
   if (images.length) {
     try {
       const form = new FormData();
-      for (let i = 0; i < images.length; i++) form.append('images', images[i]);
+      for (let i = 0; i < images.length; i++) {
+        // 파일 유효성 검사 : jpg, jpeg, png, gif 확장자만 에디터 내부에 삽입할 수 있다.
+        let fileName = images[i].name;
+        let lastDot = fileName.lastIndexOf('.');
+        let ext = fileName.substring(lastDot, fileName.length).toLowerCase();
+        let extArr = process.env.IMAGE_EXT.split(',');
+
+        if (!extArr.includes(ext))
+          return baseNotify(
+            `${process.env.IMAGE_EXT} 확장자만 등록 가능합니다.`,
+            {
+              type: 'warning',
+            },
+          );
+
+        form.append('images', images[i]);
+      }
       // 이미지 저장 경로 설정
       // TODO:server.webMvcConfig에 해당 경로 설정 확인 **
       form.append('dir', props.dir);

@@ -88,6 +88,11 @@
           </div>
         </div>
       </q-card-section>
+
+      <!-- 댓글 영역, commentYn에 따라 활성화 -->
+      <q-card-section>
+        <CommentWriteForm :commentYn="posts.commentYn" />
+      </q-card-section>
     </q-card>
     <!-- isLoading이 true인 경우 body로 teleport -->
     <TeleportSpinner v-model="isLoading" />

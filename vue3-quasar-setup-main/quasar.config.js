@@ -26,7 +26,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['recaptcha-v3', 'errorHendler', 'axios', 'froala'],
+    boot: ['recaptcha-v3', 'errorHendler', 'axios'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -67,6 +67,7 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
       env: {
         SERVER_PORT: 'http://localhost:8080',
+        IMAGE_EXT: '.jpg,.jpeg,.png,.gif',
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
