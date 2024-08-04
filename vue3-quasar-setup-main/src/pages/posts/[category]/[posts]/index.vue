@@ -26,7 +26,7 @@
             <div class="q-mr-md">
               <q-icon name="sym_o_forum" />
               <span class="q-mx-xs">댓글</span>
-              <span class="text-weight-bold">44</span>
+              <span class="text-weight-bold">{{ posts.commentCount }}</span>
             </div>
             <q-btn flat dense :ripple="false" class="text-weight-regular"
               >URL 복사</q-btn
@@ -84,14 +84,17 @@
           <div class="q-ml-md">
             <q-icon name="sym_o_forum" />
             <span class="q-mx-xs">댓글</span>
-            <span class="text-weight-bold">44</span>
+            <span class="text-weight-bold">{{ posts.commentCount }}</span>
           </div>
         </div>
       </q-card-section>
 
       <!-- 댓글 영역, commentYn에 따라 활성화 -->
       <q-card-section>
-        <CommentWriteForm :commentYn="posts.commentYn" />
+        <CommentWriteForm
+          :commentYn="posts.commentYn"
+          :postSeq="posts.postSeq"
+        />
       </q-card-section>
     </q-card>
     <!-- isLoading이 true인 경우 body로 teleport -->

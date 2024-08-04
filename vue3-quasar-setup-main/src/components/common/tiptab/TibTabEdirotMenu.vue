@@ -309,7 +309,7 @@ const readImageURL = async ({ target }) => {
 
         if (!extArr.includes(ext))
           return baseNotify(
-            `${process.env.IMAGE_EXT} 확장자만 등록 가능합니다`,
+            `${process.env.IMAGE_EXT} 확장자만 등록 가능합니다.`,
             {
               type: 'warning',
             },

@@ -50,7 +50,7 @@ export const searchOption = [
     value: 'name',
   },
   {
-    label: '타이틀',
+    label: '제목',
     value: 'title',
   },
   {
