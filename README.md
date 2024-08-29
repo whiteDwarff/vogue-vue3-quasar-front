@@ -1,4 +1,4 @@
-# Quasar App (vue3-quasar-project)
+# Quasar App (vogue-vue3-quasar-front)
 
 ### Install the dependencies
 
@@ -16,6 +16,9 @@ npm run dev
 ### 프레임워크
 - [vue.js@3.3.4](https://ko.vuejs.org/guide/introduction)
 - [quasar@2.12.0](https://quasar.dev/)
+
+### 빌드
+- [vite@1.4.3](https://ko.vitejs.dev/guide/)
 
 
 ### 상태관리 
